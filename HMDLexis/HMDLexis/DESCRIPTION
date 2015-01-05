@@ -1,0 +1,49 @@
+Package: HMDLexis
+Type: Package
+Title: HMD Internal Lexis Database Programs
+Version: 5.0
+Date: 2012-12-05
+Author: Tim Riffe, Carl Boe, Celeste Winant
+Maintainer: Tim Riffe <tim.riffe@gmail.com>
+Description: The full set of Lexis Database (LDB) programs up to MP v5, as well
+    as changes to be made in v6. All functions are visible and available.
+    Version numbers follow the MP versions, with decimals for minor revisions.
+License: to be decided
+LazyData: TRUE
+Depends:
+    R (>= 2.15)
+Imports:
+    reshape2,
+    compiler,
+    pspline,
+    lubridate
+Collate:
+    'PC2AC.R'
+    'd_CohortAdjust.R'
+    'd_KannistoSplitYrSex.R'
+    'd_KannistoSurvMin.R'
+    'd_ma0.R'
+    'd_remfluct.R'
+    'd_soainew.R'
+    'd_unk.R'
+    'readInputDB.R'
+    'resortDeaths.R'
+    'AC2AP.R'
+    'AP2AC.R'
+    'PC2AP.R'
+    'd_addCohortColumn.R'
+    'p_addCohortColumn.R'
+    'p_ecm.R'
+    'p_ecm_findOmega.R'
+    'p_unk.R'
+    'resortPops.R'
+    'p_srecm.R'
+    'p_ey2ny.R'
+    'd_long.R'
+    'p_ic_prexisting.R'
+    'ypart.R'
+    'yint.R'
+    'b_agg.R'
+    'd_agg.R'
+    'd_s1x1.R'
+    'd_unk_sex.R'

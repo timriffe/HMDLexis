@@ -1,0 +1,36 @@
+\name{p_srecm}
+\alias{p_srecm}
+\title{p_srecm extinct cohort followed by survivor ratio methods, wrapper.}
+\usage{
+  p_srecm(Pop, Deaths, k = 5, m = 5, MaxAge = 90,
+    maxit = 100, reproduce.matlab = FALSE)
+}
+\arguments{
+  \item{Pop}{The standard internal Population data.frame,
+  *after* running p_ecm().}
+
+  \item{Deaths}{after all processing is done. Completed
+  triangles.}
+
+  \item{k}{passed to \code{p_srm()}-- the parameter 'k'
+  from various equations in the section on SRM.}
+
+  \item{m}{passed to \code{p_srm()}-- the parameter 'm'
+  from various equations in the section on SRM.}
+
+  \item{MaxAge}{passed to \code{p_srm()}-- controls whether
+  we do SR 90+ or SR 85+ (or something else). Default 90.
+  (85 is untested so far)}
+
+  \item{maxit}{passed to \code{p_srm()}-- maximum number of
+  iterations to optimize the improvement coefficient, 'c'.}
+
+  \item{reproduce.matlab}{passed to \code{p_srm()} and
+  \code{p_ecm()}-- logical. Do we include the legacy matlab
+  kludge? Default \code{FALSE}.}
+}
+\description{
+  This is a wrapper, strictly. \code{p_ecm()} is first
+  called, then \code{p_srm()}, with UNK handled first.
+}
+
