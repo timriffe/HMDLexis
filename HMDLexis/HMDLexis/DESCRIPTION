@@ -47,3 +47,5 @@ Collate:
     'd_agg.R'
     'd_s1x1.R'
     'd_unk_sex.R'
+    'p_sra.R'
+    'p_srm.R'

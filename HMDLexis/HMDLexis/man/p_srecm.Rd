@@ -2,7 +2,7 @@
 \alias{p_srecm}
 \title{p_srecm extinct cohort followed by survivor ratio methods, wrapper.}
 \usage{
-  p_srecm(Pop, Deaths, k = 5, m = 5, MaxAge = 90,
+  p_srecm(Pop, Deaths, k = 5, m = 5, a = 80, A = 90,
     maxit = 100, reproduce.matlab = FALSE)
 }
 \arguments{
@@ -12,15 +12,18 @@
   \item{Deaths}{after all processing is done. Completed
   triangles.}
 
-  \item{k}{passed to \code{p_srm()}-- the parameter 'k'
+  \item{k}{passed to \code{p_sra()}-- the parameter 'k'
   from various equations in the section on SRM.}
 
-  \item{m}{passed to \code{p_srm()}-- the parameter 'm'
+  \item{m}{passed to \code{p_sra()}-- the parameter 'm'
   from various equations in the section on SRM.}
 
-  \item{MaxAge}{passed to \code{p_srm()}-- controls whether
-  we do SR 90+ or SR 85+ (or something else). Default 90.
-  (85 is untested so far)}
+  \item{a}{passed to \code{p_sra()}-- the parameter 'm'
+  from various equations in the section on SRM.}
+
+  \item{A}{passed to \code{p_sra()}-- controls whether we
+  do SR 90+ or SR 85+ (or something else). Default 90. (85
+  is untested so far)}
 
   \item{maxit}{passed to \code{p_srm()}-- maximum number of
   iterations to optimize the improvement coefficient, 'c'.}

@@ -2,7 +2,7 @@
 \alias{readInputDB}
 \title{read in the InputDB, in its entirety: XXXpop, XXXdeath, XXXtadj, XXXbirth, XXXmonthly}
 \usage{
-  readInputDB(WORKING = "/hdir/0/hmd/HMDWORK/DNK",
+  readInputDB(WORKING = "/data/commons/hmd/HMDWORK/DNK",
     XXX = NULL, log.file = "", InputDB.name = "InputDB",
     save.bin = FALSE, verbose = TRUE)
 }

@@ -2,17 +2,17 @@
 \alias{p_ecm}
 \title{p_ecm a simple extinct cohort method function, for modularity}
 \usage{
-  p_ecm(Pop, Deaths, reproduce.matlab = FALSE)
+  p_ecm(Pop, Deaths, A = 80)
 }
 \arguments{
-  \item{Popualtion}{The standard internal Population
+  \item{Population}{The standard internal Population
   data.frame, as}
 
   \item{Deaths}{after all processing is done. Completed
   triangles.}
 
-  \item{reproduce.matlab}{logical, default \code{FALSE}.
-  Optional kludge.}
+  \item{A}{lowest age for which EC estimates should be
+  given. Default 80.}
 }
 \value{
   Population with old ages either filled in or imputed
@@ -22,6 +22,15 @@
   This implementation seeks to follow the MP. Deaths must
   be finalized. Populations must be in single ages and all
   years. This function covers area B from Figure 6 'Methods
-  used for population estimates'.
+  used for population estimates'. The actual work is odone
+  by \code{p_ecm_inner()}
+}
+\details{
+  Conceivably, a population could have a long series with
+  low open ages in the early part, but decent population
+  data in the recent part. If we want a value of \code{A}
+  lower than 80 for only part of the series, this can be
+  achieved by subsetting \code{Dsex}, and making two calls
+  to the function, then \code{rbind()}ing back together.
 }
 

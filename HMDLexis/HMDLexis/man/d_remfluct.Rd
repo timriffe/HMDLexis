@@ -2,8 +2,7 @@
 \alias{d_remfluct}
 \title{d_remfluct a function called by \code{d_soainew()} to remove outliers prior to fitting the Kannisto survival function}
 \usage{
-  d_remfluct(deathsRR, N = 25, p1 = 5e-04, p2 = 0.9,
-    method = 3)
+  d_remfluct(deathsRR, N = 25, p1 = 5e-04, p2 = 0.9)
 }
 \arguments{
   \item{deathsRR}{the universal deaths object AFTER all
@@ -21,11 +20,6 @@
   \item{p2}{the smoothing parameter for the second cubic
   spline over all ages of death counts, as seen in matlab
   as 0.9.}
-
-  \item{method}{1,2, or 3. Default 3. Three reproduces
-  results for the first calibration country, Hungary. These
-  methods evolved as trial and error to capture the ad hoc
-  rules used in matlab. 1 and 2 pick up more years than 3.}
 }
 \value{
   deaths.out a simple data.frame with 3 columns: Age,
