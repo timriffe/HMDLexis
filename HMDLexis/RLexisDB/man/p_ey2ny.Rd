@@ -1,0 +1,19 @@
+\name{p_ey2ny}
+\alias{p_ey2ny}
+\title{p_ey2ny Move Dec 31 to Jan 1 of following year}
+\usage{
+  p_ey2ny(Pop)
+}
+\arguments{
+  \item{Pop}{the standard internal HMD population
+  data.frame, probably early in processing.}
+}
+\value{
+  Pop the same data.frame that was given as an argument,
+  with this paricular date change undertaken where
+  necessary
+}
+\description{
+  This function can be harmlessley called on each country.
+}
+
