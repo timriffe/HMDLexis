@@ -118,12 +118,12 @@ p_sra <- function(Pop,
         })
       
       # pop is a generic holder, in AP format (the ratios follow A and P...)
-      yrskeep         <- as.character((min(sryears) - 5):this.year)
+      #yrskeep         <- as.character((min(sryears) - k):this.year)
       ageskeep        <- as.character((a - 10):130)
       pop             <- matrix(nrow = length(ageskeep), 
-                                ncol = length(yrskeep),
+                                ncol = length(YearsKeep),
                                 dimnames = list(ageskeep,
-                                                yrskeep)
+                                  YearsKeep)
                                 )
       # get EC pops for SR zone omega
       #
@@ -203,14 +203,16 @@ p_sra <- function(Pop,
         }    
       } # 
       
+      # now reshape and filter the new population estimates
       Psr        <- melt(pop, varnames = c("Age", "Year"), value.name = "Population")
       # otherwise this could extend left of the data...
       Psr        <- Psr[Psr$Year %in% YearsKeep, ]
       # ADD COHORT, then select only sr cohorts and years. Don't redo EC data
       Psr$Cohort <- Psr$Year - Psr$Age - 1
       Psr$Population[with(Psr,is.na(Population) & Cohort <= max(srcohorts))] <- 0
-      Psr        <- Psr[with(Psr, Cohort <= max(srcohorts)), ] 
-      # this excludes the border cohort, started off with Ds value
+      
+      # this EXCLUDES the border cohort, started off with Ds value
+      Psr        <- Psr[Psr$Cohort  %in% srcohorts, ] 
       Psr        <- Psr[!is.na(Psr$Population), ]
       # now we have things cut down.
       
