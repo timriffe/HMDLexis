@@ -3,19 +3,20 @@
 #' 
 #' @description This implementation seeks to follow the MP. Deaths must be finalized. Populations must be in single ages and all years. This function covers area B from Figure 6 'Methods used for population estimates'. The actual work is odone by \code{p_ecm_inner()}
 #' 
-#' @param Population The standard internal Population data.frame, as
+#' @param Pop The standard internal Population data.frame, as
 #' @param Deaths after all processing is done. Completed triangles.
-#' @param A lowest age for which EC estimates should be given. Default 80.
+#' @param a lowest age for which EC estimates should be given. Default 80.
+#' @param reproduce.matlab logical. default is \code{FALSE}. This affects only the border cohort between EC and SR.
 #' 
 #' @return Population with old ages either filled in or imputed using the extinct cohort method
-
+#' 
 #' @details Conceivably, a population could have a long series with low open ages in the early part, but decent population data in the recent part. If we want a value of \code{A} lower than 80 for only part of the series, this can be achieved by subsetting \code{Dsex}, and making two calls to the function, then \code{rbind()}ing back together.
-
+#' 
 #' @export
 #' 
 
-p_ecm <- function(Pop, Deaths,A=80){
-  
+p_ecm <- function(Pop, Deaths, a = 80, reproduce.matlab = FALSE){
+ 
   ColnamesKeep <- colnames(Pop)
   
   Pop <- Pop[Pop$Age != "TOT", ]
@@ -34,7 +35,7 @@ p_ecm <- function(Pop, Deaths,A=80){
     Pop           <- Pop[!UNKi, ]
   }
   
-  # Sex <- "f"
+  # Sex <- "f"; Sex <- "m"
   PopMF <- list()
   for (Sex in c("m","f")){
     Dsex              <- Deaths[Deaths$Sex == Sex, ]
@@ -44,7 +45,7 @@ p_ecm <- function(Pop, Deaths,A=80){
     omega             <- p_ecm_findOmega(Dsex, l = 5, threshold = 0.5)
     # p_ecm_inner() defined below, in same script. not quirky, but it is useful
     # to have these steps be modular, so that it can be called elsewhere
-    ECpop <- p_ecm_inner(Dsex = Dsex, A = A, omega = omega, SRzone = FALSE)
+    ECpop <- p_ecm_inner(Dsex = Dsex, a = a, omega = omega, reproduce.matlab = reproduce.matlab)
     # Dima: should only be done for srecm, but not for ec.
     #    # an apparent quirk in the matlab code
     #    if (reproduce.matlab){
@@ -56,8 +57,15 @@ p_ecm <- function(Pop, Deaths,A=80){
     #        ECpop$Population[ECpop$Cohort == omega["Cohmax"]] + omega["Ds"]
     #    }
     # append
+#  LexisMap(acast(Psex, Agei~Year, value.var = "Population"),log=FALSE)
+#  dev.new()
+#  LexisMap(acast(ECpop, Agei~Year, value.var = "Population"),log=FALSE)
     # is.na(Cohort) picks out the open age groups, which we hope are all 80+
-    PopMF[[Sex]]      <- rbind(Psex[!with(Psex, Cohort <= omega["Cohmax"] & Agei >= A & !is.na(Cohort)), ColnamesKeep], ECpop[, ColnamesKeep])
+
+  Pold <- Psex[!with(Psex, (Year - Agei - 1) <= omega["Cohmax"] & Agei >= a), ColnamesKeep]
+#  dev.new()
+#  LexisMap(acast(Pold, Agei~Year, value.var = "Population"),log=FALSE)
+    PopMF[[Sex]]      <- rbind(Pold, ECpop[, ColnamesKeep])
   }
   if (UNKTF){
     PopMF[["UNK"]]    <- UNK
@@ -74,7 +82,9 @@ p_ecm <- function(Pop, Deaths,A=80){
 #' @description This implementation seeks to follow the MP, we have outsourced the work of \code{p_ecm()} to here for the sake of modularity. This function may also be called by the \code{p_ic()} function ecosystem in order to extend population counts in census 1 and census 2 prior to interpolating. Deaths must be finalized. This function covers area B from Figure 6 'Methods used for population estimates'. 
 #' 
 #' @param Dsex Deaths after all processing is done, subset of a single sex.
-#' @param A lowest age for which EC estimates should be given. Default 80.
+#' @param a lowest age for which EC estimates should be given. Default 80.
+#' @param omega is the object returned by \code{p_ecm_findOmega()}.
+#' @param reproduce.matlab logical. default is \code{FALSE}. This affects only the border cohort between EC and SR.
 #' 
 #' @return Population with old ages either filled in or imputed using the extinct cohort method
 #' 
@@ -85,7 +95,7 @@ p_ecm <- function(Pop, Deaths,A=80){
 #' @export
 #' 
 
-p_ecm_inner <- function(Dsex, A = 80, omega = NULL, SRzone = FALSE){
+p_ecm_inner <- function(Dsex, a = 80, omega = NULL, reproduce.matlab = FALSE){
   # instead of feeding in Pop argument, just assume standard R LexisDB format of Pop DF.
   # this is what we do anyway by filling out columns below.
   Pop <- structure(list(PopName = character(0), Area = integer(0), Sex = character(0), 
@@ -105,13 +115,13 @@ p_ecm_inner <- function(Dsex, A = 80, omega = NULL, SRzone = FALSE){
     omega             <- p_ecm_findOmega(Dsex, l = 5, threshold = 0.5)
   }
   
-  # leave SR area empty (NAs) or fill in using EC too?
-  maxCoh <- ifelse(SRzone, max(Deaths$Cohort), omega["Cohmax"])
   
   # 2) reshape deaths by period-cohort (PC = VV shape)
-  VV                <- acast(Dsex[with(Dsex, Agei >= A & Cohort <= maxCoh), ], 
+  VV                <- acast(Dsex[with(Dsex, Agei >= a & Cohort <= omega["Cohmax"]), ], 
                              Year ~ Cohort, sum, value.var = "Deaths")
-  
+  if (reproduce.matlab){
+    VV[,as.character(omega["Cohmax"])] <- VV[,as.character(omega["Cohmax"])] + omega["Ds"]
+  }
   cohorts           <- as.integer(colnames(VV))
   years             <- as.integer(rownames(VV))
   
@@ -121,7 +131,7 @@ p_ecm_inner <- function(Dsex, A = 80, omega = NULL, SRzone = FALSE){
   Allyears          <- replicate(length(cohorts), years)
   Allcohorts        <- t(replicate(length(years), cohorts))
   # the selection mask
-  Mask              <- AllAges >= A & AllAges <= 130
+  Mask              <- AllAges >= a & AllAges <= 130
   
   # 3) Equation 38
   ECpops            <- apply(VV[nrow(VV):1, ], 2, cumsum)[nrow(VV):1, ][Mask]
