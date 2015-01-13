@@ -212,7 +212,7 @@ p_sra <- function(Pop,
       Psr$Population[with(Psr,is.na(Population) & Cohort <= max(srcohorts))] <- 0
       
       # this EXCLUDES the border cohort, started off with Ds value
-      Psr        <- Psr[Psr$Cohort  %in% srcohorts, ] 
+      Psr        <- Psr[Psr$Cohort  %in% srcohorts & Psr$Agei >= a, ] 
       Psr        <- Psr[!is.na(Psr$Population), ]
       # now we have things cut down.
       
