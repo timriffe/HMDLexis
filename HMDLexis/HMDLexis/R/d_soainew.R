@@ -1,4 +1,21 @@
 
+# This R file contains the whole d_soainew() function family, which is admittedly overly complex and ad-hockish in nature.
+# The current implementation only manages to approximate the matlab one, and apologies are due for
+# an occassionally opaque and idiosyncratic R-implementation
+
+# Contents:
+# d_soainew()                top level wrapper
+# d_KannistoSplitYrSex()     does the work for a single year and sex
+# KannistoSurvMin()          Kannisto survival residual function
+# KannistoSurv()             Kannisto survival given a, b and ages
+# d_remfluct()               This one is ad-hickish, and a likely point 
+#                            of difference with matlab
+# d_CohortAdjust             Also not currently verified to match matlab output
+
+# TR: in my opinion this family of functions should be revisited to simplify the 
+#     method, and also to ensure that the implementation and MP description coincide.
+#
+
 #'
 #' @title d_s0ainew a function to redistribute deaths in the open age group over higher age triangles.
 #' 
