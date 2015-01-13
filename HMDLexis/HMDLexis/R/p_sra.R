@@ -209,11 +209,11 @@ p_sra <- function(Pop,
       Psr        <- Psr[Psr$Year %in% YearsKeep, ]
       # ADD COHORT, then select only sr cohorts and years. Don't redo EC data
       Psr$Cohort <- Psr$Year - Psr$Age - 1
-      Psr$Population[with(Psr,is.na(Population) & Cohort <= max(srcohorts))] <- 0
-      
       # this EXCLUDES the border cohort, started off with Ds value
-      Psr        <- Psr[Psr$Cohort  %in% srcohorts & Psr$Agei >= a, ] 
-      Psr        <- Psr[!is.na(Psr$Population), ]
+      Psr        <- Psr[Psr$Cohort %in% srcohorts & Psr$Age >= a, ] 
+      
+      # this likely won't happen
+      Psr$Population[is.na(Psr$Population)] <- 0
       # now we have things cut down.
       
       # Make selection IDs
