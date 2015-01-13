@@ -45,7 +45,7 @@ p_ic <- function(Pop, Deaths, Births, reproduce.matlab = FALSE){
   
   # separate Population counts not involved in intercensals. 
   # Stick together later
-  Pdontuse <- Pop[!Pop$Year %in% union(C1years,C2years), ]
+  Pdontuse <- Pop[!Pop$Year %in% C2years, ]
   
   PIC <- list()
   
@@ -83,7 +83,7 @@ p_ic <- function(Pop, Deaths, Births, reproduce.matlab = FALSE){
 #' @param Births the standard \code{Births} IDB object, after computations finalized.
 #' @param reproduce.matlab logical. Default \code{FALSE}. Should we reproduce all aspects of the matlab code? 
 #' 
-#' @details The only matlab oddity that is potentially affected by \code{reproduce.matlab} is the handling of dates. Matlab does not handle leap years. This function makes calls to two other LexisDB functions, such as \code{ypart()} and \code{p_addCohortColumn()}.
+#' @details The only matlab oddity that is potentially affected by \code{reproduce.matlab} is the handling of dates. Matlab does not handle leap years. This function makes calls to two other LexisDB functions, such as \code{ypart()}, \code{resortPops()}, and \code{p_addCohortColumn()}.
 #' 
 #' @return Pop a standard population data.frame, in single ages, including all years in the intercensal period. \code{C1} and \code{C2} are only included in this object if they were January 1 estimates.
 #' 
@@ -431,12 +431,10 @@ p_ic_inner <- function(C1, C2, Deaths, Births, reproduce.matlab = FALSE){
     # add to list
     PopOut[[Sex]] <- Ps
   }
-  PopOut <- do.call(rbind, PopOut)
+  PopOut        <- do.call(rbind, PopOut)
   PopOut$Cohort <- NULL
-  if (UNKTF){
-    PopOut <- rbind(PopOut, UNK)
-  }
-  PopOut <- resortPops(PopOut)
+  
+  PopOut        <- resortPops(PopOut)
   invisible(PopOut)
 }
 
