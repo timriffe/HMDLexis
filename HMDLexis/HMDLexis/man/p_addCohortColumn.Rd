@@ -16,6 +16,7 @@
   where the age interval is equal to 1. Sometimes it will
   be easier to match populations using cohorts for certain
   LDB operations. This function is an auxiliary function
-  available to all others.
+  available to all others. We assume Populations are
+  January 1 for this function.
 }
 

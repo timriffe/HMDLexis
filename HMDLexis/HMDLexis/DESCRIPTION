@@ -40,7 +40,6 @@ Collate:
     'p_srecm.R'
     'p_ey2ny.R'
     'd_long.R'
-    'p_ic_prexisting.R'
     'ypart.R'
     'yint.R'
     'b_agg.R'
@@ -48,4 +47,4 @@ Collate:
     'd_s1x1.R'
     'd_unk_sex.R'
     'p_sra.R'
-    'p_srm.R'
+    'p_ic.R'
