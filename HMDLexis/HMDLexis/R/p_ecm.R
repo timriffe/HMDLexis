@@ -115,12 +115,13 @@ p_ecm_inner <- function(Dsex, a = 80, omega = NULL, reproduce.matlab = FALSE){
     omega             <- p_ecm_findOmega(Dsex, l = 5, threshold = 0.5)
   }
   
-  
   # 2) reshape deaths by period-cohort (PC = VV shape)
   VV                <- acast(Dsex[with(Dsex, Agei >= a & Cohort <= omega["Cohmax"]), ], 
                              Year ~ Cohort, sum, value.var = "Deaths")
+  VV                <- rbind(VV, 0)   
+  rownames(VV)[nrow(VV)] <- max(Dsex$Year) + 1
   if (reproduce.matlab){
-    VV[,as.character(omega["Cohmax"])] <- VV[,as.character(omega["Cohmax"])] + omega["Ds"]
+    VV[nrow(VV),ncol(VV)] <- VV[nrow(VV),ncol(VV)] + omega["Ds"]
   }
   cohorts           <- as.integer(colnames(VV))
   years             <- as.integer(rownames(VV))
