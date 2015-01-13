@@ -2,17 +2,20 @@
 \alias{p_ecm}
 \title{p_ecm a simple extinct cohort method function, for modularity}
 \usage{
-  p_ecm(Pop, Deaths, A = 80)
+  p_ecm(Pop, Deaths, a = 80, reproduce.matlab = FALSE)
 }
 \arguments{
-  \item{Population}{The standard internal Population
-  data.frame, as}
+  \item{Pop}{The standard internal Population data.frame,
+  as}
 
   \item{Deaths}{after all processing is done. Completed
   triangles.}
 
-  \item{A}{lowest age for which EC estimates should be
+  \item{a}{lowest age for which EC estimates should be
   given. Default 80.}
+
+  \item{reproduce.matlab}{logical. default is \code{FALSE}.
+  This affects only the border cohort between EC and SR.}
 }
 \value{
   Population with old ages either filled in or imputed

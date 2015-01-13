@@ -45,7 +45,7 @@
   The only matlab oddity that is potentially affected by
   \code{reproduce.matlab} is the handling of dates. Matlab
   does not handle leap years. This function makes calls to
-  two other LexisDB functions, such as \code{ypart()} and
-  \code{p_addCohortColumn()}.
+  two other LexisDB functions, such as \code{ypart()},
+  \code{resortPops()}, and \code{p_addCohortColumn()}.
 }
 
