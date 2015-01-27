@@ -7,7 +7,8 @@
 #' @param Month month digits (string or integer, 1 or 2 characters)
 #' @param Day Day of month digits (string or integer, 1 or 2 characters)
 #' @param reproduce.matlab logical. Default TRUE. Assume 365 days in a year.
-#'
+#' @param detect.mid.year logical. if \code{TRUE}, June 30 or July 1 will always return .5.
+#' 
 #' @importFrom lubridate ymd
 #' @importFrom lubridate floor_date
 #' @importFrom lubridate yday
@@ -15,7 +16,7 @@
 #' @export
 #' 
 
-ypart <- function(Year, Month, Day, reproduce.matlab = TRUE){
+ypart <- function(Year, Month, Day, reproduce.matlab = TRUE, detect.mid.year = FALSE){
   
   if (reproduce.matlab){
     Day   <- as.integer(Day)
@@ -27,10 +28,17 @@ ypart <- function(Year, Month, Day, reproduce.matlab = TRUE){
       return(0)
     }
     
-    M <- c(0,31,59,90,120,151,181,212,243,273,304,334)
+    M <- c(0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334)
     return((M[Month] + Day) / 365)
   }
-  
+  # this chunk written just to avoiding writing p_my()
+  if (detect.mid.year){
+    .d <- as.integer(Day)
+    .m <- as.integer(Month)
+      if ((.d == 30 & .m == 6) | (.d == 1 & .m == 7)){
+        return(.5)
+      }
+  }
   # get into date class
   Date  <- ymd(paste(Year, Month, Day, sep = "/"))
   # what was jan 1st?
