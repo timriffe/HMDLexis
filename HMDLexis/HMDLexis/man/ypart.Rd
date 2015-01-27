@@ -2,7 +2,8 @@
 \alias{ypart}
 \title{ypart function to determine the proportion of a year passed as of a particular date}
 \usage{
-  ypart(Year, Month, Day, reproduce.matlab = TRUE)
+  ypart(Year, Month, Day, reproduce.matlab = TRUE,
+    detect.mid.year = FALSE)
 }
 \arguments{
   \item{Year}{4-digit year (string or integer)}
@@ -15,6 +16,9 @@
 
   \item{reproduce.matlab}{logical. Default TRUE. Assume 365
   days in a year.}
+
+  \item{detect.mid.year}{logical. if \code{TRUE}, June 30
+  or July 1 will always return .5.}
 }
 \description{
   The fraction returned by this is used e.g. for

@@ -19,11 +19,7 @@ Imports:
     lubridate
 Collate:
     'PC2AC.R'
-    'd_CohortAdjust.R'
-    'd_KannistoSplitYrSex.R'
-    'd_KannistoSurvMin.R'
     'd_ma0.R'
-    'd_remfluct.R'
     'd_soainew.R'
     'd_unk.R'
     'readInputDB.R'
@@ -37,6 +33,7 @@ Collate:
     'p_ecm_findOmega.R'
     'p_unk.R'
     'resortPops.R'
+    'p_precensal.R'
     'p_srecm.R'
     'p_ey2ny.R'
     'd_long.R'
