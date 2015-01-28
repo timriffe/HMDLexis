@@ -31,7 +31,7 @@ d_long <- function(Deaths){
         Dnew$Year         <- unique(DeathsSexYr$Year)   
         Dnew$Age          <- Dnew$Agei <- Ages       
         Dnew$Lexis        <- rep(c("TL","TU"),length(Ages) / 2)
-        Dnew$LDB          <- Dnew$AgeInterval  <-  Dnew$YearInterval  <-  1
+        Dnew$LDB          <- Dnew$AgeInterval  <-  Dnew$YearIntervali  <-  1
         Dnew$Access       <- "O"
         Dnew$Area         <- unique(DeathsSexYr$Area)
         Dnew$NoteCode1    <- "d_long()"
