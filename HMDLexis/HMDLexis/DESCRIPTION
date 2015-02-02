@@ -19,7 +19,6 @@ Imports:
     lubridate
 Collate:
     'PC2AC.R'
-    'd_ma0.R'
     'd_soainew.R'
     'd_unk.R'
     'readInputDB.R'
