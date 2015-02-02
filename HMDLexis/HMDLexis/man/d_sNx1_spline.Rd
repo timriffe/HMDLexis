@@ -1,0 +1,28 @@
+\name{d_sNx1_spline}
+\alias{d_sNx1_spline}
+\title{d_s5x1_spline the spline function used for splitting Nx1 age-period death counts into single ages.}
+\usage{
+  d_sNx1_spline(k, Y, age)
+}
+\arguments{
+  \item{k}{completed age plus age interval}
+
+  \item{Y}{cumulative deaths}
+
+  \item{age}{the single ages into which counts are to be
+  split.}
+}
+\value{
+  a vector of the estimated single-age cumulative death
+  counts.
+}
+\description{
+  This function implements the spline method described in
+  Appendix B of the Methods Protocol. It is called by
+  \code{d_sNx1()}, which does the outer loop, data prep,
+  and converts the output of this function into the
+  standard LexisDB data format. This function preserves
+  death counts for split intervals by virtue of passing
+  through exact points on the cumulative deaths curve.
+}
+
