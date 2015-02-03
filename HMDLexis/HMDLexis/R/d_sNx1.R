@@ -28,20 +28,11 @@ d_sNx1 <- function(Deaths, MPVERSION = 5){
     Deaths <- Deaths[!UNKi, ]
   }
   
-  # tried this using a data.table .SD chunk operator and had scoping issues
-  # found it not worth investigating, when this works fine. If speedup is desired,
-  # look to data.table or dplyr in future.
-#  Deaths <- do.call(
-#              rbind,
-#                lapply( # this lapply iterates over year and sex
-#                  split(Deaths, f = list(Deaths$Year, Deaths$Sex)), 
-#                  d_sNx1_inner)
-#              )
-  
-  # magrittr pipes are slightly more legible than the above...
+
+  # magrittr pipes are slightly more legible than some alternatives
   Deaths <- split(Deaths,f = list(Deaths$Year, Deaths$Sex)) %>%
-    lapply(., d_sNx1_inner, MPVERSION = MPVERSION) %>%
-    do.call(rbind, .) 
+              lapply(., d_sNx1_inner, MPVERSION = MPVERSION) %>%
+              do.call(rbind, .) 
   
   if (UNKTF){
     Deaths <- resortDeaths(rbind(UNK, Deaths))
@@ -121,41 +112,43 @@ d_sNx1_inner <- function(DSexYr, MPVERSION = 5){
   DRRCumsum              <- cumsum(DRR4fit$Deaths)
   
   if (MPVERSION < 7){
-  # there are no single or 5-year age groups, use equivalent of matlab pchip
-  if (! any(c(1,5) %in% DRR4fit$Age4fit)){
-    # unknown how often this is used:
-    cat("Careful: used pchip()\n")
-    DRRCumsum1x1         <- pracma::pchip(DRR4fit$Age4fit, DRRCumsum, singleAges)
-    names(DRRCumsum1x1)  <- singleAges
-  } else {
-    # this is meant to be the standard case:
-    DRRCumsum1x1         <- d_sNx1_spline(DRR4fit$Age4fit, DRRCumsum, singleAges)
-  }
+    # there are no single or 5-year age groups, use equivalent of matlab pchip
+    if (! any(c(1,5) %in% DRR4fit$Age4fit)){
+      # unknown how often this is used:
+      cat("Careful: used pchip()\n")
+      DRRCumsum1x1         <- pracma::pchip(DRR4fit$Age4fit, DRRCumsum, singleAges)
+      names(DRRCumsum1x1)  <- singleAges
+    } else {
+      # this is meant to be the standard case:
+      DRRCumsum1x1         <- d_sNx1_spline(DRR4fit$Age4fit, DRRCumsum, singleAges)
+    }
+    
+    # TR: The following lines reproduce the cleanup behavior used in matlab.
+    # either of the above splines may have produced output that implies negative death counts
+    # the following constraints for such counts to zero and also ensure that counts within
+    # intervals sum properly, but at the cost of ugly artifacts. Sometimes a 5-year interval
+    # will have a zero in a single cell, etc. If the initial spline were monotonic, 
+    # we'd avoid having to do all this cleaning.
   
-  # TR: The following lines reproduce the cleanup behavior used in matlab.
-  # either of the above splines may have produced output that implies negative death counts
-  # the following constraints for such counts to zero and also ensure that counts within
-  # intervals sum properly, but at the cost of ugly artifacts. Sometimes a 5-year interval
-  # will have a zero in a single cell, etc. If the initial spline were monotonic, 
-  # we'd avoid having to do all this cleaning.
-  CSrep                <- c(unlist(mapply(rep, DRRCumsum, diff(c(0,DRR4fit$Age4fit)))))
-  repind               <- DRRCumsum1x1 > CSrep 
-  DRRCumsum1x1[repind] <- CSrep[repind]
-  
-  negind <- diff(c(0,DRRCumsum1x1)) < 0
-  if (sum(negind) > 0){
-    inds <- which(negind)
-    for (i in inds){
-      DRRCumsum1x1[i]  <- DRRCumsum1x1[i-1]
+    # this is the cleanup exactly as done in matlab
+    n <- 1
+    for (k in 2:length(DRRCumsum1x1)){
+      if (DRR4fit$Age4fit[n] < singleAges[k]){
+        n <- n + 1
+      }
+      if (DRRCumsum1x1[k] > DRRCumsum[n]){
+        DRRCumsum1x1[k] <- DRRCumsum[n]
+      }
+      if (DRRCumsum1x1[k] < DRRCumsum1x1[k-1]){
+        DRRCumsum1x1[k] <- DRRCumsum1x1[k-1]
+      }
     }
   }
-  DRRCumsum1x1[as.character(DRR4fit$Age4fit)] <- DRRCumsum
-
-  # TR: this gives a fit with none of the above artifacts. In need of further investigation.
-  # another option would be to modify the HMD spline to force monotonicity. See emails sent to Dima
-  # and Carl on Feb 2-3, 2015, describing this issue at length.
-  }
+  # a patch / proposal
   if (MPVERSION >= 7){
+    # TR: this gives a fit with none of the above artifacts. In need of further investigation.
+    # another option would be to modify the HMD spline to force monotonicity. See emails sent to Dima
+    # and Carl on Feb 2-3, 2015, describing this issue at length.
     DRRCumsum1x1   <- splinefun(DRR4fit$Age4fit, DRRCumsum, method = "hyman")(singleAges)
   }
   # now clean output:
