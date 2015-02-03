@@ -1,16 +1,17 @@
 #'
 #' @title split RR deaths in age groups to single ages
 #' 
-#' @description This function iterates over each year and sex of data, isolating RR data (grouping to RR in the case of infants) and then splitting age intervals greater than one to single ages. All data in other Lexis formats are unchanged, as are pre-existing single-age data in RR format. From an error standpoint, this function may be run either before or after \code{d_unk()}. The actual work is done by the inner function, \code{d_sNx1_inner()}, which itself calls \code{d_sNx1_spline()} once data are prepared.
+#' @description This function iterates over each year and sex of data, isolating RR data (grouping to RR in the case of infants) and then splitting age intervals greater than one to single ages. All data in other Lexis formats are unchanged, as are pre-existing single-age data in RR format. From an error standpoint, this function may be run either before or after \code{d_unk()}. The actual work is done by the inner function, \code{d_sNx1_inner()}, which itself calls \code{d_sNx1_spline()} once data are prepared. If \code{MPVERSION < 7} we reproduce the matlab output exactly (save for a minor infant triangles bug fix). If \code{MPVERSION >= 7} we use a monotonic hyman spline, which solves some problems inherent in the MP method (as of this writing). Refer to emails from Tim Riffe in January, 2015 for more details and case examples.
 #' 
 #' @param Deaths the standard LexisDB Deaths object.
+#' @param MPVERSION which version of the methods protocol (experimental)
 #' 
 #' @return Deaths, with all RR entries in single ages.
 #'
 #' @export
 #' 
 #' @importFrom magrittr %>%
-d_sNx1 <- function(Deaths){
+d_sNx1 <- function(Deaths, MPVERSION = 5){
   
   #
   if (!any(Deaths$AgeIntervali > 1 & Deaths$Lexis == "RR")){
@@ -39,7 +40,7 @@ d_sNx1 <- function(Deaths){
   
   # magrittr pipes are slightly more legible than the above...
   Deaths <- split(Deaths,f = list(Deaths$Year, Deaths$Sex)) %>%
-    lapply(., d_sNx1_inner) %>%
+    lapply(., d_sNx1_inner, MPVERSION = MPVERSION) %>%
     do.call(rbind, .) 
   
   if (UNKTF){
@@ -66,7 +67,7 @@ d_sNx1 <- function(Deaths){
 #' 
 #' @details The \code{pchip()} function of the \code{pracma} package is only imported to follow the matlab robustness procedures. In R, we have the option of a monotonic interpolating spline too, but this has not been implemented. I'd (TR) propose using base R splines as fallbacks from our in-house method rather than importing a particular brand of cubic hermite splines.
 
-d_sNx1_inner <- function(DSexYr){
+d_sNx1_inner <- function(DSexYr, MPVERSION = 5){
   if (nrow(DSexYr) == 0){
     return(DSexYr)
   }
@@ -119,6 +120,7 @@ d_sNx1_inner <- function(DSexYr){
   singleAges             <- min(DRR4fit$Age4fit):max(DRR4fit$Age4fit)
   DRRCumsum              <- cumsum(DRR4fit$Deaths)
   
+  if (MPVERSION < 7){
   # there are no single or 5-year age groups, use equivalent of matlab pchip
   if (! any(c(1,5) %in% DRR4fit$Age4fit)){
     # unknown how often this is used:
@@ -130,28 +132,44 @@ d_sNx1_inner <- function(DSexYr){
     DRRCumsum1x1         <- d_sNx1_spline(DRR4fit$Age4fit, DRRCumsum, singleAges)
   }
   
-  # If a discrepancy is found, check if by some odd chance this function
-  # was being called in matlab. I doubt it would ever be called, though.
-  # then in matlab there is another condition that isn't so clear
-  # I'm not replicating this for the time being.
-  #  if isnan(d1(1))
-  #        disp('Standad spline');
-  #        D1=spline(A, Y, a1);
-  #  end
+  # TR: The following lines reproduce the cleanup behavior used in matlab.
+  # either of the above splines may have produced output that implies negative death counts
+  # the following constraints for such counts to zero and also ensure that counts within
+  # intervals sum properly, but at the cost of ugly artifacts. Sometimes a 5-year interval
+  # will have a zero in a single cell, etc. If the initial spline were monotonic, 
+  # we'd avoid having to do all this cleaning.
+  CSrep                <- c(unlist(mapply(rep, DRRCumsum, diff(c(0,DRR4fit$Age4fit)))))
+  repind               <- DRRCumsum1x1 > CSrep 
+  DRRCumsum1x1[repind] <- CSrep[repind]
   
+  negind <- diff(c(0,DRRCumsum1x1)) < 0
+  if (sum(negind) > 0){
+    inds <- which(negind)
+    for (i in inds){
+      DRRCumsum1x1[i]  <- DRRCumsum1x1[i-1]
+    }
+  }
+  DRRCumsum1x1[as.character(DRR4fit$Age4fit)] <- DRRCumsum
+
+  # TR: this gives a fit with none of the above artifacts. In need of further investigation.
+  # another option would be to modify the HMD spline to force monotonicity. See emails sent to Dima
+  # and Carl on Feb 2-3, 2015, describing this issue at length.
+  }
+  if (MPVERSION >= 7){
+    DRRCumsum1x1   <- splinefun(DRR4fit$Age4fit, DRRCumsum, method = "hyman")(singleAges)
+  }
   # now clean output:
   # TR: I think the splines produce fairly exact output, but this takes
   # care of machine precision issues, which don't really matter since 
   # single age deaths will be decimal anyway...
-  DRRCumsum1x1[as.character(DRR4fit$Age4fit)] <- DRRCumsum
+
   # de-cumulate deaths:
   DRR1x1              <- diff(c(0, DRRCumsum1x1))
-  # can't have negatives:
-  DRR1x1[DRR1x1 < 0]  <- 0
+
   # give age names for nice indexing
   names(DRR1x1)       <- singleAges - 1 # remove 1, back to completed age
   # now figure out what to keep and what to throw:
-  rmind <- DRR$AgeIntervali > 1 & !is.na(DRR$AgeIntervali)
+  rmind               <- DRR$AgeIntervali > 1 & !is.na(DRR$AgeIntervali)
   DRRreplace          <- DRR[rmind, ]
   # i.e. was used for fitting, but not to be replaced
   DRRappend           <- DRR[!rmind, ] # could be age 0 and open age...
@@ -165,8 +183,8 @@ d_sNx1_inner <- function(DSexYr){
   
   # we also need to ensure that N-year age groups with 0 deaths have
   # zero deaths in their corresponding single ages
-  agesrep             <- sort(c(unlist(mapply(rep, from, DRRreplace$AgeIntervali))))
-  deathsrep           <- sort(c(unlist(mapply(rep, DRRreplace$Deaths, DRRreplace$AgeIntervali))))
+  agesrep             <- c(unlist(mapply(rep, from, DRRreplace$AgeIntervali)))
+  deathsrep           <- c(unlist(mapply(rep, DRRreplace$Deaths, DRRreplace$AgeIntervali)))
   names(deathsrep)    <- agesrep # use to indicate zeros
   zeros               <- deathsrep == 0
   # use cheap character indexing...
