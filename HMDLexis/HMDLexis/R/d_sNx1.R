@@ -122,6 +122,7 @@ d_sNx1_inner <- function(DSexYr){
   # there are no single or 5-year age groups, use equivalent of matlab pchip
   if (! any(c(1,5) %in% DRR4fit$Age4fit)){
     # unknown how often this is used:
+    cat("Careful: used pchip()\n")
     DRRCumsum1x1         <- pracma::pchip(DRR4fit$Age4fit, DRRCumsum, singleAges)
     names(DRRCumsum1x1)  <- singleAges
   } else {
@@ -160,10 +161,17 @@ d_sNx1_inner <- function(DSexYr){
   # and what single ages does this chunk correspond to? (we'll only grab those from DRR1x1...)
   from                <- DRRreplace$Agei
   to                  <- from + DRRreplace$AgeIntervali - 1
-  singlekeep          <- sort(c(unlist(mapply(seq,from,to))))
+  singlekeep          <- sort(c(unlist(mapply(seq, from, to))))
   
+  # we also need to ensure that N-year age groups with 0 deaths have
+  # zero deaths in their corresponding single ages
+  agesrep             <- sort(c(unlist(mapply(rep, from, DRRreplace$AgeIntervali))))
+  deathsrep           <- sort(c(unlist(mapply(rep, DRRreplace$Deaths, DRRreplace$AgeIntervali))))
+  names(deathsrep)    <- agesrep # use to indicate zeros
+  zeros               <- deathsrep == 0
   # use cheap character indexing...
   Dsingle             <- DRR1x1[as.character(singlekeep)]
+  Dsingle[zeros]      <- 0
   Dnew                <- DRRreplace[1:length(Dsingle), ]
   
   # now the verbose assigning of all the co
