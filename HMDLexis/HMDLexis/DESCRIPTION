@@ -31,7 +31,7 @@ Collate:
     'd_soainew.R'
     'd_unk.R'
     'readInputDB.R'
-    'AC2AP.R' 
+    'AC2AP.R'
     'p_unk.R'
     'p_ecm_findOmega.R'
     'p_ecm.R'
@@ -46,3 +46,4 @@ Collate:
     'p_sra.R'
     'p_ic.R'
     'd_sNx1.R'
+    'd_svv.R'
