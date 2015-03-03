@@ -2,7 +2,7 @@
 \alias{d_sNx1_inner}
 \title{a function that splits age groups for a single sex and year}
 \usage{
-  d_sNx1_inner(DSexYr)
+  d_sNx1_inner(DSexYr, MPVERSION = 5)
 }
 \arguments{
   \item{DSexYr}{a chunk of the standard Deaths object, a
