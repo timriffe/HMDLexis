@@ -21,6 +21,24 @@ d_svv <- function(Deaths, reproduce.matlab = FALSE){
   if (reproduce.matlab){
     cat("\nWarning: you specified reproduce.matlab = TRUE.\nThe original matlab code did some out-of-protocol stuff that I didn't\nhave time to reproduce, sorry!\nThe function will return results for reproduce.matlab = FALSE.")
     reproduce.matlab <- FALSE
+    
+    for (sex in c("f","m")){
+      
+      # ignore infant TL
+      TL <- DataKeep[DataKeep$Lexis %==% "TL" & DataKeep$Sex == sex & DataKeep$Agei %>% 0,] 
+      TL$Agei <- TL$Agei + 1 # align to VV Age (it's confusing, but VV is indexed to the lower age)
+      TU <- DataKeep[DataKeep$Lexis %==% "TU" & DataKeep$Sex == sex,]
+      # get in AP matrices
+      TL <- acast(TL, Agei ~ Year, sum, value.var = "Deaths", fill = NA_real_)
+      TU <- acast(TU, Agei ~ Year, sum, value.var = "Deaths", fill = NA_real_)
+      
+      YrKeep  <- intersect(colnames(TU),colnames(TL))
+      AgeKeep  <- intersect(rownames(TU),rownames(TL))
+      # note that TU age remains, and TL age is -1 in case of VV alignment
+
+    
+      reproduce.matlab <- FALSE # provisional behavior until above is complete.
+                                # looking for an efficient way to split using known proportions.
   }
   if (!reproduce.matlab){
     # in the MP, we say we divide equally into triangles..
@@ -35,14 +53,9 @@ d_svv <- function(Deaths, reproduce.matlab = FALSE){
     TLTU$NoteCode1  	<- "d_svv()" # may overwrite previous NoteCode
   }
   
+  D.Out <- d_agg(rbind(DataKeep, TLTU))
   
-  Dout <- rbind(DataKeep, TLTU)
-  
-  # TODO d_agg() should be called here, as we could end up with redundant triangles
-  # but it needs to be overhauled at the moment.
-  #
-  
-  invisible(resortDeaths(Dout))
+  invisible(resortDeaths(D.Out))
 }
 
 
