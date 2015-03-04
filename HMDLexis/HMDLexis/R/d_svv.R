@@ -9,6 +9,7 @@
 #' @return Deaths with VV converted to TL and TU. There will be more rows now...
 #' 
 #' @export
+#' 
 
 d_svv <- function(Deaths, reproduce.matlab = FALSE){
   # this can be before or after redistributing deaths of Unknown age, it makes no difference
@@ -25,20 +26,21 @@ d_svv <- function(Deaths, reproduce.matlab = FALSE){
     for (sex in c("f","m")){
       
       # ignore infant TL
-      TL <- DataKeep[DataKeep$Lexis %==% "TL" & DataKeep$Sex == sex & DataKeep$Agei %>% 0,] 
-      TL$Agei <- TL$Agei + 1 # align to VV Age (it's confusing, but VV is indexed to the lower age)
-      TU <- DataKeep[DataKeep$Lexis %==% "TU" & DataKeep$Sex == sex,]
+      TL        <- DataKeep[DataKeep$Lexis %==% "TL" & DataKeep$Sex == sex & DataKeep$Agei %>% 0,] 
+      TL$Agei   <- TL$Agei + 1 # align to VV Age (it's confusing, but VV is indexed to the lower age)
+      TU        <- DataKeep[DataKeep$Lexis %==% "TU" & DataKeep$Sex == sex,]
       # get in AP matrices
-      TL <- acast(TL, Agei ~ Year, sum, value.var = "Deaths", fill = NA_real_)
-      TU <- acast(TU, Agei ~ Year, sum, value.var = "Deaths", fill = NA_real_)
+      TL        <- acast(TL, Agei ~ Year, sum, value.var = "Deaths", fill = NA_real_)
+      TU        <- acast(TU, Agei ~ Year, sum, value.var = "Deaths", fill = NA_real_)
       
-      YrKeep  <- intersect(colnames(TU),colnames(TL))
-      AgeKeep  <- intersect(rownames(TU),rownames(TL))
+      YrKeep    <- intersect(colnames(TU), colnames(TL))
+      AgeKeep   <- intersect(rownames(TU), rownames(TL))
       # note that TU age remains, and TL age is -1 in case of VV alignment
-
+      
+    }
+    reproduce.matlab <- FALSE # provisional behavior until above is complete.
+    # looking for an efficient way to split using known proportions.
     
-      reproduce.matlab <- FALSE # provisional behavior until above is complete.
-                                # looking for an efficient way to split using known proportions.
   }
   if (!reproduce.matlab){
     # in the MP, we say we divide equally into triangles..
@@ -57,18 +59,6 @@ d_svv <- function(Deaths, reproduce.matlab = FALSE){
   
   invisible(resortDeaths(D.Out))
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

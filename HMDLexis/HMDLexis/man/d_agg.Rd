@@ -1,11 +1,11 @@
 \name{d_agg}
 \alias{d_agg}
-\title{a function to aggregate late-registered deaths into the appropriate age and year categories}
+\title{a function to aggregate redundant death counts}
 \usage{
-  d_agg(Deaths.In)
+  d_agg(DeathsIn)
 }
 \arguments{
-  \item{Deaths.In}{This should be the standard Deaths
+  \item{Deaths}{This should be the standard Deaths
   data.frame, as typically returned by
   \code{readInputDB()}.}
 }
@@ -32,9 +32,14 @@
   future, such as Finland or Australia, depending on how
   data come. This function may have other unexpected
   side-effects where redundant deaths have not been
-  properly dealt with in the matlab code. For now, this
-  function will be called on the CS-side, prior to
-  submitting the InputDB, as this function needs to be used
-  prior to completion of the LexisDB R programs.
+  properly dealt with in the matlab code. Another side
+  effect of this function is to add Lexis triangle death
+  counts appropriately after splitting RR, VV or VH death
+  counts in the case that other triangles already existed.
+  This arises in cases where TL and TU are explicitly used
+  to split death counts proportionally. That behavior is
+  not document in the MP, but it is used in
+  \code{d_rr2tltu()} and \code{d_svv()} at a minimum
+  (possibly elsewhere too).
 }
 
