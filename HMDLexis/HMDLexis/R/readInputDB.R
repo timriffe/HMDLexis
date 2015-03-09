@@ -24,7 +24,8 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
           log.file = "", 
           InputDB.name = "InputDB",
           save.bin = FALSE,
-          verbose = TRUE){
+          verbose = TRUE,
+          strict = TRUE){
   # cheap verbosity toggle
   log.empty <- log.file == ""
   if (log.empty & !verbose){
@@ -393,7 +394,12 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
   # -------------------------------------------------------------------------------------------------------------
   # check Age and AgeInterval values where appropriate - let's say no higher than 130?
   {
-  possible.ages       <- c(0:130, "UNK", "TOT")
+    if (strict){
+      possible.ages       <- c(0:130, "UNK", "TOT")
+    } else {
+      possible.ages       <- c(0:150, "UNK", "TOT")
+    }
+  #possible.ages       <- c(0:130, "UNK", "TOT")
   possible.intervals  <- c(1:10, "+", NA) # NA possible if Age is "UNK"
   # Deaths
   if (!all(Deaths$Age %in% possible.ages)){
@@ -418,7 +424,12 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
     stop("Take care of this issue first.")
   }
   # Tadj
-  possible.tadj.ages <- c(NA, 0:130) 
+  if (strict){
+    possible.tadj.ages <- c(NA, 0:130) 
+  } else {
+    possible.tadj.ages <- c(NA, 0:150) 
+  }
+  #possible.tadj.ages <- c(NA, 0:130) 
   if (tadjTF){
     if (!all(Tadj$Age %in% possible.tadj.ages)){
       cat("\nThe 'Age' column in", potential.file.names["tadj"], 
