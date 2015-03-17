@@ -101,7 +101,11 @@ p_sra <- function(Pop,
       # make D_dot, a recycled vector.
       # aggregate 5x1 cohorts counting back from most recent year. 
       # create early to remove redndancy in repeated testing
-      D_dot           <- acast(Dsex[with(Dsex, Year > (this.year - 6) & Cohort > omega["Cohmax"]), ], 
+      D_dot           <- acast(Dsex[with(Dsex, Year > (this.year - 6) & 
+                                               Year <= this.year & # this condition makes no difference for right-side
+                                                                   # SRA application, but allows us flexibility for
+                                                                   # p_soai() [mid-surface operations]
+                                               Cohort > omega["Cohmax"]), ], 
                               . ~ Cohort, sum, value.var = "Deaths")[, , drop = TRUE][srcohortsc]
       
       # VVcumsums are the same as EC, but for the SR region only. Recycled in later loop 
