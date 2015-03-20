@@ -1,10 +1,9 @@
-#k = 5;m = 5;l=5;a=80;A = 90;maxit = 100
 
 
 #'
 #' @title p_sra a simple and flexible survivor ratio method function, for modularity.
 #' 
-#' @description This implementation seeks to follow the MP. LDB \code{Deaths} must be finalized. Population data is only needed to get an estimate for population in an artifical open age group, age 90\+ by default, though this may be lowered or raised. An argument \code{reproduce.matlab} controls whether an unnecessary matlab kludge is included. This function calls various other LexisDB functions at the moment, such as \code{d_addCohortColumn()}, \code{p_addCohortColumn()}, and \code{p_ecm_findOmega()}. 
+#' @description This implementation seeks to follow the MP. LDB \code{Deaths} must be finalized. Population data is only needed to get an estimate for population in an artifical open age group, age 90\+ by default, though this may be lowered or raised. An argument \code{reproduce.matlab} controls whether an unnecessary matlab kludge is included. This function calls various other LexisDB functions at the moment, such as \code{d_addCohortColumn()}, \code{p_addCohortColumn()}, and \code{p_ecm_findOmega()}. The parameter \code{bordercoh} is \code{FALSE} by defauls, unless function called by \code{p_soai()}.
 #' 
 #' @param Pop The standard internal Population data.frame, *after* running p_ecm().
 #' @param Deaths after all processing is done. Completed triangles.
@@ -15,6 +14,7 @@
 #' @param A controls whether we do SR 90+ or SR 85+ (or something else). Default 90.
 #' @param maxit maximum number of iterations to optimize the improvement coefficient, 'c'.
 #' @param reproduce.matlab logical. Do we include the legacy matlab kludge? Default \code{FALSE}. This effects results very little, and is only used for exact matching of output.
+#' @param bordercoh logical. Should be keep the border cohort between SR and EC zones?
 #' 
 #' @return Pop standard object, with recent old ages adjusted using the survivor ratio method
 #' 
@@ -29,7 +29,9 @@
 #' 
 #  tail(Pop)
 # k = 5;m = 5;l=5;a=80;A = 90;maxit = 100;reproduce.matlab = TRUE
-# Pop <- P1970; Deaths <- Deaths[Deaths$Year<=1969,]; library(reshape2)
+# A <- 85
+# Pop <- P1970; 
+# Deaths <- Deaths[Deaths$Year<=1969,]; library(reshape2)
 p_sra <- function(Pop, 
     Deaths, 
     k = 5, 
@@ -38,7 +40,8 @@ p_sra <- function(Pop,
     a = 80,
     A = 90, 
     maxit = 100,
-    reproduce.matlab = FALSE){
+    reproduce.matlab = FALSE,
+    bordercoh = FALSE){
     
     # if totals are there, get rid of them
     Pop             <- Pop[Pop$Age != "TOT", ]
@@ -61,6 +64,10 @@ p_sra <- function(Pop,
     this.year       <- max(Pop$Year)
     this.yearc      <- as.character(this.year)
     
+    # added for when SRA used in years other than most recent year.
+    Deaths <- Deaths[Deaths$Year < this.year, ]
+    
+    YearsFit        <- min(Deaths$Year):this.year
     YearsKeep       <- min(Pop$Year):this.year
     # to be filled later
     PopMF           <- list()
@@ -77,12 +84,15 @@ p_sra <- function(Pop,
       
       # omega is typically different for males and females, must be in the loop:
       omega           <- p_ecm_findOmega(Dsex, l = l, threshold = 0.5)
+      #
       w               <- omega["omega"] 
      
       # some helpful vectors for selecting and iterating:
       srages          <- A:(w - 1)                       # have tried w, w-1,w-2
       srcohorts       <- this.year - 1 - srages               # this is exact
       sryears         <- (this.year - (w - a - 1)):(this.year-1)  # this is not particularly key
+      # in case of p_soai(), the left side of this may need to tuck in.
+      sryears         <- sryears[sryears >= min(YearsFit)]
       
       # for name-based matrix indexing:
       sragesc         <- as.character(srages)
@@ -100,14 +110,14 @@ p_sra <- function(Pop,
       # ------------------------------------
       # make D_dot, a recycled vector.
       # aggregate 5x1 cohorts counting back from most recent year. 
-      # create early to remove redndancy in repeated testing
+      # create early to remove redundancy in repeated testing
       D_dot           <- acast(Dsex[with(Dsex, Year > (this.year - 6) & 
-                                               Year <= this.year & # this condition makes no difference for right-side
+                                               #Year <= this.year & # this condition makes no difference for right-side
                                                                    # SRA application, but allows us flexibility for
                                                                    # p_soai() [mid-surface operations]
                                                Cohort > omega["Cohmax"]), ], 
-                              . ~ Cohort, sum, value.var = "Deaths")[, , drop = TRUE][srcohortsc]
-      
+                              . ~ Cohort, sum, value.var = "Deaths", fill = 0)[, , drop = TRUE][srcohortsc]
+     #sort(unique(Dsex$Cohort))
       # VVcumsums are the same as EC, but for the SR region only. Recycled in later loop 
       # as a constant.
       VV              <- acast(Dsex[with(Dsex, Year %in% sryears & Cohort %in% srcohorts), ], 
@@ -125,9 +135,9 @@ p_sra <- function(Pop,
       #yrskeep         <- as.character((min(sryears) - k):this.year)
       ageskeep        <- as.character((a - 10):130)
       pop             <- matrix(nrow = length(ageskeep), 
-                                ncol = length(YearsKeep),
+                                ncol = length(YearsFit),
                                 dimnames = list(ageskeep,
-                                  YearsKeep)
+                                  YearsFit)
                                 )
       # get EC pops for SR zone omega
       #
@@ -154,7 +164,10 @@ p_sra <- function(Pop,
                          })
       # move to AP format, to place into population results container, pop
       ECpopAP <- PC2AP(ECpop)
-      pop[rownames(ECpopAP), colnames(ECpopAP)]       <-   ECpopAP      
+      
+      rn      <- intersect(rownames(ECpopAP),rownames(pop))
+      cn      <- intersect(colnames(ECpopAP),colnames(pop))
+      pop[rn, cn]       <-   ECpopAP[rn, cn]       
    
       # -----------------------------------------------------------
       # starting values give as a c of 5, oddly high, although this is
@@ -166,7 +179,7 @@ p_sra <- function(Pop,
       for (z in 1:maxit){  
         cmid[z]    <- (c_l + c_r) / 2
         pop.this.yr <- R_star <- num <- denom <- rep(0,length(srages))
-        for (i in length(srages):1){ # i <- 12 ; i <- 11                     
+        for (i in length(srages):1){ # i <- 19 ; i <- 11                     
           # first make R_star, the Ratio, given 'c'
    
           denom[i]          <- sum(pop[as.character(srages[i] - k), yr.denom ], na.rm = TRUE)
@@ -194,7 +207,7 @@ p_sra <- function(Pop,
         Sumt      <- sum(pop[as.integer(rownames(pop)) >= A, this.yearc], na.rm = TRUE)
         res[z]    <- abs(Sumt - SUM)
         # stop optimizing cmid if we've balanced pop age 90+
-        if (res[z] < 0.1){
+        if (res[z] < 0.1){ # this res copied from matlab
           break
         }
         # ---------------------------
@@ -214,8 +227,13 @@ p_sra <- function(Pop,
       # ADD COHORT, then select only sr cohorts and years. Don't redo EC data
       Psr$Cohort <- Psr$Year - Psr$Age - 1
       # this EXCLUDES the border cohort, started off with Ds value
-      Psr        <- Psr[Psr$Cohort %in% srcohorts & Psr$Age >= a, ] 
-      
+      if(bordercoh){
+        Psr        <- Psr[Psr$Cohort %in% c(srcohorts, omega["Cohmax"]) & Psr$Age >= a, ] 
+      } else {
+        Psr        <- Psr[Psr$Cohort %in% srcohorts & Psr$Age >= a, ] 
+      }
+    
+     
       # this likely won't happen
       Psr$Population[is.na(Psr$Population)] <- 0
       # now we have things cut down.

@@ -158,7 +158,7 @@ p_ecm_inner <- function(Dsex, a = 80, omega = NULL, reproduce.matlab = FALSE){
   ECpop$LDB         <- 1
   ECpop$Cohort      <- ECCohorts
   ECpop$Access      <- "O" # presumably any data we invent is open access, even if the origin data are not?
-  ECpop$NoteCode1   <- "p_ecm()" # might as well leave this as a note
+  ECpop$NoteCode1   <- "p_ecm()" 
   ECpop[,colnames(Pop)]
 }
 

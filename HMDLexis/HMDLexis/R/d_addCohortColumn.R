@@ -16,16 +16,17 @@ d_addCohortColumn <- cmpfun(function(Deaths, TLTUonly = TRUE){
       Deaths$Cohort         <- Deaths$Year - Deaths$Agei
       
       NAi                   <- is.na(Deaths$Lexis)
-      # this takes care of TU and VV
-      TUVVi                 <- (Deaths$Lexis == "TU" | Deaths$Lexis == "VV") & !NAi
+      # this takes care of TU and VV 
+      # testing use of %==% operator. See if stuff breaks
+      TUVVi                 <- (Deaths$Lexis %==% "TU" | Deaths$Lexis %==% "VV") 
       Deaths$Cohort[TUVVi]  <- Deaths$Cohort[TUVVi] - 1
       
       # RV only for infants anyway, the rest are VV
-      RVi                   <- Deaths$Lexis == "RV" & !NAi
+      RVi                   <- Deaths$Lexis %==% "RV"
       Deaths$Cohort[RVi]    <- Deaths$Cohort[RVi] - 2
       
       # never assign Cohort to RR
-      Deaths$Cohort[Deaths$Lexis == "RR" & !NAi] <- NA
+      Deaths$Cohort[Deaths$Lexis %==% "RR"]      <- NA
       Deaths$Cohort[is.na(Deaths$Lexis)]         <- NA
       
       # in case we strictly want triangles
