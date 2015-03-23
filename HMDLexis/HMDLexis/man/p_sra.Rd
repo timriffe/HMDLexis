@@ -3,7 +3,8 @@
 \title{p_sra a simple and flexible survivor ratio method function, for modularity.}
 \usage{
   p_sra(Pop, Deaths, k = 5, m = 5, l = 5, a = 80, A = 90,
-    maxit = 100, reproduce.matlab = FALSE)
+    maxit = 100, reproduce.matlab = FALSE,
+    bordercoh = FALSE)
 }
 \arguments{
   \item{Pop}{The standard internal Population data.frame,
@@ -34,6 +35,9 @@
   matlab kludge? Default \code{FALSE}. This effects results
   very little, and is only used for exact matching of
   output.}
+
+  \item{bordercoh}{logical. Should be keep the border
+  cohort between SR and EC zones?}
 }
 \value{
   Pop standard object, with recent old ages adjusted using
@@ -49,7 +53,9 @@
   included. This function calls various other LexisDB
   functions at the moment, such as
   \code{d_addCohortColumn()}, \code{p_addCohortColumn()},
-  and \code{p_ecm_findOmega()}.
+  and \code{p_ecm_findOmega()}. The parameter
+  \code{bordercoh} is \code{FALSE} by defauls, unless
+  function called by \code{p_soai()}.
 }
 \details{
   Years all data present in SR zone could be kept, as long

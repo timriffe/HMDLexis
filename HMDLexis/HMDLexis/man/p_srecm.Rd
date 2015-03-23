@@ -15,6 +15,9 @@
   \item{k}{passed to \code{p_sra()}-- the parameter 'k'
   from various equations in the section on SRM.}
 
+  \item{l}{passed to \code{p_sra()}-- the parameter 'l'
+  from various equations in the section on SRM.}
+
   \item{m}{passed to \code{p_sra()}-- the parameter 'm'
   from various equations in the section on SRM.}
 

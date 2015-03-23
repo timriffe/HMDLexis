@@ -4,7 +4,7 @@
 \usage{
   readInputDB(WORKING = "/data/commons/hmd/HMDWORK/DNK",
     XXX = NULL, log.file = "", InputDB.name = "InputDB",
-    save.bin = FALSE, verbose = TRUE)
+    save.bin = FALSE, verbose = TRUE, strict = TRUE)
 }
 \arguments{
   \item{WORKING}{the file path the country working folder.
