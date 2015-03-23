@@ -24,6 +24,7 @@
 
 #' @importFrom reshape2 acast
 #' @importFrom reshape2 melt
+#' @importFrom compiler cmpfun
 #' 
 #' @export 
 #' 
@@ -32,7 +33,7 @@
 # A <- 85
 # Pop <- P1970; 
 # Deaths <- Deaths[Deaths$Year<=1969,]; library(reshape2)
-p_sra <- function(Pop, 
+p_sra <- cmpfun(function(Pop, 
     Deaths, 
     k = 5, 
     m = 5, 
@@ -270,7 +271,7 @@ p_sra <- function(Pop,
     rownames(Pop)       <- NULL
     invisible(Pop)
     
-  }
+  })
 
 
 

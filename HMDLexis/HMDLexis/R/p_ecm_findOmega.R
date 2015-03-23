@@ -24,7 +24,7 @@ p_ecm_findOmega <- cmpfun(function(Deaths, l = 5, threshold = 0.5){
   N           <- nrow(VV)
   cohorts     <- as.integer(colnames(VV))
   this.year   <- max(as.integer(rownames(VV)))
-  
+
   # this is a selection matrix
   Blocki      <- lower.tri(matrix(0, nrow = 5, ncol = 5), diag = TRUE)
   Ncoh        <- length(cohorts)

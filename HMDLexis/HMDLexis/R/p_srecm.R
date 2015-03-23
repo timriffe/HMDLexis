@@ -5,6 +5,7 @@
 #' @param Pop The standard internal Population data.frame, *after* running p_ecm().
 #' @param Deaths after all processing is done. Completed triangles.
 #' @param k passed to \code{p_sra()}-- the parameter 'k' from various equations in the section on SRM.
+#' @param l passed to \code{p_sra()}-- the parameter 'l' from various equations in the section on SRM.
 #' @param m passed to \code{p_sra()}-- the parameter 'm' from various equations in the section on SRM.
 #' @param a passed to \code{p_sra()}-- the parameter 'm' from various equations in the section on SRM.
 #' @param A passed to \code{p_sra()}-- controls whether we do SR 90+ or SR 85+ (or something else). Default 90. (85 is untested so far)
@@ -31,6 +32,7 @@ p_srecm <- function(Pop, Deaths, k = 5, m = 5, a = 80, A = 90, maxit = 100, repr
                                    reproduce.matlab = reproduce.matlab), 
                              Deaths, 
                              k = k, 
+                             l = l,
                              m = m, 
                              a = a,
                              A = A, 

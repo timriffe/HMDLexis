@@ -50,7 +50,8 @@ p_ic <- function(Pop, Deaths, Births, reproduce.matlab = FALSE){
   PIC <- list()
   
   # Y is the number of intercensal periods we need to deal with.
-  for (i in 1:Y){
+  # C1 <- C1i; C2 <- C2i
+  for (i in 1:Y){ 
     C1i <- Pop[Pop$Year == C1years[i], ]
     C2i <- Pop[Pop$Year == C2years[i], ]
     PIC[[i]] <- p_ic_inner(C1 = C1i, 
@@ -95,7 +96,7 @@ p_ic <- function(Pop, Deaths, Births, reproduce.matlab = FALSE){
 p_ic_inner <- function(C1, C2, Deaths, Births, reproduce.matlab = FALSE){
   
   Deaths  <- d_addCohortColumn(Deaths)
-  # cut off UNK if necessary
+  # cut off UNK if necessary 
   # UNK should be redistributed prior to running p_ic()
   stopifnot(all(C1$Age != "UNK"))
   stopifnot(all(C2$Age != "UNK"))
@@ -417,6 +418,8 @@ p_ic_inner <- function(C1, C2, Deaths, Births, reproduce.matlab = FALSE){
     Ps$Access      <- "O"
     Ps$NoteCode1   <- "p_ic()"
     Ps$RefCode     <- Ps$NoteCode2 <- Ps$NoteCode3 <- NA
+    
+    #sort(colnames(Ps));sort(colnames(C1s))
     Ps             <- Ps[,colnames(C1s)]
     
     # swap in original C1 and C2 if necessary, no need to overwrite
