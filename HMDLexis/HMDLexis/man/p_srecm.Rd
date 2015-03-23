@@ -2,7 +2,7 @@
 \alias{p_srecm}
 \title{p_srecm extinct cohort followed by survivor ratio methods, wrapper.}
 \usage{
-  p_srecm(Pop, Deaths, k = 5, m = 5, a = 80, A = 90,
+  p_srecm(Pop, Deaths, k = 5, l = l, m = 5, a = 80, A = 90,
     maxit = 100, reproduce.matlab = FALSE)
 }
 \arguments{

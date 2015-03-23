@@ -15,7 +15,7 @@
 #' @export
 #' 
 
-p_srecm <- function(Pop, Deaths, k = 5, m = 5, a = 80, A = 90, maxit = 100, reproduce.matlab = FALSE){
+p_srecm <- function(Pop, Deaths, k = 5, l = l, m = 5, a = 80, A = 90, maxit = 100, reproduce.matlab = FALSE){
   
   # slice off UNK, rbind back on later:
   UNKi          <- Pop$Age == "UNK"
