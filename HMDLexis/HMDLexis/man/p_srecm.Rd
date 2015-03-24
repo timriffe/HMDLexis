@@ -13,16 +13,18 @@
   triangles.}
 
   \item{k}{passed to \code{p_sra()}-- the parameter 'k'
-  from various equations in the section on SRM.}
+  from various equations in the section on SRM. Default 5,
+  per MP.}
 
   \item{l}{passed to \code{p_sra()}-- the parameter 'l'
-  from various equations in the section on SRM.}
+  from various equations in the section on SRM. Default 5,
+  per MP.}
 
   \item{m}{passed to \code{p_sra()}-- the parameter 'm'
-  from various equations in the section on SRM.}
+  from various equations in the section on SRM. Default 5,
+  per MP.}
 
-  \item{a}{passed to \code{p_sra()}-- the parameter 'm'
-  from various equations in the section on SRM.}
+  \item{a}{lower age bound. Default 80, according to MP..}
 
   \item{A}{passed to \code{p_sra()}-- controls whether we
   do SR 90+ or SR 85+ (or something else). Default 90. (85
