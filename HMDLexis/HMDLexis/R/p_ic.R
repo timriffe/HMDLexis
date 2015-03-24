@@ -54,6 +54,7 @@ p_ic <- function(Pop, Deaths, Births, reproduce.matlab = FALSE){
   for (i in 1:Y){ 
     C1i <- Pop[Pop$Year == C1years[i], ]
     C2i <- Pop[Pop$Year == C2years[i], ]
+   
     PIC[[i]] <- p_ic_inner(C1 = C1i, 
                            C2 = C2i, 
                            Deaths = Deaths, 

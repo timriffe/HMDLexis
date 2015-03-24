@@ -4,10 +4,10 @@
 #' 
 #' @param Pop The standard internal Population data.frame, *after* running p_ecm().
 #' @param Deaths after all processing is done. Completed triangles.
-#' @param k passed to \code{p_sra()}-- the parameter 'k' from various equations in the section on SRM.
-#' @param l passed to \code{p_sra()}-- the parameter 'l' from various equations in the section on SRM.
-#' @param m passed to \code{p_sra()}-- the parameter 'm' from various equations in the section on SRM.
-#' @param a passed to \code{p_sra()}-- the parameter 'm' from various equations in the section on SRM.
+#' @param k passed to \code{p_sra()}-- the parameter 'k' from various equations in the section on SRM. Default 5, per MP.
+#' @param l passed to \code{p_sra()}-- the parameter 'l' from various equations in the section on SRM. Default 5, per MP.
+#' @param m passed to \code{p_sra()}-- the parameter 'm' from various equations in the section on SRM. Default 5, per MP.
+#' @param a lower age bound. Default 80, according to MP..
 #' @param A passed to \code{p_sra()}-- controls whether we do SR 90+ or SR 85+ (or something else). Default 90. (85 is untested so far)
 #' @param maxit passed to \code{p_srm()}-- maximum number of iterations to optimize the improvement coefficient, 'c'.
 #' @param reproduce.matlab passed to \code{p_srm()} and \code{p_ecm()}-- logical. Do we include the legacy matlab kludge? Default \code{FALSE}.
