@@ -670,14 +670,15 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
   minYr <- min(c(Popyrs,Birthyrs,Myrs,Tyrs,Dyrs))
   maxYr <- max(c(Popyrs,Birthyrs,Myrs,Tyrs,Dyrs))
   all.yrs <- minYr:maxYr
-  
+
+  NN <- max(possible.tadj.ages,na.rm=TRUE)+2
   GenericTadj <- data.frame(PopName = XXX, 
-    Year = rep(all.yrs,each = 132*2), 
+    Year = rep(all.yrs,each = NN*2), 
     Age = rep(possible.tadj.ages,length(all.yrs)*2),
     Area1 = NA,
     Area2 = NA,
-    Sex = rep(c(rep("f",132),rep("m",132)),length(all.yrs)),
-    Type = rep(c("Rb",rep("Vx",131)),length(all.yrs)*2),
+    Sex = rep(c(rep("f",NN),rep("m",NN)),length(all.yrs)),
+    Type = rep(c("Rb",rep("Vx",NN-1)),length(all.yrs)*2),
     Value = 1,
     LDB = 1)
   if (tadjTF){
