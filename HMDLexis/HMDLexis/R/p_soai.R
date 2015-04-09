@@ -273,5 +273,5 @@ p_soai <- function(
 }
 
 # end
-Pout[Pout$Year == 1981, ]
+
 
