@@ -153,8 +153,9 @@ p_soai <- function(
     Yrs     <- sort(Yrs, decreasing = TRUE)
     
     # these are years on the right side of gaps > 1 year
-    C2years <- rev(rev(Pyears)[c(diff(rev(Pyears)) < -1,FALSE)])
-    Yrs     <- Yrs[Yrs %in% C2years]
+    # TR: removed these two lines May 12, 2015 for p_split() compatibility...
+    #C2years <- rev(rev(Pyears)[c(diff(rev(Pyears)) < -1,FALSE)])
+    #Yrs     <- Yrs[Yrs %in% C2years]
     # at a minimum, the left 11 years of data...
     NoTouch <- Pop[!Pop$Year %in% Yrs, ] 
     Pop     <- Pop[Pop$Year %in% Yrs, ]
@@ -169,7 +170,7 @@ p_soai <- function(
     for (sex in c("m","f")){
       DeathsSex <- Deaths[Deaths$Sex == sex, ]
       Psex      <- Pop[Pop$Sex == sex, ]
-      for (yr in Yrs){
+      for (yr in Yrs){ # yr <- Yrs
         Pout[[paste0(yr, sex)]] <- 
                     p_soai_inner_matlab(PopYrSex = Psex[Psex$Year == yr, ], 
                                         DeathsSex = DeathsSex, 
