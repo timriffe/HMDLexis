@@ -164,7 +164,7 @@ p_soai <- function(
     # not efficient, but easy to manage pieces this way...
     Pout <- list()
     Pout[["NoTouch"]] <- NoTouch
-    # sex <- "f"
+    # sex <- "m"
     # yr <- 1992
     
     for (sex in c("m","f")){
