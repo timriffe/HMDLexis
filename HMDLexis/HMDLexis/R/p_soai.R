@@ -229,7 +229,7 @@ p_soai <- function(
     for (sex in c("f","m")){ # sex <- "m"
       RefSex   <- acast(PSRECM[PSRECM$Sex == sex, ], Agei ~ Year, sum, value.var = "Population")
       Psex     <- Pop[Pop$Sex == sex, ]
-      for (yr in Yrs){ # yr <- 1981
+      for (yr in Yrs){ # yr <- 1980
         PSY      <- Psex[Psex$Year == yr, ]
         OAi      <- PSY$AgeInterval == "+"
         OA       <- PSY$Agei[OAi]
