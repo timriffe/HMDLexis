@@ -120,8 +120,8 @@ p_soai_inner_matlab <- function(PopYrSex, DeathsSex,
 #' @importFrom reshape2 acast
 #' 
 
-# k <- m <- l <- 5; reproduce.matlab = TRUE
-# A <- 85; a <- 80; maxit = 100
+# k <- m <- l <- 5; reproduce.matlab = FALSE
+# A <- 90; a <- 80; maxit = 100
 
 p_soai <- function(
   Pop, 
@@ -219,7 +219,9 @@ p_soai <- function(
     Pout    <- list()
     Yrs     <- with(Pop, unique(Year[AgeInterval == "+"]))
     # maybe not do this for the extreme right-side year:
-    Yrs     <- Yrs[Yrs < max(Pop$Year)]
+    if (length(Yrs) > 1){
+      Yrs     <- Yrs[Yrs < max(Pop$Year)]
+    }
     NoTouch <- Pop[!Pop$Year %in% Yrs, ] 
     Pout[["NoTouch"]] <- NoTouch
     Pop     <- Pop[Pop$Year %in% Yrs, ]
