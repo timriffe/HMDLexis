@@ -21,6 +21,8 @@ d_long <- function(Deaths){
         return(DeathsSexYr)
       } else {
        
+        # insert
+        
         Ages    <- rep(0:130, each = 2)
         Lexis   <- rep(c("TL","TU"),length(Ages) / 2)
         
@@ -43,7 +45,9 @@ d_long <- function(Deaths){
                  with(DeathsSexYr, paste(Year, Age, Lexis, sep = "-")))
         Dnew <- Dnew[rmID, ]
         
-        return(rbind(DeathsSexYr, Dnew))
+        
+        Dout <- resortDeaths(rbind(DeathsSexYr, Dnew))
+        invisible(Dout)
       }
     }) # end internal function definition
   Deaths <- Deaths[Deaths$Age != "TOT", ]
@@ -61,7 +65,7 @@ d_long <- function(Deaths){
       d_long_SexYr
         )
       )
-  
+  # wow, really this could be made the final function called for deaths...
   if (UNKTF){
     Deaths <- rbind(Deaths, UNK)
   }
