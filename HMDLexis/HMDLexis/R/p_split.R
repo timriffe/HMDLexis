@@ -75,10 +75,12 @@ p_split_inner <- function(C1, C2, Deaths, Births, a = 80, reproduce.matlab = FAL
   # Check for single ages in C2
   stopifnot(all(C2$AgeIntervali == 1))
   # upper age checks happen in the sex loop
-  
+  C1singles  <- C1[C1$AgeIntervali %==% 1, ]
+  C1         <- C1[C1$AgeIntervali %!=% 1, ]
   # one Sex at a time.
   sexes  <- c("m","f")
   PopOut <- list()
+  PopOut[["Singles"]] <- C1singles
   for (Sex in sexes){ # Sex <- "m"
     C1s  <- C1[C1$Sex == Sex, ]
     C2s  <- C2[C2$Sex == Sex, ]
@@ -149,11 +151,11 @@ p_split_inner <- function(C1, C2, Deaths, Births, a = 80, reproduce.matlab = FAL
     
     # This is a good place for a stop condition
     # this may involve *not* bothering to split C1 ages 80+.
-    C1SingleAgesImplied     <- 0:(with(C1s,max(Agei) + AgeIntervali[which.max(Agei)]) - 1)
-    C1grouped               <- c(apply(C1s[, c("Agei","AgeIntervali")], 1, 
+    C1SingleAgesImplied     <- with(C1s,min(Agei):((max(Agei) + AgeIntervali[which.max(Agei)]) - 1))
+    C1grouped               <- c(unlist(apply(C1s[, c("Agei","AgeIntervali")], 1, 
         function(x){
           rep(x[[1]],x[[2]])
-        }))
+        })))
     # the C1 cohorts we actually have represented 
     # TODO: this may be off by one, if we need to shift UP one to account for f1 blending
     # which we haven't yet done... Figure this out when we get so far.
