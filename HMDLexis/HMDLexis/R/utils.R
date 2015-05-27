@@ -81,10 +81,6 @@ isLeapYear <- function (Year){      # CB: mostly good algorithm from wikipedia
 #' @param detect.mid.year logical. if \code{TRUE}, June 30 or July 1 will always return .5.
 #' @param detect.start.end logical. default \code{TRUE}. Should Jan 1 always be 0 and Dec 31 always be 1?
 #' 
-# #' @importFrom lubridate ymd
-# #' @importFrom lubridate floor_date
-# #' @importFrom lubridate yday
-#' 
 #' @export
 #' 
 
@@ -157,9 +153,6 @@ ypart <- function(Year, Month, Day, reproduce.matlab = TRUE, detect.mid.year = F
 #' @param detect.start.end logical. default \code{TRUE}. Should Jan 1 always be 0 and Dec 31 always be 1?
 #' 
 #' @return decimal value of year fraction (can be greater than 1)
-#' 
-# #' @importFrom lubridate decimal_date
-# #' @importFrom lubridate ymd
 #' 
 #' @export
 #' 
