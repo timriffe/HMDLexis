@@ -1,6 +1,13 @@
-
+if (system("hostname",intern=TRUE) %in% c("triffe-N80Vm", "tim-ThinkPad-L440")){
+	# if I'm on the laptop
+	wd <- "/home/tim/git/HMDLexis/HMDLexis/HMDLexis"
+} else {
+	# in that case I'm on Berkeley system, and other people in the dept can run this too
+	wd <- paste0("/data/commons/",system("whoami",intern=TRUE),"/git/HMDLexis/HMDLexis/HMDLexis")
+}
 
 library(devtools)
-document("/data/commons/triffe/git/HMDLexis/HMDLexis/HMDLexis")
+document(wd)
 
 #install.packages("pspline")
+#install.packages("pracma")
