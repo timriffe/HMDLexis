@@ -2,7 +2,7 @@
 #'
 #' @title redistributes open age group population counts using SRA method (a single year and sex of data)
 #' 
-#' @description This function mirrors behavior of the matlab function, but not the present live function. The live function was found to have a few bugs, which were fixed for purposes of testing. Since, this function calls \code{p_sra()}, we pass the relevant arguments down the chain. There is one shortcoming with this implementation, namely that \code{p_sra() only works with Jan 1 in the current implementation. The resultant error is likely very small, however. This function is called by \code{p_soai()}. Further critiques are given in the code comments and description of the parent function, \code{p_soai()}.
+#' @description This function mirrors behavior of the matlab function, but not the present live function. The live function was found to have a few bugs, which were fixed for purposes of testing. Since, this function calls \code{p_sra()}, we pass the relevant arguments down the chain. There is one shortcoming with this implementation, namely that \code{p_sra()} only works with Jan 1 in the current implementation. The resultant error is likely very small, however. This function is called by \code{p_soai()}. Further critiques are given in the code comments and description of the parent function, \code{p_soai()}.
 #' 
 #' @param PopYrSex A single year and sex of the standard population object. Single ages only. 
 #' @param DeathsSex the standard Deaths \code{data.frame}, for a single sex, all years.
