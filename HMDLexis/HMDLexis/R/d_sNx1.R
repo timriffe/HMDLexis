@@ -9,8 +9,7 @@
 #' @return Deaths, with all RR entries in single ages.
 #'
 #' @export
-#' 
-#' @importFrom magrittr %>%
+
 d_sNx1 <- function(Deaths, MPVERSION = 5){
   
   #
@@ -30,9 +29,8 @@ d_sNx1 <- function(Deaths, MPVERSION = 5){
   
 
   # magrittr pipes are slightly more legible than some alternatives
-  Deaths <- split(Deaths,f = list(Deaths$Year, Deaths$Sex)) %>%
-              lapply(., d_sNx1_inner, MPVERSION = MPVERSION) %>%
-              do.call(rbind, .) 
+  Deaths <- split(Deaths, f = list(Deaths$Year, Deaths$Sex)) 
+  Deaths <- do.call(rbind, lapply(Deaths, d_sNx1_inner, MPVERSION = MPVERSION))
   
   if (UNKTF){
     Deaths <- resortDeaths(rbind(UNK, Deaths))
