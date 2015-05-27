@@ -3,7 +3,7 @@
 \title{ypart function to determine the proportion of a year passed as of a particular date}
 \usage{
   ypart(Year, Month, Day, reproduce.matlab = TRUE,
-    detect.mid.year = FALSE)
+    detect.mid.year = FALSE, detect.start.end = TRUE)
 }
 \arguments{
   \item{Year}{4-digit year (string or integer)}
@@ -19,6 +19,11 @@
 
   \item{detect.mid.year}{logical. if \code{TRUE}, June 30
   or July 1 will always return .5.}
+
+  \item{detect.start.end}{logical. default \code{TRUE}.
+  Should Jan 1 always be 0 and Dec 31 always be 1?
+
+  #}
 }
 \description{
   The fraction returned by this is used e.g. for

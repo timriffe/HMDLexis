@@ -15,12 +15,9 @@ Depends:
 Imports:
     reshape2,
     compiler,
-    pspline,
-    lubridate
+    pspline
 Collate:
     'utils.R'
-    'ypart.R'
-    'yint.R'
     'PC2AC.R'
     'AP2AC.R'
     'PC2AP.R'
