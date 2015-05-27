@@ -28,6 +28,7 @@ NULL
   x != y & !is.na(x) & !is.na(y)
 }
 
+# note this is incompatible with magrittr!
 #' @rdname HMDlogic
 '%>%' <- function(x,y){
   x > y & !is.na(x) & !is.na(y)
