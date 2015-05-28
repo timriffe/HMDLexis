@@ -65,17 +65,17 @@ p_precensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = F
                       Year ~ Cohort, 
                       sum, 
                       value.var = "Deaths", 
-                      fill = NA_real_)
+                      fill = NA_real_, drop = FALSE)
     DU      <- acast(Dsex[with(Dsex, Year %in% years & Lexis == "TU"), ], 
                       Year ~ Cohort, 
                       sum, 
                       value.var = "Deaths", 
-                      fill = NA_real_) 
+                      fill = NA_real_, drop = FALSE) 
     VV      <- acast(Dsex[with(Dsex, Year %in% years), ], 
                       Year ~ Cohort, 
                       sum, 
                       value.var = "Deaths", 
-                      fill = NA_real_)  
+                      fill = NA_real_, drop = FALSE)  
     # right-side adjustment for partial years
     Dc      <- f2^2 * DL[nrow(DL), ]
     Dd      <- ((2 * f2) - f2^2) * DU[nrow(DU), ]
