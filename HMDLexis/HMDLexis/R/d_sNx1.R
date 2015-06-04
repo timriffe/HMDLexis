@@ -52,9 +52,6 @@ d_sNx1 <- function(Deaths, MPVERSION = 5){
 #' 
 #' @export
 #' 
-#' @importFrom pracma pchip
-#' 
-#' @details The \code{pchip()} function of the \code{pracma} package is only imported to follow the matlab robustness procedures. In R, we have the option of a monotonic interpolating spline too, but this has not been implemented. I'd (TR) propose using base R splines as fallbacks from our in-house method rather than importing a particular brand of cubic hermite splines.
 
 d_sNx1_inner <- function(DSexYr, MPVERSION = 5){
   if (nrow(DSexYr) == 0){
