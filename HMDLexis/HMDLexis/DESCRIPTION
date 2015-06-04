@@ -14,8 +14,7 @@ Depends:
     R (>= 2.15)
 Imports:
     reshape2,
-    compiler,
-    pspline
+    compiler
 Collate:
     'utils.R'
     'PC2AC.R'
