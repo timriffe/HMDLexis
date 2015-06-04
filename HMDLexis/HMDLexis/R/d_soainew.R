@@ -174,7 +174,7 @@ d_KannistoSplitYrSex <- function(DeathsYearSex, N = 20, ACVVmatrix, reproduce.ma
   # if no fluctuations were detected according to that quirky function, we still get back the 
   # right object. Note, it's only ages and deaths and another indicator column to note which
   # ones were imputed. 
-  dths.fit          <- d_remfluct(deathsRR, N = 25, p1 = 0.0005, p2 = 0.9)
+  dths.fit       <- d_remfluct(deathsRR, N = 25, spar1 = 0.9, spar2 = 0.3)
   
   # now do a reverse cumsum to get a synthetic survival on the last N-1 (19) years of it:
   # [this N is different from the one used as an argument in d_remfluct()...]
