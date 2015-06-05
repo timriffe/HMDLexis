@@ -44,10 +44,10 @@ p_split_inner <- function(C1, C2, Deaths, Births, a = 80, reproduce.matlab = FAL
   C1       <- C1[C1$AgeInterval != "+", ]
   
   Interval <- unique(C2$Year) - unique(C1$Year)
-  aM <- max(C1$Agei) + C1$AgeIntervali[which.max(C1$Agei)] - 1
+  aM       <- max(C1$Agei) + C1$AgeIntervali[which.max(C1$Agei)] - 1
   # Pop <- C2
   if (max(C2$Agei[C2$AgeIntervali %==% 1]) < (aM + Interval)){
-    C2  <- p_soai(C2, Deaths, a = a, reproduce.matlab = reproduce.matlab)
+    C2   <- p_soai(C2, Deaths, a = a, reproduce.matlab = reproduce.matlab)
     
     # need to pad in case of reproduce.matlab = TRUE...
     maxM <- max(C2$Agei[C2$Sex == "m"])
@@ -78,10 +78,10 @@ p_split_inner <- function(C1, C2, Deaths, Births, a = 80, reproduce.matlab = FAL
   C1singles  <- C1[C1$AgeIntervali %==% 1, ]
   C1         <- C1[C1$AgeIntervali %!=% 1, ]
   # one Sex at a time.
-  sexes  <- c("m","f")
+  sexes  <- unique(C1$Sex)
   PopOut <- list()
   PopOut[["Singles"]] <- C1singles
-  for (Sex in sexes){ # Sex <- "m"
+  for (Sex in sexes){ # Sex <- "f"
     C1s  <- C1[C1$Sex == Sex, ]
     C2s  <- C2[C2$Sex == Sex, ]
     Dsex <- Deaths[Deaths$Sex == Sex, ]
@@ -151,6 +151,7 @@ p_split_inner <- function(C1, C2, Deaths, Births, a = 80, reproduce.matlab = FAL
     
     # This is a good place for a stop condition
     # this may involve *not* bothering to split C1 ages 80+.
+
     C1SingleAgesImplied     <- with(C1s,min(Agei):((max(Agei) + AgeIntervali[which.max(Agei)]) - 1))
     C1grouped               <- c(unlist(apply(C1s[, c("Agei","AgeIntervali")], 1, 
         function(x){
@@ -188,17 +189,17 @@ p_split_inner <- function(C1, C2, Deaths, Births, a = 80, reproduce.matlab = FAL
       Year ~ Cohort, 
       sum, 
       value.var = "Deaths", 
-      fill = NA_real_)
+      fill = NA_real_, drop = FALSE)
     DU      <- acast(Dsex[with(Dsex, Year %in% years & Lexis == "TU"), ], 
       Year ~ Cohort, 
       sum, 
       value.var = "Deaths", 
-      fill = NA_real_) 
+      fill = NA_real_, drop = FALSE) 
     VV      <- acast(Dsex[with(Dsex, Year %in% years), ], 
       Year ~ Cohort, 
       sum, 
       value.var = "Deaths", 
-      fill = NA_real_)  
+      fill = NA_real_, drop = FALSE)  
     
     # DL, DU only needed for Da,Db,Dc,Dd   : not used later
     # VV is used later to produce cumulative deaths
@@ -290,7 +291,9 @@ p_split_inner <- function(C1, C2, Deaths, Births, a = 80, reproduce.matlab = FAL
       ))
     # easy arithmetic to simply repeat each age group value N times, since C1grouped
     # was painstakingly made.
-    CPopRep          <- with(C1s, Population[Agei %in% C1grouped])[as.character(C1grouped)]
+    PI               <- with(C1s, Population[Agei %in% C1grouped])
+    names(PI)        <- with(C1s, Age[Agei %in% C1grouped])
+    CPopRep          <- PI[as.character(C1grouped)]
     # now multiply into C1
     Cpop             <- C1hatpdf * CPopRep
     
