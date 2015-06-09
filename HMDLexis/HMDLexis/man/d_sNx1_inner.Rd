@@ -23,13 +23,4 @@
   estimates. See MP for methods description, or check out
   the in-house spline function \code{d_sNx1_spline()}.
 }
-\details{
-  The \code{pchip()} function of the \code{pracma} package
-  is only imported to follow the matlab robustness
-  procedures. In R, we have the option of a monotonic
-  interpolating spline too, but this has not been
-  implemented. I'd (TR) propose using base R splines as
-  fallbacks from our in-house method rather than importing
-  a particular brand of cubic hermite splines.
-}
 

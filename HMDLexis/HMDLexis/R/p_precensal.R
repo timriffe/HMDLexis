@@ -15,6 +15,8 @@
 #' @importFrom reshape2 melt
 #'
 
+
+### TODO: We have a dimension problem if we're doing a 1-year precensal.
 p_precensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = FALSE){
   yr1    <- min(Deaths$Year) 
   yr2    <- min(Pop$Year)
@@ -25,13 +27,13 @@ p_precensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = F
   stopifnot(all(C2$AgeIntervali == 1))
   # note Pop date might not be Jan 1. Could be mid year.
   
-  years  <- yr1:yr2
+  years  <- yr1:yr2 # possibly the source of the problem.
   N      <- length(years)
   
   PopOut   <- list()
   PopOut[["RightSide"]] <- Pop[Pop$Year > yr2, ]
   # 
-  for (Sex in c("f","m")){
+  for (Sex in c("f","m")){ # Sex <- "f"
     C2s  <- C2[C2$Sex == Sex, ]
     Dsex <- Deaths[Deaths$Sex == Sex, ]
     # get f2 only (no f1 in precensals)
@@ -87,11 +89,11 @@ p_precensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = F
 
     CDc              <- Dc[as.character(Ccoh)]
     CDd              <- Dd[as.character(Ccoh)]
-    CDc[is.na(CDc)]   <- 0
+    CDc[is.na(CDc)]  <- 0
 
     # CVV can now be used for cumulative deaths
-    CVV              <- VV[, as.character(Ccoh)]
-    CVV[is.na(CVV)]   <- 0
+    CVV              <- VV[, as.character(Ccoh), drop = FALSE]
+    CVV[is.na(CVV)]  <- 0
     CVV[nrow(CVV), ] <- CDc + CDd
     
     CVVcumsums <- apply(CVV,2,function(x){
@@ -99,10 +101,11 @@ p_precensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = F
       })
     # get simple starting and ending vectors of population
     C2vec   <- C2s$Population[C2s$Cohort %in% Ccoh]
+    names(C2vec) <- C2s$Cohort[C2s$Cohort %in% Ccoh]
     #
 
     # this is complete, but lacking cohorts for whom we have births
-    PPC   <- C2vec + t(CVVcumsums)
+    PPC   <- C2vec + t(CVVcumsums)[, names(C2vec)]
     
     ####################################
     # now newborn cohorts:             #
@@ -114,7 +117,7 @@ p_precensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = F
     # right-side adjustment
     NDc     <- Dc[as.character(Ncoh)]
     NDd     <- Dd[as.character(Ncoh)]
-    
+    NDd[is.na(NDd)] <- 0
     # fragile verify this 
     NVV     <- VV[, as.character(Ncoh), drop = FALSE]
     NVV[nrow(NVV), ] <- NDc + NDd

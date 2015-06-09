@@ -1,0 +1,22 @@
+\name{Tab2Standard}
+\alias{Tab2Standard}
+\title{a function to convert Celeste's RDC death tabulations to the standard HMD R internal format}
+\usage{
+  Tab2Standard(DeathsTab)
+}
+\arguments{
+  \item{DeathsTab}{deaths, as read into R in Celeste's
+  format}
+}
+\value{
+  Deaths the standard HMD R internal deaths
+  \code{data.frame}.
+}
+\description{
+  of course, if Celeste's format changes, then this will
+  need to change. For instance, a capitalization anomaly in
+  the column name PopName is dealt with. This function may
+  or may not be phased out in the future, and at this time
+  it is used specifically in the RDC environment.
+}
+

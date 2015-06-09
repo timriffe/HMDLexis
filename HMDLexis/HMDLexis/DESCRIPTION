@@ -46,3 +46,4 @@ Collate:
     'p_soai.R'
     'p_split.R'
     'pchip.R'
+    'Tab2Standard.R'
