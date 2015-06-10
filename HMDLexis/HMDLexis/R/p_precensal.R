@@ -27,7 +27,9 @@ p_precensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = F
   stopifnot(all(C2$AgeIntervali == 1))
   # note Pop date might not be Jan 1. Could be mid year.
   
-  years  <- yr1:yr2 # possibly the source of the problem.
+  
+  # Jan 1, no matter what.
+  years  <- yr1:yr2 
   N      <- length(years)
   
   PopOut   <- list()
@@ -64,33 +66,38 @@ p_precensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = F
     }
     
     DL      <- acast(Dsex[with(Dsex, Year %in% years & Lexis == "TL"), ], 
-                      Year ~ Cohort, 
-                      sum, 
-                      value.var = "Deaths", 
-                      fill = NA_real_, drop = FALSE)
+      Year ~ Cohort, 
+      sum, 
+      value.var = "Deaths", 
+      fill = NA_real_, drop = FALSE)
     DU      <- acast(Dsex[with(Dsex, Year %in% years & Lexis == "TU"), ], 
-                      Year ~ Cohort, 
-                      sum, 
-                      value.var = "Deaths", 
-                      fill = NA_real_, drop = FALSE) 
+      Year ~ Cohort, 
+      sum, 
+      value.var = "Deaths", 
+      fill = NA_real_, drop = FALSE) 
     VV      <- acast(Dsex[with(Dsex, Year %in% years), ], 
-                      Year ~ Cohort, 
-                      sum, 
-                      value.var = "Deaths", 
-                      fill = NA_real_, drop = FALSE)  
+      Year ~ Cohort, 
+      sum, 
+      value.var = "Deaths", 
+      fill = NA_real_, drop = FALSE)  
     # right-side adjustment for partial years
     Dc      <- f2^2 * DL[nrow(DL), ]
     Dd      <- ((2 * f2) - f2^2) * DU[nrow(DU), ]
     
     # the cohorts present in the first pop year, up to age 130 by default (should be param)
-    Ncoh    <- yr1:(yr2 - 1)
-    Ccoh    <- C2s$Cohort[!C2s$Cohort %in% Ncoh]
+    if (yr2 > yr1){
+      Ncoh    <- yr1:(yr2 - 1)
+    } else {
+      Ncoh <- NULL
+    }
     
-
+    Ccoh    <- C2s$Cohort[C2s$Cohort < min(Ncoh)]
+    
+    
     CDc              <- Dc[as.character(Ccoh)]
     CDd              <- Dd[as.character(Ccoh)]
     CDc[is.na(CDc)]  <- 0
-
+    
     # CVV can now be used for cumulative deaths
     CVV              <- VV[, as.character(Ccoh), drop = FALSE]
     CVV[is.na(CVV)]  <- 0
@@ -99,122 +106,133 @@ p_precensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = F
     CVVcumsums <- apply(CVV,2,function(x){
         rev(cumsum(rev(x)))
       })
+    # this dimension stuff is necessary in order to deal with both 1 and >1 length years...
+    dim(CVVcumsums)      <- dim(CVV)
+    dimnames(CVVcumsums) <- dimnames(CVV)
     # get simple starting and ending vectors of population
     C2vec   <- C2s$Population[C2s$Cohort %in% Ccoh]
     names(C2vec) <- C2s$Cohort[C2s$Cohort %in% Ccoh]
     #
-
+    
     # this is complete, but lacking cohorts for whom we have births
-    PPC   <- C2vec + t(CVVcumsums)[, names(C2vec)]
+    # CVVcumsums <- CVVcumsums[1,]
+    PPC   <- C2vec + t(CVVcumsums)[names(C2vec), ]
     
     ####################################
     # now newborn cohorts:             #
     ####################################
-    # these go from C2 backward, so we want to rev them
-    N2      <- rev(C2s$Population[C2s$Cohort %in% Ncoh])
-    names(N2) <- Ncoh
     
-    # right-side adjustment
-    NDc     <- Dc[as.character(Ncoh)]
-    NDd     <- Dd[as.character(Ncoh)]
-    NDd[is.na(NDd)] <- 0
-    # fragile verify this 
-    NVV     <- VV[, as.character(Ncoh), drop = FALSE]
-    NVV[nrow(NVV), ] <- NDc + NDd
-    
-    NVV[is.na(NVV)] <- 0
-    
-    # this is the TR-proposed amendment, TBD for MPv7
-    if (MPVERSION >= 7){
-      
-      # TR: code copied and pasted, with minor modification, from p_ic_inner().
-      # this redistributes error for infants, as we do in intercensal estimation.
-      
-      # Births enter into LDB sorted, so no worries.
-      NB        <- Births$Births[Births$Year %in% Ncoh & Births$Sex == Sex]
-      names(NB) <- Ncoh
+    # TR: in the case of a mid-year census in year t, where we only need precensals
+    # back to Jan 1 of year t, then we skip this part:
+    if (!is.null(Ncoh)){
       # these go from C2 backward, so we want to rev them
+      N2      <- rev(C2s$Population[C2s$Cohort %in% Ncoh])
+      names(N2) <- Ncoh
       
-      # estimated pop size, assuming only death decrement
-      N2hat     <- NB - colSums(NVV, na.rm = TRUE)
-      # total error on arrival at C2
-      NDelta    <- N2 - N2hat
+      # right-side adjustment
+      NDc     <- Dc[as.character(Ncoh)]
+      NDd     <- Dd[as.character(Ncoh)]
+      NDd[is.na(NDd)] <- 0
+      # fragile verify this 
+      NVV     <- VV[, as.character(Ncoh), drop = FALSE]
+      NVV[nrow(NVV), ] <- NDc + NDd
       
-      # getting prop to distribute error over, tricky
-      # remove last row of NVV (note it's PC data), because the row labels refer to cohort of deaths,
-      # but what we really want is Jan 1 of year t, not the last year, though, which could stick out past our data.
-      NVV       <- NVV[-nrow(NVV), , drop = FALSE]
-      Nprop     <- NVV * 0
-      # K, k follow MP naming conventions
-      for (coh in 1:length(Ncoh)){ # like in MP (note our N might be different)
-        K            <- N - coh - 1
-        k            <- 0:K
-        prop         <- (2 * k + 1) / (2 * K  + 1 + 2 * f2)
-        Nprop[coh, ] <- c(rep(0,coh-1), prop)
+      NVV[is.na(NVV)] <- 0
+      
+      # this is the TR-proposed amendment, TBD for MPv7
+      if (MPVERSION >= 7){
+        
+        # TR: code copied and pasted, with minor modification, from p_ic_inner().
+        # this redistributes error for infants, as we do in intercensal estimation.
+        
+        # Births enter into LDB sorted, so no worries.
+        NB        <- Births$Births[Births$Year %in% Ncoh & Births$Sex == Sex]
+        names(NB) <- Ncoh
+        # these go from C2 backward, so we want to rev them
+        
+        # estimated pop size, assuming only death decrement
+        N2hat     <- NB - colSums(NVV, na.rm = TRUE)
+        # total error on arrival at C2
+        NDelta    <- N2 - N2hat
+        
+        # getting prop to distribute error over, tricky
+        # remove last row of NVV (note it's PC data), because the row labels refer to cohort of deaths,
+        # but what we really want is Jan 1 of year t, not the last year, though, which could stick out past our data.
+        NVV       <- NVV[-nrow(NVV), , drop = FALSE]
+        Nprop     <- NVV * 0
+        # K, k follow MP naming conventions
+        for (coh in 1:length(Ncoh)){ # like in MP (note our N might be different)
+          K            <- N - coh - 1
+          k            <- 0:K
+          prop         <- (2 * k + 1) / (2 * K  + 1 + 2 * f2)
+          Nprop[coh, ] <- c(rep(0,coh-1), prop)
+        }
+        # Total error
+        NDelta  <- Nprop * NDelta
+        
+        # cumulative deaths, for decrement *from* births
+        NVVcum              <- t(apply(NVV, 2, cumsum))
+        
+        # estimate population over period
+        Npop    <- NB - NVVcum + NDelta
+        Npop[Nprop == 0] <- NA
+        
+        colnames(Npop) <- as.integer(colnames(Npop)) + 1
       }
-      # Total error
-      NDelta  <- Nprop * NDelta
-      
-      # cumulative deaths, for decrement *from* births
-      NVVcum              <- t(apply(NVV, 2, cumsum))
-      
-      # estimate population over period
-      Npop    <- NB - NVVcum + NDelta
-      Npop[Nprop == 0] <- NA
-      
-      colnames(Npop) <- as.integer(colnames(Npop)) + 1
+      # This is the matlab error-free assumption
+      if (MPVERSION < 7){
+        # generate the same output assuming no error.
+        # this was default behavior until TR noticed this.
+        
+        # we're always dealing with something close to a triangle in this zone, so this works
+        NVV <- NVV * !upper.tri(NVV, TRUE)
+        NVV <- NVV[-1, , drop = FALSE]
+        
+        # note the other version is a simple cumsum, but here we need 
+        # rcumusum() because it's an increment from the right
+        NCPcumsum <- t(apply(NVV,2,function(x){
+              rev(cumsum(rev(x)))
+            }))
+        # it's this easy because we have no error...
+        Npop <- N2 + NCPcumsum
+        Npop[lower.tri(Npop)] <- NA
+        
+      }
+    } else {
+      # TR: just to make the code keep chugging
+      Npop <- PPC * NA
     }
-    # This is the matlab error-free assumption
-    if (MPVERSION < 7){
-      # generate the same output assuming no error.
-      # this was default behavior until TR noticed this.
-      
-      # we're always dealing with something close to a triangle in this zone, so this works
-      NVV <- NVV * !upper.tri(NVV, TRUE)
-      NVV <- NVV[-1, , drop = FALSE]
-      
-      # note the other version is a simple cumsum, but here we need 
-      # rcumusum() because it's an increment from the right
-      NCPcumsum <- t(apply(NVV,2,function(x){
-          rev(cumsum(rev(x)))
-        }))
-      # it's this easy because we have no error...
-      Npop <- N2 + NCPcumsum
-      Npop[lower.tri(Npop)] <- NA
- 
-    }
-
-      
-      Ps     <- rbind(
-        melt(PPC, value.name = "Population", varnames = c("Cohort", "Year")),
-        melt(Npop, value.name = "Population", varnames = c("Cohort", "Year"))
-      )
-      Ps             <- Ps[!is.na(Ps$Population), ]
     
-      # add on other columns
-      # need AP in the end...
-      Ps$Agei        <- Ps$Age <- Ps$Year - Ps$Cohort - 1
-      Ps             <- Ps[Ps$Age <= 130, ]
-      
-      # now add on the remaining columns...
-      Ps$Sex         <- Sex
-      Ps$PopName     <- unique(C2s$PopName)
-      Ps$Area        <- NA
-      Ps$LDB         <- Ps$Month <- Ps$Day <- Ps$AgeInterval <- Ps$AgeIntervali <- 1
-      Ps$Type        <- "precensal"
-      Ps$Access      <- "O"
-      Ps$NoteCode1   <- "p_precensal()"
-      Ps$RefCode     <- Ps$NoteCode2 <- Ps$NoteCode3 <- NA
-      Ps             <- Ps[, colnames(C2s)]
-      Ps$Cohort      <- NULL
-      PopOut[[Sex]] <- Ps
-      
-    }
-    PopOut        <- do.call(rbind, PopOut)
-
-    PopOut        <- resortPops(PopOut)
-    invisible(PopOut)
+    Ps     <- rbind(
+      melt(PPC, value.name = "Population", varnames = c("Cohort", "Year")),
+      melt(Npop, value.name = "Population", varnames = c("Cohort", "Year"))
+    )
+    Ps             <- Ps[!is.na(Ps$Population), ]
+    
+    # add on other columns
+    # need AP in the end...
+    Ps$Agei        <- Ps$Age <- Ps$Year - Ps$Cohort - 1
+    Ps             <- Ps[Ps$Age <= 130, ]
+    
+    # now add on the remaining columns...
+    Ps$Sex         <- Sex
+    Ps$PopName     <- unique(C2s$PopName)
+    Ps$Area        <- NA
+    Ps$LDB         <- Ps$Month <- Ps$Day <- Ps$AgeInterval <- Ps$AgeIntervali <- 1
+    Ps$Type        <- "precensal"
+    Ps$Access      <- "O"
+    Ps$NoteCode1   <- "p_precensal()"
+    Ps$RefCode     <- Ps$NoteCode2 <- Ps$NoteCode3 <- NA
+    Ps             <- Ps[, colnames(C2s)]
+    Ps$Cohort      <- NULL
+    PopOut[[Sex]] <- Ps
+    
   }
+  PopOut        <- do.call(rbind, PopOut)
+  
+  PopOut        <- resortPops(PopOut)
+  invisible(PopOut)
+}
 
 
 
