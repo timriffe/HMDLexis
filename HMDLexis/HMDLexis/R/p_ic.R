@@ -212,6 +212,10 @@ p_ic_inner <- function(C1, C2, Deaths, Births, reproduce.matlab = FALSE){
     C1s$Cohort <- C1s$Cohort + 1
     C2s$Cohort <- C2s$Cohort + 1
     
+    ##############################################################
+    # TODO: Tadj: either adjust C1 or C2, but not both, and be consistent with deaths
+   ##############################################################
+    
     ######################################################################
     # 4) get death matrices, triangles and PC parallelograms             #
     ######################################################################
@@ -231,6 +235,14 @@ p_ic_inner <- function(C1, C2, Deaths, Births, reproduce.matlab = FALSE){
       sum, 
       value.var = "Deaths", 
       fill = NA_real_)  
+    
+    ##############################################################
+    # TODO: Tadj: either adjust each of the 3 matrices, but elementwise multiplication
+    # with some sort of conformable Vx matrix, and consistent with the Pop adjustment
+    # we just did
+    ##############################################################
+    
+    
     
     # DL, DU only needed for Da,Db,Dc,Dd   : not used later
     # VV is used later to produce cumulative deaths
@@ -398,6 +410,14 @@ p_ic_inner <- function(C1, C2, Deaths, Births, reproduce.matlab = FALSE){
     ####################################################################
     # 9) combine estimates                                             #
     ####################################################################   
+    
+    ####################################################################
+    # TODO: us Vx matrix to adjust back to original reference population
+    # Note there is no need to change the guts of what's happening above.
+    # we transform once before, and then once again afterwards. Note also
+    # that we're like 100% sure that this is how it needs to happen, and I
+    # rate a high likelihood of some matlab idiosyncracy coming to the fore
+    ####################################################################
     
     # move to long format 
     Ps     <- rbind(
