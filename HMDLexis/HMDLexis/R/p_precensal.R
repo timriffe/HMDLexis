@@ -116,8 +116,9 @@ p_precensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = F
     
     # this is complete, but lacking cohorts for whom we have births
     # CVVcumsums <- CVVcumsums[1,]
-    PPC   <- C2vec + t(CVVcumsums)[names(C2vec), ]
-    
+    PPC           <- C2vec + t(CVVcumsums)[names(C2vec), , drop = FALSE]
+    dim(PPC)      <- dim(t(CVVcumsums)[names(C2vec), , drop = FALSE])
+    dimnames(PPC) <- dimnames(t(CVVcumsums)[names(C2vec), , drop = FALSE])
     ####################################
     # now newborn cohorts:             #
     ####################################
