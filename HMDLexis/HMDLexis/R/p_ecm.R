@@ -45,7 +45,7 @@ p_ecm <- function(Pop, Deaths, a = 80, reproduce.matlab = FALSE){
     omega             <- p_ecm_findOmega(Dsex, l = 5, threshold = 0.5)
     # p_ecm_inner() defined below, in same script. not quirky, but it is useful
     # to have these steps be modular, so that it can be called elsewhere
-    ECpop <- p_ecm_inner(Dsex = Dsex, a = a, omega = omega, reproduce.matlab = reproduce.matlab)
+    ECpop             <- p_ecm_inner(Dsex = Dsex, a = a, omega = omega, reproduce.matlab = reproduce.matlab)
     # Dima: should only be done for srecm, but not for ec.
     #    # an apparent quirk in the matlab code
     #    if (reproduce.matlab){
@@ -62,7 +62,7 @@ p_ecm <- function(Pop, Deaths, a = 80, reproduce.matlab = FALSE){
 #  LexisMap(acast(ECpop, Agei~Year, value.var = "Population"),log=FALSE)
     # is.na(Cohort) picks out the open age groups, which we hope are all 80+
 
-  Pold <- Psex[!with(Psex, (Year - Agei - 1) <= omega["Cohmax"] & Agei >= a), ColnamesKeep]
+    Pold <- Psex[!with(Psex, (Year - Agei - 1) <= omega["Cohmax"] & Agei >= a), ColnamesKeep]
 #  dev.new()
 #  LexisMap(acast(Pold, Agei~Year, value.var = "Population"),log=FALSE)
     PopMF[[Sex]]      <- rbind(Pold, ECpop[, ColnamesKeep])
