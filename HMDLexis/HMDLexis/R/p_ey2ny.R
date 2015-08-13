@@ -11,7 +11,7 @@
 #' @export
 #' 
 
-eyInd[500:600] <- TRUE
+
 p_ey2ny <- function(Pop){
   
   DM                <- paste(Pop$Day, Pop$Month, sep = "-")

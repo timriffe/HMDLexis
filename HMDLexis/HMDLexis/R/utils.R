@@ -194,7 +194,6 @@ yint <- function(Day1, Month1, Year1, Day2, Month2, Year2, reproduce.matlab = TR
 #' 
 #' @export
 #' 
-#' 
 
 assignNoteCode <- function(X, code){
  
