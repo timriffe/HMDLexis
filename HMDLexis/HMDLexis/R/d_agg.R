@@ -26,6 +26,7 @@ d_agg <- function(DeathsIn){
  
   # resort columns
   D.Out            <- resortDeaths(D.out[,colnames(DeathsIn)])
+  D.Out            <- assignNoteCode( D.Out, "d_agg()")
   # return invisibly
   invisible(D.Out)
 }

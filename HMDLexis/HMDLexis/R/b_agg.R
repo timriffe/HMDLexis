@@ -26,7 +26,7 @@ b_agg <- function(Births.In){
     B.Agg$Access   <- B.Agg$YearReg <- NA
   
   # make note that this is no longer an input file
-  B.Agg$NoteCode1  <- "This is not the real input file!"
+  B.Agg            <- assignNoteCode(B.Agg, "b_agg()")
 
   # resort columns
   B.Agg            <- B.Agg[,colnames(Births.In)]

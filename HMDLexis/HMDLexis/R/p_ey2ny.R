@@ -11,7 +11,7 @@
 #' @export
 #' 
 
-
+eyInd[500:600] <- TRUE
 p_ey2ny <- function(Pop){
   
   DM                <- paste(Pop$Day, Pop$Month, sep = "-")
@@ -20,6 +20,11 @@ p_ey2ny <- function(Pop){
   Pop$Day[eyInd]    <- 1
   Pop$Month[eyInd]  <- 1
   Pop$Year[eyInd]   <- Pop$Year[eyInd] + 1
+  
+  # untested! this might break it!
+  if (any(eyInd)){
+    Pop[eyInd, ] <- assignNoteCode(Pop[eyInd, ], "p_ey2ny()")
+  }
   
   invisible(Pop)
 }

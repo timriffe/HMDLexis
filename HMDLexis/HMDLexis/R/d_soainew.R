@@ -271,7 +271,7 @@ d_KannistoSplitYrSex <- function(DeathsYearSex, N = 20, ACVVmatrix, reproduce.ma
   # this can only happen if DOA is 0, but we'd get NaNs in Deaths due to 0 
   # in denom in various locations. Just overwrite
   Dnew$Deaths[is.nan(Dnew$Deaths)] <- 0
-  
+  Dnew              <- assignNoteCode(Dnew, "d_soainew()")
   DeathsYearSex     <- rbind(DeathsYearSex[DeathsYearSex$AgeInterval != "+", ], Dnew)
   
   invisible(resortDeaths(DeathsYearSex))

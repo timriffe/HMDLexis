@@ -52,7 +52,8 @@ d_svv <- function(Deaths, reproduce.matlab = FALSE){
     TU$Lexis          <- "TU"
     
     TLTU              <- rbind(TL,TU)
-    TLTU$NoteCode1  	<- "d_svv()" # may overwrite previous NoteCode
+    TLTU              <- assignNoteCode(TLTU, "d_svv()")
+   
   }
   
   D.Out <- d_agg(rbind(DataKeep, TLTU))

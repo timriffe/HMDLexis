@@ -57,6 +57,7 @@ d_unk_sex <- function(Deaths){
           KnownSex$Deaths <-  KnownSex$Deaths + 
             (KnownSex$Deaths / sum(KnownSex$Deaths, na.rm = TRUE)) * UNK
         }
+        KnownSex <- assignNoteCode(KnownSex, "d_unk_sex()")
       }
         return(invisible(KnownSex))
       } 

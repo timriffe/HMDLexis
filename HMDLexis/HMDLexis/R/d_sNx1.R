@@ -185,7 +185,7 @@ d_sNx1_inner <- function(DSexYr, MPVERSION = 5){
   Dnew$Age            <- Dnew$Agei  <- singlekeep
   Dnew$RefCode        <- DSexYr$RefCode[1] #cheap ...
   Dnew$PopName        <- DSexYr$PopName[1]
-  Dnew$NoteCode1      <- "d_sNx1()"
+  Dnew                <- assignNoteCode(Dnew, "d_sNx1()")
   Dnew$LDB            <- 1
   Dnew$AgeInterval    <- Dnew$AgeIntervali <- 1
   Dnew$Lexis          <- "RR"

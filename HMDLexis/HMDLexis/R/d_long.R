@@ -36,7 +36,8 @@ d_long <- function(Deaths){
         Dnew$LDB          <- Dnew$AgeIntervali <- Dnew$AgeInterval  <-  Dnew$YearInterval  <-  1
         Dnew$Access       <- "O"
         Dnew$Area         <- unique(DeathsSexYr$Area)
-        Dnew$NoteCode1    <- "d_long()"
+        #Dnew$NoteCode1    <- "d_long()"
+        Dnew              <- assignNoteCode(Dnew, "d_long")
         Dnew$Deaths       <- 0
         Dnew$Sex          <- unique(DeathsSexYr$Sex)
         Dnew$PopName      <- unique(DeathsSexYr$PopName)

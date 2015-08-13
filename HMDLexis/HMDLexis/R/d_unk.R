@@ -23,6 +23,7 @@ d_unk <- function(Deaths){
       DeathsYearSex <- DeathsYearSex[!UNKi, ]
       DeathsYearSex$Deaths <-  DeathsYearSex$Deaths + 
                      (DeathsYearSex$Deaths / sum(DeathsYearSex$Deaths, na.rm = TRUE)) * UNK
+      DeathsYearSex <- assignNoteCode(DeathsYearSex, "d_unk()")
     }
     invisible(DeathsYearSex)
   })

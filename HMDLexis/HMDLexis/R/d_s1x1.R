@@ -207,7 +207,7 @@ d_s1x1 <- function(Deaths, Births){
     DN$Agei            <- DeathsTLTU$Age
     DN$AgeIntervali    <- 1
     DN$LDB             <- 1
-    DN$NoteCode1       <- "d_s1x1()"
+    DN                 <- assignNoteCode(DN, "d_s1x1()")
     DN$Access          <- "O" # this maybe need to be sensitive? apply general rule later?
     Dout[[Sex]]        <- rbind(DO, DN)
   }

@@ -259,7 +259,7 @@ p_sra <- cmpfun(function(Pop,
       SRpop$Month       <- 1
       SRpop$LDB         <- 1
       SRpop$Access      <- "O"       # presumably any data we invent is open access, even if the origin data are not?
-      SRpop$NoteCode1   <- "p_sra()" # might as well leave this as a note
+      SRpop             <- assignNoteCode(SRpop, "p_sra()") 
       SRpop$Cohort      <- Psr$Cohort
       
       PopMF[[Sex]] <- rbind(Psex[rmID, ColnamesKeep],SRpop[,ColnamesKeep])

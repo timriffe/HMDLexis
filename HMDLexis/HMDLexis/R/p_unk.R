@@ -20,6 +20,7 @@ p_unk <- function(Pop){
         UNK                   <- PopYearSex$Population[PopYearSex$Age == "UNK"] 
         PopYearSex            <- PopYearSex[PopYearSex$Age != "UNK", ]
         PopYearSex$Population <- PopYearSex$Population + (PopYearSex$Population / sum(PopYearSex$Population)) * UNK
+        PopYearSex            <- assignNoteCode(PopYearSex, "p_unk")
       }
       invisible(PopYearSex)
     })

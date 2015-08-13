@@ -245,10 +245,10 @@ p_soai <- function(
         # the ages to extract
         Ages             <- OA:130
         f1               <- ypart(Year = yr, 
-                              Month = unique(Psex$Month[Psex$Year == yr]), 
-                              Day = unique(Psex$Day[Psex$Year == yr]), 
-                              detect.mid.year = TRUE,
-                              reproduce.matlab = reproduce.matlab)
+                                  Month = unique(Psex$Month[Psex$Year == yr]), 
+                                  Day = unique(Psex$Day[Psex$Year == yr]), 
+                                  detect.mid.year = TRUE,
+                                  reproduce.matlab = reproduce.matlab)
         
         Pleft            <- RefSex[as.character(Ages),as.character(yr)]
         Pright           <- RefSex[as.character(Ages),as.character(yr + 1)]
@@ -259,8 +259,7 @@ p_soai <- function(
         Pouti            <- PSY[1:length(Ages), ]
         Pouti$Agei       <- Pouti$Age <- Ages
         Pouti$Population <- Pest
-        Pouti$NoteCode1  <- "p_soai()"
-        
+        Pouti            <- assignNoteCode(Pouti, "p_soai()")
         Pouti            <- rbind(PSY[PSY$Agei < OA, ], Pouti)
         Pout[[paste0(yr, sex)]] <- Pouti
       }

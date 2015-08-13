@@ -54,18 +54,18 @@ p_split_inner <- function(C1, C2, Deaths, Births, a = 80, reproduce.matlab = FAL
     maxF <- max(C2$Agei[C2$Sex == "f"])
     maxA <- min(c(maxM,maxF))
     if (maxA < 130){
-      padA             <- (maxA + 1):130
-      CHUNK            <- C2[1:length(padA), ]
-      CHUNK$NoteCode3  <- "p_split()"
-      CHUNK$Age        <- CHUNK$Agei <- padA
+      padA              <- (maxA + 1):130
+      CHUNK             <- C2[1:length(padA), ]
+      CHUNK             <- assignNoteCode(CHUNK, "p_split()")
+      CHUNK$Age         <- CHUNK$Agei         <- padA
       CHUNK$AgeInterval <- CHUNK$AgeIntervali <- 1
-      CHUNK$Population <- 0
-      CHUNKF           <- CHUNK
-      CHUNKF$Sex       <- "f"
-      CHUNK$Sex        <- "m"
-      CHUNKF           <- CHUNKF[CHUNKF$Agei > maxF, ]
-      CHUNK            <- CHUNK [CHUNK$Agei > maxM, ]
-      C2               <- resortPops(rbind(C2, CHUNK, CHUNKF))
+      CHUNK$Population  <- 0
+      CHUNKF            <- CHUNK
+      CHUNKF$Sex        <- "f"
+      CHUNK$Sex         <- "m"
+      CHUNKF            <- CHUNKF[CHUNKF$Agei > maxF, ]
+      CHUNK             <- CHUNK [CHUNK$Agei > maxM, ]
+      C2                <- resortPops(rbind(C2, CHUNK, CHUNKF))
     }
     
   } else {
