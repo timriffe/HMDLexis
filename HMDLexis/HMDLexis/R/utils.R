@@ -197,10 +197,10 @@ yint <- function(Day1, Month1, Year1, Day2, Month2, Year2, reproduce.matlab = TR
 
 assignNoteCode <- function(X, code){
  
-  Free <- colSums(is.na(X[,c("NoteCode1","NoteCode2","NoteCode3")])) > 0
+  Free <- colSums(is.na(as.matrix(X[,c("NoteCode1","NoteCode2","NoteCode3")]))) > 0
   if (any(Free)){
     NoteCol <- paste0("NoteCode",min(which(Free)))
-    X[, NoteCol] <- code
+    X[[NoteCol]] <- code
   } else {
     X$NoteCode3 <- paste(X$NoteCode3, code, sep = " ")
   }
