@@ -17,6 +17,7 @@
 
 
 ### TODO: We have a dimension problem if we're doing a 1-year precensal.
+# library(reshape2)
 p_precensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = FALSE){
   yr1    <- min(Deaths$Year) 
   yr2    <- min(Pop$Year)
@@ -63,18 +64,15 @@ p_precensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = F
     if (f2 > 0){
       C2s$Population[-1] <- (1 - f2) * C2s$Population[-nrow(C2s)] + f2 * C2s$Population[-1]
       C2s$Cohort <- C2s$Cohort + 1
-      
-      yr2adj <- 0
-    } else {
-      yr2adj <- 1
-    }
+    } 
     
     # the cohorts present in the first pop year, up to age 130 by default (should be param)
     if (yr2 > yr1){
-      Ncoh    <- yr1:(yr2 - yr2adj)
+      Ncoh    <- yr1:(yr2 - 1)
     } else {
       Ncoh <- NULL
     }
+    Ccoh             <- C2s$Cohort[C2s$Cohort < min(Ncoh)]
     
     DL      <- acast(Dsex[with(Dsex, Year %in% years & Lexis == "TL"), ], 
                       Year ~ Cohort, 
@@ -94,11 +92,6 @@ p_precensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = F
     # right-side adjustment for partial years
     Dc      <- f2^2 * DL[nrow(DL), ]
     Dd      <- ((2 * f2) - f2^2) * DU[nrow(DU), ]
-    
- 
-    
-    Ccoh             <- C2s$Cohort[C2s$Cohort < min(Ncoh)]
-    
     
     CDc              <- Dc[as.character(Ccoh)]
     CDd              <- Dd[as.character(Ccoh)]
@@ -200,10 +193,11 @@ p_precensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = F
         NCPcumsum <- t(apply(NVV,2,function(x){
               rev(cumsum(rev(x)))
             }))
+        dimnames(NCPcumsum) <- dimnames(NVV)         # TR unsure, but fixes bug for US states
         # it's this easy because we have no error...
         Npop <- N2 + NCPcumsum
         Npop[lower.tri(Npop)] <- NA
-        
+        dimnames(Npop) <- dimnames(t(NCPcumsum)[names(N2), , drop = FALSE]) # TR unsure, but fixes bug for US states
       }
     } else {
       # TR: just to make the code keep chugging
@@ -219,6 +213,7 @@ p_precensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = F
     # add on other columns
     # need AP in the end...
     Ps$Agei        <- Ps$Age <- Ps$Year - Ps$Cohort - 1
+
     Ps             <- Ps[Ps$Age <= 130, ]
     
     # now add on the remaining columns...
