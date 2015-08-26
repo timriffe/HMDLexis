@@ -99,6 +99,7 @@ p_movedata_inner <- function(
   Fout$Population <- FR$Population * propr + FL$Population * propl 
   
   Pout <- rbind(Fout, Mout)
+  
   Pout <- assignNoteCode(Pout, "p_movedata()")
    
   Pout

@@ -63,35 +63,41 @@ p_precensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = F
     if (f2 > 0){
       C2s$Population[-1] <- (1 - f2) * C2s$Population[-nrow(C2s)] + f2 * C2s$Population[-1]
       C2s$Cohort <- C2s$Cohort + 1
+      
+      yr2adj <- 0
+    } else {
+      yr2adj <- 1
     }
-    
-    DL      <- acast(Dsex[with(Dsex, Year %in% years & Lexis == "TL"), ], 
-      Year ~ Cohort, 
-      sum, 
-      value.var = "Deaths", 
-      fill = NA_real_, drop = FALSE)
-    DU      <- acast(Dsex[with(Dsex, Year %in% years & Lexis == "TU"), ], 
-      Year ~ Cohort, 
-      sum, 
-      value.var = "Deaths", 
-      fill = NA_real_, drop = FALSE) 
-    VV      <- acast(Dsex[with(Dsex, Year %in% years), ], 
-      Year ~ Cohort, 
-      sum, 
-      value.var = "Deaths", 
-      fill = NA_real_, drop = FALSE)  
-    # right-side adjustment for partial years
-    Dc      <- f2^2 * DL[nrow(DL), ]
-    Dd      <- ((2 * f2) - f2^2) * DU[nrow(DU), ]
     
     # the cohorts present in the first pop year, up to age 130 by default (should be param)
     if (yr2 > yr1){
-      Ncoh    <- yr1:(yr2 - 1)
+      Ncoh    <- yr1:(yr2 - yr2adj)
     } else {
       Ncoh <- NULL
     }
     
-    Ccoh    <- C2s$Cohort[C2s$Cohort < min(Ncoh)]
+    DL      <- acast(Dsex[with(Dsex, Year %in% years & Lexis == "TL"), ], 
+                      Year ~ Cohort, 
+                      sum, 
+                      value.var = "Deaths", 
+                      fill = NA_real_, drop = FALSE)
+    DU      <- acast(Dsex[with(Dsex, Year %in% years & Lexis == "TU"), ], 
+                      Year ~ Cohort, 
+      	              sum, 
+                      value.var = "Deaths", 
+                      fill = NA_real_, drop = FALSE) 
+    VV      <- acast(Dsex[with(Dsex, Year %in% years), ], 
+                      Year ~ Cohort, 
+                      sum, 
+                      value.var = "Deaths", 
+                      fill = NA_real_, drop = FALSE)  
+    # right-side adjustment for partial years
+    Dc      <- f2^2 * DL[nrow(DL), ]
+    Dd      <- ((2 * f2) - f2^2) * DU[nrow(DU), ]
+    
+ 
+    
+    Ccoh             <- C2s$Cohort[C2s$Cohort < min(Ncoh)]
     
     
     CDc              <- Dc[as.character(Ccoh)]
