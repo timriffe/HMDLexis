@@ -49,3 +49,4 @@ Collate:
     'Tab2Standard.R'
     'p_postcensal.R'
     'p_movedata.R'
+    'p_rescale.R'
