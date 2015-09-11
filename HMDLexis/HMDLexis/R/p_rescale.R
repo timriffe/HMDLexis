@@ -70,7 +70,7 @@ p_agg <- function(Pop, N = 5){
 #' 
 p_rescale <- function(Pop, PopN, N = 5){
   # Pop is the single age data, and Standard Pop is the grouped data. If it's not pre-grouped,
-  # we group it.  
+  # we group it.  Pop <- P1960_1;PopN <- P1960_5
   
   # dates must match to rescale. Take care to do this before running this function
   PopN$Date         <- with(PopN, paste(Day, Month, Year, sep = "-"))
@@ -106,6 +106,7 @@ p_rescale <- function(Pop, PopN, N = 5){
   
   # now get Population sums by ageN
   # operation much easier in data.table 
+  # library(data.table)
   PopR              <- data.table(PopR)
   
   # aggregate populations by new age groups
@@ -131,7 +132,7 @@ p_rescale <- function(Pop, PopN, N = 5){
   PopR$PSN[is.na(PopR$PSN)] <- PopR$PN[is.na(PopR$PSN)]
   
   # and here we rescale:
-  PopR$Population     <- PopR$Population * PopR$PSN / PopR$PN
+  PopR$Population     <- PopR$Population * (PopR$PSN / PopR$PN)
  
   if (any(is.infinite( PopR$Population))){
     cat("Warning: there are some Inf Population counts now,\nsince we rescale using a coeficient that could theoretically have a zero in the denominator...\nAhhhh data quality\n")
