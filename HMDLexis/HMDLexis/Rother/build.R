@@ -11,3 +11,8 @@ document(wd)
 
 #install.packages("pspline")
 #install.packages("pracma")
+install_github("timriffe/TimUtils/TimUtils")
+library(TimUtils)
+parent.path <- "/data/commons/triffe/git/HMDLexis/HMDLexis"
+IncrementVersion(file.path(parent.path ,"HMDLexis"),"5","2012-12-05")
+

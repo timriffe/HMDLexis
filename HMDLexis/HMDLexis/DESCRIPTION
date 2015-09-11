@@ -1,8 +1,8 @@
 Package: HMDLexis
 Type: Package
 Title: HMD Internal Lexis Database Programs
-Version: 5.0
-Date: 2012-12-05
+Version: 5.2.7672
+Date: 2015-09-11
 Author: Tim Riffe, Carl Boe, Celeste Winant
 Maintainer: Tim Riffe <tim.riffe@gmail.com>
 Description: The full set of Lexis Database (LDB) programs up to MP v5, as well
