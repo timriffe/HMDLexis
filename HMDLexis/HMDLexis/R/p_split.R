@@ -364,6 +364,7 @@ p_split <- function(Pop, Deaths, Births, a = 80, reproduce.matlab = FALSE){
   for (yr in yearssp){ # yr <- 1970
     C1    <- Pop[Pop$Year == yr, ]
     C2    <- Pop[Pop$Year == years[years > yr][1], ]
+    message("p_split(): year", yr)
     C1out <- p_split_inner(C1, C2, Deaths, Births, a = a, reproduce.matlab = reproduce.matlab )
     Pop   <- resortPops(rbind(Pop[Pop$Year != yr, ], C1out))
   }

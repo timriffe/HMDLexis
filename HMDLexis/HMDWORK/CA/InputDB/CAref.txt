@@ -1,0 +1,172 @@
+Reference code file for state of CA
+Last modified 08-14-2015
+
+RefCode
+1
+Source
+United States Census Bureau
+Comments
+1960 Census of Population, Vol. I. Characteristics of the Population, Part A, Number of Inhabitants, Parts 1-57: Number of Inhabitants, General Population Characteristics, General Social and Economic Characteristics, and Detailed Characteristics
+http://www.census.gov/prod/www/decennial.html
+Date
+17-July-2015
+Reference Person
+Celeste Winant
+
+RefCode
+2
+Source
+United States Census Bureau
+Comments
+1970 Census of Population, Vol. I. Characteristics of the Population, Volume 1, Part A, Section 1: Number of Inhabitants, United States, Alabama - Mississippi
+&
+1970 Census of Population, Vol. I. Characteristics of the Population, Volume 1, Part A, Section 2: Number of Inhabitants, Missouri - Wyoming, Puerto Rico, and Outlying Areas
+http://www.census.gov/prod/www/decennial.html
+Date
+17-July-2015
+Reference Person
+Celeste Winant
+
+RefCode
+3
+Source
+United States Census Bureau
+Comments
+1980 Census of Population, Vol. I. Characteristics of the Population, Ch. A - Number of Inhabitants (tables 1-13)
+http://www.census.gov/prod/www/decennial.html
+Date
+14-August-2015
+Reference Person
+Celeste Winant
+
+Note- RefCodes for births are not up to date
+
+RefCode
+216
+Source
+National Center for Health Statistics
+Comments
+Joyce A. Martin, M.P.H.; Brady E. Hamilton, Ph.D.; Paul D. Sutton Ph.D.; Stephanie J. Ventura, M.A.; Fay Menacker, Dr. P.H.; Sharon Kirmeyer, Ph.D.; and Martha L. Munson, M.S.; Division of Vital Statistics, "Births: Final Data for 2003", National Vital Statistics Reports, September 8, 2005, vol. 54, n. 2 
+data: http://www.cdc.gov/nchs/data_access/Vitalstatsonline.htm
+Date
+11-August-2015
+Reference Person
+Celeste Winant
+
+RefCode
+219
+Source
+National Center for Health Statistics
+Comments
+Joyce A. Martin, M.P.H.; Brady E. Hamilton, Ph.D.; Paul D. Sutton, Ph.D.;
+Stephanie J. Ventura, M.A.; Fay Menacker, Dr. P.H.; and Sharon Kirmeyer, Ph.D., Division of Vital Statistics, "Births: Final Data for 2004", National Vital Statistics Reports, September 29, 2006, vol. 55, n. 1 
+data: http://www.cdc.gov/nchs/data_access/Vitalstatsonline.htm
+Date
+11-August-2015
+Reference Person
+Celeste Winant
+
+RefCode
+222
+Source
+National Center for Health Statistics
+Comments
+Joyce A. Martin, M.P.H.; Brady E. Hamilton, Ph.D.; Paul D. Sutton Ph.D.; Stephanie J. Ventura, M.A.; Fay Menacker, Dr. P.H.; Sharon Kirmeyer, Ph.D.; and Martha L. Munson, M.S.; Division of Vital Statistics, "Births: Final Data for 2005", National Vital Statistics Reports, December 5, 2007, vol. 56, n. 6 
+http://www.cdc.gov/nchs/data_access/vitalstats/VitalStats_Births.htm
+Date
+11-August-2015
+Reference Person
+Celeste Winant
+
+RefCode
+225
+Source
+National Center for Health Statistics
+Comments
+Joyce A. Martin, M.P.H.; Brady E. Hamilton, Ph.D.; Paul D. Sutton, Ph.D.; Stephanie J. Ventura, M.A.; Fay Menacker, Dr. P.H.; Sharon Kirmeyer, Ph.D.; and T.J. Mathews, M.S., Division of Vital Statistics, "Births: Final Data for 2006", National Vital Statistics Reports, January 7, 2009, vol. 57, n. 7 
+http://www.cdc.gov/nchs/data_access/vitalstats/VitalStats_Births.htm
+Date
+11-August-2015
+Reference Person
+Celeste Winant
+
+RefCode
+228
+Source
+National Center for Health Statistics
+Comments
+Joyce A. Martin, M.P.H.; Brady E. Hamilton, Ph.D.; Paul D. Sutton, Ph.D.; Stephanie J. Ventura, M.A.;
+T.J. Mathews, M.S.; Sharon Kirmeyer, Ph.D.; and Michelle J.K. Osterman, M.H.S., Division of Vital Statistics, "Births: Final Data for 2007", National Vital Statistics Reports, August 9, 2010, vol. 58, n. 24 
+http://www.cdc.gov/nchs/data_access/vitalstats/VitalStats_Births.htm
+Date
+11-August-2015
+Reference Person
+Celeste Winant
+
+RefCode
+231
+Source
+National Center for Health Statistics
+Comments
+Joyce A. Martin, M.P.H.; Brady E. Hamilton, Ph.D.; Stephanie J. Ventura, M.A.; Michelle J.K. Osterman, M.H.S.; Sharon Kirmeyer, Ph.D.; T.J. Mathews, M.S.; and Elizabeth C. Wilson, M.P.H., Division of Vital Statistics, "Births: Final Data for 2009", National Vital Statistics Reports, November 3, 2011, vol. 60, n.1 
+http://www.cdc.gov/nchs/data_access/vitalstats/VitalStats_Births.htm
+Date
+11-August-2015
+Reference Person
+Celeste Winant
+
+RefCode
+234
+Source
+National Center for Health Statistics
+Comments
+Joyce A. Martin, M.P.H.; Brady E. Hamilton, Ph.D.; Michelle J.K. Osterman, M.H.S.; Sally C. Curtin, M.A.; and T.J. Mathews, M.S., Division of Vital Statistics, "Births: Final Data for 2010", National Vital Statistics Reports, August 28, 2012, vol. 61, n.1 
+http://www.cdc.gov/nchs/data_access/vitalstats/VitalStats_Births.htm
+Date
+11-August-2015
+Reference Person
+Celeste Winant
+
+RefCode
+237
+Source
+National Center for Health Statistics
+Comments
+Joyce A. Martin, M.P.H.; Brady E. Hamilton, Ph.D.; Michelle J.K. Osterman, M.H.S.; Sally C. Curtin, M.A.; and T.J. Mathews, M.S., Division of Vital Statistics, "Births: Final Data for 2011", National Vital Statistics Reports, June 28, 2013, vol. 62, n.1 
+http://www.cdc.gov/nchs/data_access/vitalstats/VitalStats_Births.htm
+Date
+11-August-2015
+Reference Person
+Celeste Winant
+
+RefCode
+240
+Source
+National Center for Health Statistics
+Comments
+Joyce A. Martin, M.P.H.; Brady E. Hamilton, Ph.D.; Michelle J.K. Osterman, M.H.S.; Sally C. Curtin, M.A.; and T.J. Mathews, M.S., Division of Vital Statistics, "Births: Final Data for 2012", National Vital Statistics Reports, December 20, 2013, vol. 62, n.9 
+http://www.cdc.gov/nchs/data_access/vitalstats/VitalStats_Births.htm
+Date
+11-August-2015
+Reference Person
+Celeste Winant
+
+RefCode
+243
+Source
+National Center for Health Statistics
+Comments
+Joyce A. Martin, M.P.H.; Brady E. Hamilton, Ph.D.; Michelle J.K. Osterman, M.H.S.; Sally C. Curtin, M.A.; and T.J. Mathews, M.S.,
+Division of Vital Statistics, "Births: Final Data for 2013", National Vital Statistics Reports, January 15, 2015, vol. 64, n.1 
+http://www.cdc.gov/nchs/data_access/vitalstats/VitalStats_Births.htm
+Date
+11-August-2015
+Reference Person
+Celeste Winant
+
+
+Date
+11-August-2015
+Reference Person
+Celeste Winant
+

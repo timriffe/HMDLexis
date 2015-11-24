@@ -329,6 +329,8 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
   possible.months <- c(1:12, "TOT", NA) # check if can contain UNK
   possible.days   <- as.character(c(1:31), NA)
   possible.lexis  <- c("RR", "TL", "TU", "VV", "VH", "RV", NA) # NA for Age = "UNK"
+
+## CAB:  Tadj includes type Rd, e.g. used in NZL_MA, to apply to death counts
   possible.tadj.types <- c("Rb", "Vx")
   # Deathss
   if (!all(Deaths$Year %in% possible.years)){
@@ -727,9 +729,11 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
     out.path   <- file.path(dir.path, "IDB_data.frames.Rdata")
     # saving happens here
     save(output, file = out.path)
-    Sys.chmod(out.path, mode = "2775", use_umask = FALSE)
-    chgrp <- paste0("chgrp hmdcalc ",out.path)
-    system(chgrp)
+    
+    ## CAB: this is not portable and should not be programmed by and application
+    ## Sys.chmod(out.path, mode = "2775", use_umask = FALSE)
+    ## chgrp <- paste0("chgrp hmdcalc ",out.path)
+    ## system(chgrp)
     cat("\n\nR binary copy of function output saved to:\n", out.path, "\n\n", file = log.file, append = TRUE)
   }
   

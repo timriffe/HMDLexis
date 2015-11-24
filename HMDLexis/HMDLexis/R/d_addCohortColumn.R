@@ -9,7 +9,7 @@
 #' @importFrom compiler cmpfun
 #' 
 
-d_addCohortColumn <- cmpfun(function(Deaths, TLTUonly = TRUE){
+d_addCohortColumn <- function(Deaths, TLTUonly = TRUE){
     
     if (!"Cohort" %in% colnames(Deaths)){
       # this takes care of TL and VH
@@ -36,4 +36,4 @@ d_addCohortColumn <- cmpfun(function(Deaths, TLTUonly = TRUE){
       }
     }
     invisible(Deaths)
-  })
+}

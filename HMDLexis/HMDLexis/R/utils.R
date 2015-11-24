@@ -185,9 +185,27 @@ yint <- function(Day1, Month1, Year1, Day2, Month2, Year2, reproduce.matlab = TR
 }
 
 
+#' @title a cheap way to choose which column to assign a NoteCode to
+#' 
+#' @description One property of the LexisDB scripts that might be useful for downstream checks is the ability to trace which functions have modified a given data object. These can go into NoteCode slots. This function writes \code{code} to the first unoccupied \code{NoteCode} column. If all three \code{NoteCode} columns are occupied, it concatenates the end of the third column. This way we preserve a full history. Unfortunately it gets split between columns. Oh well. Good for eyeballing. This function written for the sake of modularity.
+#' 
+#' @param X the HMD data object that presumably has three \code{NoteCode} columns
+#' @param code character string to assign to the column, typically the name of the function operating on \code{X}.
+#' 
+#' @export
+#' 
 
-
-
+assignNoteCode <- function(X, code){
+ 
+  Free <- colSums(is.na(as.matrix(X[,c("NoteCode1","NoteCode2","NoteCode3")]))) > 0
+  if (any(Free)){
+    NoteCol <- paste0("NoteCode",min(which(Free)))
+    X[[NoteCol]] <- code
+  } else {
+    X$NoteCode3 <- paste(X$NoteCode3, code, sep = " ")
+  }
+  X
+}
 
 
 
