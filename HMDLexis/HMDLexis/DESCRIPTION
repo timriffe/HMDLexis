@@ -1,8 +1,8 @@
 Package: HMDLexis
 Type: Package
 Title: HMD Internal Lexis Database Programs
-Version: 5.2.7672
-Date: 2015-09-11
+Version: 5.3.1609
+Date: 2016-02-02
 Author: Tim Riffe, Carl Boe, Celeste Winant
 Maintainer: Tim Riffe <tim.riffe@gmail.com>
 Description: The full set of Lexis Database (LDB) programs up to MP v5, as well
@@ -50,3 +50,4 @@ Collate:
     'p_postcensal.R'
     'p_movedata.R'
     'p_rescale.R'
+    'p_long.R'

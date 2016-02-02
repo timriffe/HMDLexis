@@ -58,18 +58,18 @@ Pop <- tmp
 Pop     <- p_unk(Pop)
 Pop<-   p_ic(Pop, Deaths, Births, reproduce.matlab = TRUE)
 
-
 Pop<-   p_srecm(Pop, Deaths, reproduce.matlab = TRUE)
 
 #length(unique(Pop$Year)) * 
 #  length(unique(Pop$Sex)) * 
 # length(unique(Pop$Age))  == nrow(Pop)
 #length(unique(Pop$Year)) * 2 * 131 == nrow(Pop)
-unique(Pop$Area)
-head(Pop[is.na(Pop$Area),])
+#unique(Pop$Area)
+#head(Pop[is.na(Pop$Area),])
 # generate LDB output:
-
+# TR: could do Pop <- p_long(Pop) redundantly in this case
 # need writeLDB() function here.
+# TR: see comments in header of computLDB()
 LDB.struc <- computeLDB(Births, Deaths, Pop, 
                         Tadj= (if(TadjTF){ Tadj} else NULL), verbose=FALSE) 
 

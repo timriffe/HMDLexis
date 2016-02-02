@@ -29,20 +29,21 @@ p_long <- function(Pop, OPENAGE = 130){
       
       Pnew$Year         <- unique(PopSexYr$Year)   
       Pnew$Age          <- Pnew$Agei <- Ages       
-      Pnew$LDB          <- Pnew$AgeIntervali <- Pnew$AgeInterval  <-  Pnew$YearInterval  <-  1
+      Pnew$LDB          <- Pnew$AgeIntervali <- Pnew$AgeInterval  <-  1
       Pnew$Access       <- "O"
       # TR: this area assignment seems OK to me. Safe to assume 
       # we'd never have more than one NoteCode for a given year & Sex?
       Pnew$Area         <- unique(PopSexYr$Area)
       Pnew              <- assignNoteCode(Pnew, "p_long")
-      Pnew$Deaths       <- 0
+      Pnew$Population       <- 0
       Pnew$Sex          <- unique(PopSexYr$Sex)
       Pnew$PopName      <- unique(PopSexYr$PopName)
       
       rmID <- !(with(Pnew, paste(Year, Age, sep = "-")) %in% 
           with(PopSexYr, paste(Year, Age, sep = "-")))
       Pnew <- Pnew[rmID, ]
-      
+      colnames(PopSexYr)
+      colnames(Pnew)
       Pout <- resortPops(rbind(PopSexYr, Pnew))
       invisible(Pout)
     }
@@ -54,7 +55,7 @@ p_long <- function(Pop, OPENAGE = 130){
     UNK           <- Pop[Pop$Age == "UNK", ]
     Pop        <- Pop[Pop$Age != "UNK", ]
   }
-  
+  # PopSexYr <- Pop[Pop$Year == 2010 & Pop$Sex == "m",]
 # break apart, operate, stick back together. Would be easier and faster with data.table
   Pop <- do.call(rbind,
               lapply(
