@@ -45,7 +45,7 @@ tmp<- Deaths
 Deaths <- d_unk(Deaths)
 Deaths <- d_soainew(Deaths)
 Deaths <- d_long(Deaths)
-
+any(is.na(Deaths$Deaths))
 #length(unique(Deaths$Year)) * 
 #  length(unique(Deaths$Sex)) * 
 #  length(unique(Deaths$Age)) * 

@@ -222,15 +222,18 @@ assignArea <- function(Pnew, PopRef){
   
   Years <- unique(PopRef$Year)
   Areas <- sapply(Years, function(yr,P){
-     
       code <- unique(P$Area[P$Year == yr], na.rm = TRUE)
-      stopifnot(length(code) == 1, "Some year has more than 1 Area code!")
+      stopifnot(length(code) == 1)
       code
     }, P = PopRef)
   names(Areas) <- Years
   Pnew$Area   <- Areas[as.character(Pnew$Year)]
   Pnew
 }
+# Pnew <- ECpop
+# PopRef <- Psex
+
+
 
 
 

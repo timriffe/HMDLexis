@@ -1,26 +1,56 @@
 ## Q's  
 ## (1) do Tadj  ever really enter?   Are they not used prior to LexisDB output?  Seems bad
 ##     to mix adjustment of data with output of data
+# TR:       I think yes, because the Population column of pop only refers to January 1 by the end of
+#           of processing. For this reason, you still need Tadj to calculate. I wish that LDB column for Lexis
+#           (1 or 2) referred to Jan 1 (1), Dec 31 (2) instead of Jan 1 & AP birthday line... We only
+#           gain an entry for births by this decision, but they are not used in Lifetable calcs. Jan 1 and Dec 31
+#           are however used. If we made this change then the LDB file would be sufficient for v5 calcs.
+#           otherwise the Lifetable functions need to dip into InputDB to tadj for Dec 31...
+
 ## (2) CB: confirm with TR, but it appears that there is no need to test for TOT and UNK cases
 ##     since those lines are purged before this ultimate output step
+# TR:       most pop functions redundantly remove TOT. Only p_unk() distributes UNK, so checking for UNK
+#           would only tell you whether it needs to be run. In that case, you could just call it, and in-trickles
+#           the dream of a fully automatic LDB machine. Turing capable and everything.
+
 ## (3) Deaths have NA above age 99.  Like #1, surprising that data is not manipulated before
 ##     i/o outputting the data, and that the age ranges differ for Pop and Deaths   Is NA used
 ##     for missing in the case of Pop?
+# TR:       HUN does not produce this. This must be a bug by some production function. Gotta find it.
+
 ## (4) type "Rd" is a possibility in Tadj, yet this is not readily accounted for in the codebase, and
 ##     only occurs for a single country.  
+# TR:       correct, is it even in the MP? If not, add to list for v7.
+
 ## (5) Area consistency -- not really enforced.  Assumption that Tadj$Area1 will match up with Area fields
 ##     in Births, Pop, Deaths, but this is not enforced much.  Prior routines (p_ic() ?) augment the original data
 ##     but do not nicely track Area fields, with the result that the Pop data contains many NAs.  This starts at
 ##     age 80 and increases in frequency with higher ages.  Proper incorporation of Tadj remains TODO in many 
 ##     functions and it is too late by this stage to make good use of Tadj.
+# TR:       see new function assignArea() in utils.R  This has been incorporated into p_ecm() and p_srm()
+#           So HUN now correctly computes in this respect. Checking consistency between inputs needs to happen
+#           in readInputDB(). I've not yet done this. Feel free.
+
 ## (6) p_ecm() routine does not preserve 'Area', so change error to warning for now
+# TR: fixed
+
 ##
 ## (7) split function of matlab routines into 2 parts.  First is computation and second is I/O.
 ##     NB: Matlab rouding algorithm needed correction, as it did not handle -1 correctly (or any negative #s)
+# TR: NB: one common difference that is toggled by reproduce.matlab is early rounding. Further, now that we have
+#      changes in exposure and a0 calcs, nearly every Lifetable entrey will be slightly different, and it's the 
+#      perfect time to depart from Matlab rounding norms, which we've not fully reproduced anyway. Why try? 
 
 ##writeLDB()
 
 ## uses routine from data.table package, assumed loaded
+# TR: add roxygen header, like this:
+#' @importFrom data.table rbindlist
+#     note that rbindlist() is the same as do.call(rbind, my.list), which comes in base
+#     rbindlist() does not check column names, FYI. Maybe we don't care about that.
+
+# TR: I've made no changes to the function Feb 2, 2016
 
 ## WORKING = "/home/boe/DEMOG/Triffe_git/HMDLexis/HMDLexis"
 
