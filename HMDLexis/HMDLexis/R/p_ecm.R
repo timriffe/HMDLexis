@@ -46,27 +46,25 @@ p_ecm <- function(Pop, Deaths, a = 80, reproduce.matlab = FALSE){
     # p_ecm_inner() defined below, in same script. not quirky, but it is useful
     # to have these steps be modular, so that it can be called elsewhere
     ECpop             <- p_ecm_inner(Dsex = Dsex, a = a, omega = omega, reproduce.matlab = reproduce.matlab)
-    # Dima: should only be done for srecm, but not for ec.
-    #    # an apparent quirk in the matlab code
-    #    if (reproduce.matlab){
-    #      ECpop <- rbind(ECpop, ECpop[nrow(ECpop), ])
-    #      ECpop[nrow(ECpop), "Population"] <- 0
-    #      ECpop[nrow(ECpop), "Age"]        <- ECpop[nrow(ECpop), "Agei"] <- omega["omega"]
-    #      ECpop[nrow(ECpop), "Year"]       <- max(Psex$Year)
-    #      ECpop$Population[ECpop$Cohort == omega["Cohmax"]] <- 
-    #        ECpop$Population[ECpop$Cohort == omega["Cohmax"]] + omega["Ds"]
-    #    }
-    # append
-#  LexisMap(acast(Psex, Agei~Year, value.var = "Population"),log=FALSE)
-#  dev.new()
-#  LexisMap(acast(ECpop, Agei~Year, value.var = "Population"),log=FALSE)
-    # is.na(Cohort) picks out the open age groups, which we hope are all 80+
 
+    # TR: p_ecm() was guilty of not assigning Area. Since future Tadj compatibility
+    # will mostly be accounted for by passing Tadj into the inner function, area assignment
+    # can happen either there or on the outside. If it happens inside, that info would need 
+    # to come from Tadj. If it happens out here the info can come from Pop. For some reason
+    # I prefer that. So I'll add an assignment line out here. Assignment will assume that for each
+    # year, there can only be one non-NA Area value, and it populates the NAs with that.
+    Years <- unique(Pold$Year)
+    Areas <- sapply(Years, function(yr,P){
+        unique(P$Area[P$Year == yr],na.rm=TRUE)
+      }, P = Pold)
+    names(Areas) <- Years
+    ECpop$Area   <- Areas[as.character(ECpop$Year)]
     Pold <- Psex[!with(Psex, (Year - Agei - 1) <= omega["Cohmax"] & Agei >= a), ColnamesKeep]
 #  dev.new()
 #  LexisMap(acast(Pold, Agei~Year, value.var = "Population"),log=FALSE)
     PopMF[[Sex]]      <- rbind(Pold, ECpop[, ColnamesKeep])
   }
+  
   if (UNKTF){
     PopMF[["UNK"]]    <- UNK
   }
@@ -153,6 +151,7 @@ p_ecm_inner <- function(Dsex, a = 80, omega = NULL, reproduce.matlab = FALSE){
   ECpop$Sex         <- unique(Dsex$Sex)
   ECpop$AgeInterval <- ECpop$AgeIntervali    <- 1
   ECpop$PopName     <- unique(Dsex$PopName)
+  
   ECpop$Day         <- 1
   ECpop$Month       <- 1
   ECpop$LDB         <- 1
