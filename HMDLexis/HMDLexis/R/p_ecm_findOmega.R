@@ -14,7 +14,8 @@
 #' @importFrom reshape2 acast
 #' 
 
-p_ecm_findOmega <- cmpfun(function(Deaths, l = 5, threshold = 0.5){
+p_ecm_findOmega <- function(Deaths, l = 5, threshold = 0.5){
+  
   
   # add Cohort column to Deaths (possibly to be made standard later on?
   Deaths      <- d_addCohortColumn(Deaths)
@@ -44,6 +45,6 @@ p_ecm_findOmega <- cmpfun(function(Deaths, l = 5, threshold = 0.5){
   Cohmax      <- max(cohorts[1:(Ncoh - l)][Dtilde / l <= threshold]) + l + 1 # test: added one
   omega       <- this.year - Cohmax
   c(omega = omega, Cohmax = Cohmax, Ds = Ds)
-})
+}
 
 

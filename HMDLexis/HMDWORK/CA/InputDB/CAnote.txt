@@ -1,0 +1,16 @@
+Note code file for state of CA
+Last modified 08-11-2015
+
+1 
+Estimates of 1960 population by state were taken from two data
+sources, from the 1960 Census by sex, state, and age (single-year) and
+by sex, state, and age (5-yr age groups).  The 5-yr-age-group
+tabulations are more complete but do not provide the detail of the
+1-yr-age group tabulations.  These estimates distribute the
+5-yr-age-group tabulations over 1-yr-age groups using the relative
+population distribution from the 1-yr tabulations.
+
+2 
+NCHS only published total births by state for the year 1967.  For this
+year, we applied the US national sex ratio at birth to each state
+to estimate births by sex.

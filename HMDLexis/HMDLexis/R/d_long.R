@@ -16,7 +16,7 @@
 d_long <- function(Deaths){
   
   # an internal function
-  d_long_SexYr <- cmpfun(function(DeathsSexYr){
+  d_long_SexYr <- function(DeathsSexYr){
       if (any(DeathsSexYr$AgeInterval == "+", na.rm = TRUE)){
         return(DeathsSexYr)
       } else {
@@ -50,7 +50,7 @@ d_long <- function(Deaths){
         Dout <- resortDeaths(rbind(DeathsSexYr, Dnew))
         invisible(Dout)
       }
-    }) # end internal function definition
+    } # end internal function definition
   Deaths <- Deaths[Deaths$Age != "TOT", ]
   # remove UNK
   UNKTF <- any(Deaths$Age == "UNK")
@@ -66,6 +66,12 @@ d_long <- function(Deaths){
       d_long_SexYr
         )
       )
+  
+#   tmp.cb <- split(Deaths, list(Deaths$Sex,Deaths$Year) )
+#   tmp.cb2 <- lapply(tmp.cb, d_long_SexYr )
+#   Deaths <- do.call(rbind, tmp.cb2)
+  
+  
   # wow, really this could be made the final function called for deaths...
   if (UNKTF){
     Deaths <- rbind(Deaths, UNK)

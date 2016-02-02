@@ -33,7 +33,9 @@
 # A <- 85
 # Pop <- P1970; 
 # Deaths <- Deaths[Deaths$Year<=1969,]; library(reshape2)
-p_sra <- cmpfun(function(Pop, 
+
+
+p_sra <- function(Pop, 
     Deaths, 
     k = 5, 
     m = 5, 
@@ -84,7 +86,9 @@ p_sra <- cmpfun(function(Pop,
       Dsex            <- Deaths[Deaths$Sex == Sex, ]
       
       # omega is typically different for males and females, must be in the loop:
-      omega           <- p_ecm_findOmega(Dsex, l = l, threshold = 0.5)
+     
+      t.l <- l ;
+      omega           <- p_ecm_findOmega(Dsex, l = t.l, threshold = 0.5)
       #
       w               <- omega["omega"] 
      
@@ -271,7 +275,7 @@ p_sra <- cmpfun(function(Pop,
     rownames(Pop)       <- NULL
     invisible(Pop)
     
-  })
+  }
 
 
 
