@@ -208,7 +208,29 @@ assignNoteCode <- function(X, code){
 }
 
 
+#' @title assign the correct Area code to each year
+#' 
+#' @description Some newly created Population data, e.g., made by \texttt{p_ecm()} needs to have Area assigned to the new data. This function just modulates the way of accomplishing this.
+#' 
+#' @param Pnew an interim Population object created by some other function
+#' @param PopRef the original Population object from which Area codes are to be carried over
+#' 
+#' @export
+#' 
 
+assignArea <- function(Pnew, PopRef){
+  
+  Years <- unique(PopRef$Year)
+  Areas <- sapply(Years, function(yr,P){
+     
+      code <- unique(P$Area[P$Year == yr], na.rm = TRUE)
+      stopifnot(length(code) == 1, "Some year has more than 1 Area code!")
+      code
+    }, P = PopRef)
+  names(Areas) <- Years
+  Pnew$Area   <- Areas[as.character(Pnew$Year)]
+  Pnew
+}
 
 
 

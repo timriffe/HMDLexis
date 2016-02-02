@@ -53,13 +53,9 @@ p_ecm <- function(Pop, Deaths, a = 80, reproduce.matlab = FALSE){
     # to come from Tadj. If it happens out here the info can come from Pop. For some reason
     # I prefer that. So I'll add an assignment line out here. Assignment will assume that for each
     # year, there can only be one non-NA Area value, and it populates the NAs with that.
-    Years <- unique(Pold$Year)
-    Areas <- sapply(Years, function(yr,P){
-        unique(P$Area[P$Year == yr],na.rm=TRUE)
-      }, P = Pold)
-    names(Areas) <- Years
-    ECpop$Area   <- Areas[as.character(ECpop$Year)]
-    Pold <- Psex[!with(Psex, (Year - Agei - 1) <= omega["Cohmax"] & Agei >= a), ColnamesKeep]
+    ECpop             <- assignArea(ECpop, Psex)
+    Pold              <- Psex[!with(Psex, (Year - Agei - 1) <= omega["Cohmax"] & 
+                            Agei >= a), ColnamesKeep]
 #  dev.new()
 #  LexisMap(acast(Pold, Agei~Year, value.var = "Population"),log=FALSE)
     PopMF[[Sex]]      <- rbind(Pold, ECpop[, ColnamesKeep])

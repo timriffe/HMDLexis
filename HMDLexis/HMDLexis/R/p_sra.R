@@ -266,7 +266,11 @@ p_sra <- function(Pop,
       SRpop             <- assignNoteCode(SRpop, "p_sra()") 
       SRpop$Cohort      <- Psr$Cohort
       
-      PopMF[[Sex]] <- rbind(Psex[rmID, ColnamesKeep],SRpop[,ColnamesKeep])
+      # TR: added to carry over Area assignment in newly created data
+      # this might be able to stay here even after Tadj has been incorporated
+      SRpop             <- assignArea(SRpop, Psex)
+
+      PopMF[[Sex]]      <- rbind(Psex[rmID, ColnamesKeep],SRpop[,ColnamesKeep])
     } # end Sex loop
     if (UNKTF){
       PopMF[["UNK"]]    <- UNK[,ColnamesKeep]
