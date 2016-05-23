@@ -220,9 +220,9 @@ p_soai <- function(
     Pout    <- list()
     Yrs     <- with(Pop, unique(Year[AgeInterval == "+"]))
     # maybe not do this for the extreme right-side year:
-    if (length(Yrs) > 1){
-      Yrs     <- Yrs[Yrs < max(Pop$Year)]
-    }
+#    if (length(Yrs) > 1){
+#      Yrs     <- Yrs[Yrs < max(Pop$Year)]
+#    }
     NoTouch <- Pop[!Pop$Year %in% Yrs, ] 
     Pout[["NoTouch"]] <- NoTouch
     Pop     <- Pop[Pop$Year %in% Yrs, ]

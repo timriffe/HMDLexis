@@ -3,7 +3,7 @@
 #'
 #' @title p_sra a simple and flexible survivor ratio method function, for modularity.
 #' 
-#' @description This implementation seeks to follow the MP. LDB \code{Deaths} must be finalized. Population data is only needed to get an estimate for population in an artifical open age group, age 90\+ by default, though this may be lowered or raised. An argument \code{reproduce.matlab} controls whether an unnecessary matlab kludge is included. This function calls various other LexisDB functions at the moment, such as \code{d_addCohortColumn()}, \code{p_addCohortColumn()}, and \code{p_ecm_findOmega()}. The parameter \code{bordercoh} is \code{FALSE} by defauls, unless function called by \code{p_soai()}.
+#' @description This implementation seeks to follow the MP. LDB \code{Deaths} must be finalized. Population data is only needed to get an estimate for population in an artificial open age group, age 90\+ by default, though this may be lowered or raised. An argument \code{reproduce.matlab} controls whether an unnecessary matlab kludge is included. This function calls various other LexisDB functions at the moment, such as \code{d_addCohortColumn()}, \code{p_addCohortColumn()}, and \code{p_ecm_findOmega()}. The parameter \code{bordercoh} is \code{FALSE} by default, unless function called by \code{p_soai()}.
 #' 
 #' @param Pop The standard internal Population data.frame, *after* running p_ecm().
 #' @param Deaths after all processing is done. Completed triangles.
