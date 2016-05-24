@@ -211,18 +211,19 @@ p_postcensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = 
     
     # TR: added 24.05.2016
     # negative numbers are possible in high ages. I'm going to make an executive decision
-    # here. If it's above age 115, we can replace negatives with 0,
-    # but if a negative occurs below age 115 then we'll abort with predjudice and
+    # here. If it's above age 111, we can replace negatives with 0,
+    # but if a negative occurs below age 111 then we'll abort with predjudice and
     # an informative warning message.
     
     if (any(Ps$Population < 0)){
       AgesNeg <- Ps$Agei[Ps$Population < 0]
-      if (!all(AgesNeg >= 115)){
+      if (!all(AgesNeg >= 111)){
         cat("\npostcensal estimates have some negative population counts in ages under 115
 We therefore abort this function. Either there was a negative pop count you need to deal with, 
 or there are deaths being deducted from a zero or small pop count and dropping
 below zero. If that is the case, and this is a minor data quality issue, then deal with
 it prior to calling this function.")
+cat(AgesNeg)
        return(Pop)
       }
      
