@@ -27,7 +27,12 @@ p_long <- function(Pop, OPENAGE = 130){
                       ncol = ncol(PopSexYr),
                       dimnames = list(NULL, colnames(PopSexYr))))
       
-      Pnew$Year         <- unique(PopSexYr$Year)   
+      Pnew$Year         <- unique(PopSexYr$Year)  
+      # TR: added 24.05.2016, when p_long() got integrated in p_movedata(), and p_soai()
+      Pnew$Month        <- unique(PopSexYr$Month)  
+      Pnew$Day          <- unique(PopSexYr$Day)  
+      # end add
+      
       Pnew$Age          <- Pnew$Agei <- Ages       
       Pnew$LDB          <- Pnew$AgeIntervali <- Pnew$AgeInterval  <-  1
       Pnew$Access       <- "O"
@@ -55,7 +60,7 @@ p_long <- function(Pop, OPENAGE = 130){
     UNK           <- Pop[Pop$Age == "UNK", ]
     Pop        <- Pop[Pop$Age != "UNK", ]
   }
-  # PopSexYr <- Pop[Pop$Year == 2010 & Pop$Sex == "m",]
+  
 # break apart, operate, stick back together. Would be easier and faster with data.table
   Pop <- do.call(rbind,
               lapply(
