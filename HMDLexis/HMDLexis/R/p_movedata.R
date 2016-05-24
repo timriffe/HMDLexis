@@ -12,6 +12,7 @@
 #' @param detect.mid.year logical. if \code{TRUE}, June 30 or July 1 will always return .5.
 #' @param detect.start.end logical. default \code{TRUE}. Should Jan 1 always be 0 and Dec 31 always be 1?
 #' @param reproduce.matlab logical. Default TRUE. Assume 365 days in a year.
+#' @param OPENAGE pad with 0s out to this age, if necessary.
 #' 
 #' @export
 
@@ -33,6 +34,7 @@ p_movedata_inner <- function(
   # must have all single years.
   stopifnot(all(PopL$AgeIntervali==1))
   stopifnot(all(PopR$AgeIntervali==1))
+  
   
   PopL        <- PopL[order(PopL$Sex, PopL$Agei), ]
   PopR        <- PopR[order(PopR$Sex, PopR$Agei), ]
@@ -75,6 +77,7 @@ p_movedata_inner <- function(
   MR    	        <- PopR[PopR$Sex == "m", ]
   FR              <- PopR[PopR$Sex == "f", ]
   
+  
   # can only interpolate shared ages
   agesm           <- union(ML$Agei, MR$Agei)
   agesf           <- union(FL$Agei, FR$Agei)
@@ -94,7 +97,7 @@ p_movedata_inner <- function(
   Fout$Day        <- 1
   
   # TR the actual calc is super simple here. simple is good, but we can
-  # do better than this
+  # do better than this 
   Mout$Population <- MR$Population * propr + ML$Population * propl 
   Fout$Population <- FR$Population * propr + FL$Population * propl 
   
@@ -116,8 +119,10 @@ p_movedata_inner <- function(
 #' 
 #' @export
 
-p_movedata <- function(Pop, detect.mid.year = TRUE, detect.start.end = TRUE, reproduce.matlab = FALSE){
+p_movedata <- function(Pop, detect.mid.year = TRUE, detect.start.end = TRUE, reproduce.matlab = FALSE, OPENAGE = 130){
   
+  # TR: added this line. This pads any years with no open age groups out to 130.
+  Pop <- suppressWarnings(p_long(Pop, OPENAGE = OPENAGE))
   # assumes we have single-age population counts already.
   # should do 5-yr splitting beforehand...
   # move from right to left. We'll do this using inefficient programming,
@@ -137,7 +142,7 @@ p_movedata <- function(Pop, detect.mid.year = TRUE, detect.start.end = TRUE, rep
   Pout <- list()
   
   # TR: unsure what would happen if years not continuous, but this works for now.
-  for (yr in rev(years[-1])){ # yr <- 1979
+  for (yr in rev(years[-1])){ # yr <- 2013
     PopR <- Pop[Pop$Year == yr, ]
     if ((yr - 1) %in% years){
       PopL <- Pop[Pop$Year == (yr - 1), ]

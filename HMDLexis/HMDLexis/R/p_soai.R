@@ -11,6 +11,7 @@
 #' @param l the parameter 'l' from various equations in the section on SRM.
 #' @param maxit parameter passed to \code{p_sra()}, which is iterative. 100 is more than enough.
 #' @param reproduce.matlab logical. Do we include legacy matlab kludges? Default \code{FALSE}. This effects results very little, and is only used for exact matching of output.
+#' @param OPENAGE pad with 0s out to this age, if necessary.
 #' 
 #' @return PopYrSex, with open age group redistributed over higher ages, up to and including omega, as detected by \code{p_ecm_findOmega()}.
 #' 
@@ -22,7 +23,8 @@ p_soai_inner_matlab <- function(PopYrSex, DeathsSex,
   l = 5,
   m = 5, 
   maxit = 100,
-  reproduce.matlab = FALSE){
+  reproduce.matlab = FALSE,
+  OPENAGE = 130){
   
   # 
   do.this <- any(PopYrSex$AgeInterval == "+")
@@ -97,7 +99,8 @@ p_soai_inner_matlab <- function(PopYrSex, DeathsSex,
   # combine data
 
   Pout             <- resortPops(rbind(Pout, PopSR))
-   
+  # TR: added. easy way to pad with 0s out to 130
+  Pout             <- suppressWarnings(p_long(Pout, OPENAGE = OPENAGE))
   invisible(Pout)
 }
 
