@@ -51,3 +51,4 @@ Collate:
     'p_movedata.R'
     'p_rescale.R'
     'p_long.R'
+    'generateLDB.R'
