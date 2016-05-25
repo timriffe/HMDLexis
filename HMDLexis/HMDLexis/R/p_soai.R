@@ -117,6 +117,7 @@ p_soai_inner_matlab <- function(PopYrSex, DeathsSex,
 #' @param A passed to \code{p_sra()}-- controls whether we do SR 90+ or SR 85+ (or something else). Default 90.
 #' @param maxit parameter passed to \code{p_sra()}, which is iterative. 100 is more than enough.
 #' @param reproduce.matlab logical. Default \code{FALSE}. See description.
+#' @param OPENAGE pad with 0s out to this age, if necessary.
 #' 
 #' @export
 #' 
@@ -135,7 +136,8 @@ p_soai <- function(
   A = 90,
   a = 80,
   maxit = 100, 
-  reproduce.matlab = FALSE){
+  reproduce.matlab = FALSE,
+  OPENAGE = 130){
   
   # never use TOT
   Pop     <- Pop[Pop$Age != "TOT", ]
@@ -167,8 +169,6 @@ p_soai <- function(
     # not efficient, but easy to manage pieces this way...
     Pout <- list()
     Pout[["NoTouch"]] <- NoTouch
-    # sex <- "m"
-    # yr <- 1992
     
     for (sex in c("m","f")){
       DeathsSex <- Deaths[Deaths$Sex == sex, ]
@@ -181,7 +181,8 @@ p_soai <- function(
                                         l = l,
                                         m = m,
                                         maxit = maxit,
-                                        reproduce.matlab = reproduce.matlab)
+                                        reproduce.matlab = reproduce.matlab,
+										OPENAGE = OPENAGE)
       }
     }
   }
@@ -273,7 +274,8 @@ p_soai <- function(
   Pout <- do.call(rbind, Pout)
   rownames(Pout) <- NULL
   Pout <- resortPops(Pout)
-  
+  # TR: added. easy way to pad with 0s out to 130
+  Pout             <- suppressWarnings(p_long(Pout, OPENAGE = OPENAGE))
   invisible(Pout)
 }
 
