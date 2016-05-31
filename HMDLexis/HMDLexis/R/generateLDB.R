@@ -22,7 +22,8 @@ computeLDB <- function(  # WORKING = "/data/commons/hmd/HMDWORK/DNK",
   verbose = FALSE){
   
   ## processes a single country.  Test that parts agree
-  if(TadjTF){
+  # TR: change Tadj detection. This was throwing error for me, since TF was never passed in
+  if(!missing(Tadj)){
     Tadj.name <- as.character(Tadj$PopName)
   } else {
     Tadj.name <- NULL
