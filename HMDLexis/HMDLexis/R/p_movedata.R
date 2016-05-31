@@ -156,7 +156,7 @@ p_movedata <- function(Pop, detect.mid.year = TRUE, detect.start.end = TRUE, rep
     Pout[[as.character(yr)]] <- PopR
   }
   Pout <- do.call(rbind, Pout)
-
+  Pout <- resortPops(Pout)
   
   Pout
   
