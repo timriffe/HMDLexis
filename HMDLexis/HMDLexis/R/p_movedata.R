@@ -142,7 +142,7 @@ p_movedata <- function(Pop, detect.mid.year = TRUE, detect.start.end = TRUE, rep
   Pout <- list()
   
   # TR: unsure what would happen if years not continuous, but this works for now.
-  for (yr in rev(years[-1])){ # yr <- 2013
+  for (yr in rev(years)){ #
     PopR <- Pop[Pop$Year == yr, ]
     if ((yr - 1) %in% years){
       PopL <- Pop[Pop$Year == (yr - 1), ]
@@ -155,6 +155,7 @@ p_movedata <- function(Pop, detect.mid.year = TRUE, detect.start.end = TRUE, rep
     }
     Pout[[as.character(yr)]] <- PopR
   }
+  
   Pout <- do.call(rbind, Pout)
   Pout <- resortPops(Pout)
   
