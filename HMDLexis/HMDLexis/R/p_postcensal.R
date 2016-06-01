@@ -18,9 +18,20 @@
 p_postcensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = FALSE){
   yr2    <- max(Deaths$Year) + 1 # because we shoot for Jan 1
   yr1    <- max(Pop$Year) 
-  C1     <- Pop[Pop$Year == yr1, ]
+  
+  #----------------------
+  # TR: added 1 June, 2016: C1 could otherwise be multiple time points.
+  Pop    <- p_Date(Pop)
+  C1     <- Pop[Pop$Date == max(Pop$Date), ]
+  Pop$Date <- NULL
+  #----------------------
+  
   Deaths <- Deaths[Deaths$Year >= yr1, ]
   Deaths <- d_addCohortColumn(Deaths)
+  
+  # TR: can optionally run p_soai() before p_postcensal() to
+  # obviate this line. Ought not affect estimates, however, since
+  # p_sra()/p_srecm() erases old age estimates of this kind
   C1     <- C1[C1$AgeInterval != "+", ]
   
   # ergo, we can't have UNK, do this earlier in processing.
