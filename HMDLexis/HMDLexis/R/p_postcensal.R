@@ -23,8 +23,7 @@ p_postcensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = 
   # TR: added 1 June, 2016: C1 could otherwise be multiple time points.
   Pop    <- p_Date(Pop)
   C1     <- Pop[Pop$Date == max(Pop$Date), ]
-  Pop$Date <- NULL
-  C1$Date  <- NULL
+  
   #----------------------
   
   Deaths <- Deaths[Deaths$Year >= yr1, ]
@@ -43,9 +42,13 @@ p_postcensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = 
   N      <- length(years)
   
   PopOut   <- list()
-  # i.e., if the currently right-most population counts are mid-year, we still keep them
-  # in this function unique(Pop$Year)
-  PopOut[["LeftSide"]] <- Pop[Pop$Year < yr2, ]
+  
+  # TR: 1 June 2016 this now removes C1 if it wasn't Jan 1
+  y1Jan1 <- as.Date(paste(yr1,"01","01",sep="-"))
+  PopOut[["LeftSide"]] <- Pop[Pop$Date <= y1Jan1, ]
+  
+  Pop$Date <- NULL
+  C1$Date  <- NULL
   # 
   for (Sex in c("f","m")){ # Sex <- "m"
     C1s  <- C1[C1$Sex == Sex, ]
