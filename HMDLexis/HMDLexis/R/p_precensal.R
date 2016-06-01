@@ -44,7 +44,8 @@ p_precensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = F
   PopOut   <- list()
   PopOut[["RightSide"]] <- Pop[Pop$Year > yr2, ]
   # 
-  for (Sex in c("f","m")){ # Sex <- "f"
+  
+  for (Sex in c("f","m")){ # Sex <- "m"
     C2s  <- C2[C2$Sex == Sex, ]
     Dsex <- Deaths[Deaths$Sex == Sex, ]
     # get f2 only (no f1 in precensals)
@@ -82,7 +83,10 @@ p_precensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = F
     } else {
       Ncoh <- NULL
     }
-    Ccoh             <- C2s$Cohort[C2s$Cohort < min(Ncoh)]
+    
+    # TR: 1 June, 2016 made inequality robust to Ncoh being NULL
+    Ccoh    <- C2s$Cohort
+    Ccoh    <- Ccoh[Ccoh %!=% Ncoh]
     
     DL      <- acast(Dsex[with(Dsex, Year %in% years & Lexis == "TL"), ], 
                       Year ~ Cohort, 
@@ -240,9 +244,11 @@ p_precensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = F
     PopOut[[Sex]] <- Ps
     
   }
+
   PopOut        <- do.call(rbind, PopOut)
   
   PopOut        <- resortPops(PopOut)
+  rownames(PopOut) <- NULL
   invisible(PopOut)
 }
 
