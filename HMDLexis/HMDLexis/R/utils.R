@@ -247,6 +247,16 @@ p_Date <- function(Pop){
   Pop
 }
 
-
+#'
+#' @title extract year element from date class
+#' @description This makes for cleaner looking code in functions such as \code{p_movedata()}
+#' 
+#' @param Date a vector of Date class.
+#' @return vector of years as integers
+#' @export 
+#' 
+dateYear <- function(Date){
+  as.integer(format(Date, "%Y")) 
+}
 
 
