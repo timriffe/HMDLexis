@@ -28,22 +28,21 @@
   the behavior of the matlab \code{p_movedata()} and
   \code{p_my()}, depending on the settings of
   \code{detect.mid.year} and \code{detect.start.end}. For
-  \code{p_my()}, set these two arguments to \code{TRUE},
-  otherwise \code{FALSE}. It seems, however, that when a
-  statistical office declare June 30 or July 1 that these
-  are both intended to be midyear estimates, and so TR
-  thinks it wise to just set the defaults to \code{TRUE}
-  and not change them. \code{reproduce.matlab} only affects
-  the leapyear aspect of estimating year proportions. See
-  \code{?ypart} for more info on that. In general, TR
-  thinks it would be best to replace this method with a)
-  \code{p_ic()} for single-year spans or b) a version of
-  \code{p_ic()} for single-year spans that accounts for
-  within-cohort variation in the population distribution,
-  e.g., from the monthly birth distribution of a given
-  cohort. One quirk of this function is that Jan 1 of year
-  t is considered adjacent to Dec 31 of year t+1. This
-  means that it makes a difference if you run
-  \code{p_ey2ny()} before this or not!
+  \code{p_my()} emulation, set these two arguments to
+  \code{TRUE}, otherwise \code{FALSE}. It seems, however,
+  that when a statistical office declare June 30 or July 1
+  that these are both intended to be midyear estimates, and
+  so TR thinks it wise to just set the defaults to
+  \code{TRUE} and not change them. \code{reproduce.matlab}
+  only affects the leapyear aspect of estimating year
+  proportions. See \code{?ypart} for more info on that. In
+  general, TR thinks it would be best to replace this
+  method with a) \code{p_ic()} for single-year spans or b)
+  a version of \code{p_ic()} for single-year spans that
+  accounts for within-cohort variation in the population
+  distribution, e.g., from the monthly birth distribution
+  of a given cohort. This function forces Dec 31 to Jan 1
+  of following year, for consistency. It therefore makes no
+  difference whether you run \code{p_ey2ny()} beforehand.
 }
 
