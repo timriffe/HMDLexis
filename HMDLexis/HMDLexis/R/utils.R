@@ -20,40 +20,68 @@ NULL
 
 #' @rdname HMDlogic
 '%==%' <- function(x,y){
-  x <- ifelse(is.null(x),NA,x)
-  y <- ifelse(is.null(y),NA,y)
+  if (is.null(x)){
+    return(rep(FALSE, length(y)))
+  }
+  if (is.null(y)){
+    return(rep(FALSE,length(x)))
+  }
   x == y & !is.na(x) & !is.na(y)
 }
 
 #' @rdname HMDlogic
 '%!=%' <- function(x,y){
-  x <- ifelse(is.null(x),NA,x)
-  y <- ifelse(is.null(y),NA,y)
+  if (is.null(x)){
+    return(rep(TRUE, length(y)))
+  }
+  if (is.null(y)){
+    return(rep(TRUE,length(x)))
+  }
  x != y & !is.na(x) & !is.na(y) 
 }
 
 # note this is incompatible with magrittr!
 #' @rdname HMDlogic
 '%>%' <- function(x,y){
-  x <- ifelse(is.null(x),NA,x)
-  y <- ifelse(is.null(y),NA,y)
+  if (is.null(x)){
+    return(rep(FALSE, length(y)))
+  }
+  if (is.null(y)){
+    return(rep(FALSE,length(x)))
+  }
   x > y & !is.na(x) & !is.na(y) 
 }
 
 #' @rdname HMDlogic
 '%<%' <- function(x,y){
-  x <- ifelse(is.null(x),NA,x)
-  y <- ifelse(is.null(y),NA,y)
+  if (is.null(x)){
+    return(rep(FALSE, length(y)))
+  }
+  if (is.null(y)){
+    return(rep(FALSE,length(x)))
+  }
   x < y & !is.na(x) & !is.na(y) 
 }
 
 #' @rdname HMDlogic
 '%>=%' <- function(x,y){
+  if (is.null(x)){
+    return(rep(FALSE, length(y)))
+  }
+  if (is.null(y)){
+    return(rep(FALSE,length(x)))
+  }
   x >= y & !is.na(x) & !is.na(y)
 }
 
 #' @rdname HMDlogic
 '%<=%' <- function(x,y){
+  if (is.null(x)){
+    return(rep(FALSE, length(y)))
+  }
+  if (is.null(y)){
+    return(rep(FALSE,length(x)))
+  }
   x <= y & !is.na(x) & !is.na(y)
 }
 
