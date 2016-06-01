@@ -47,8 +47,8 @@ p_postcensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = 
   y1Jan1 <- as.Date(paste(yr1,"01","01",sep="-"))
   PopOut[["LeftSide"]] <- Pop[Pop$Date <= y1Jan1, ]
   
-  Pop$Date <- NULL
-  C1$Date  <- NULL
+  PopOut$LeftSide$Date <- NULL
+  C1$Date              <- NULL
   # 
   for (Sex in c("f","m")){ # Sex <- "m"
     C1s  <- C1[C1$Sex == Sex, ]
