@@ -253,6 +253,7 @@ cat(AgesNeg)
   
   
   PopOut        <- resortPops(PopOut)
+  rownames(PopOut) <- NULL
   invisible(PopOut)
 }
 
