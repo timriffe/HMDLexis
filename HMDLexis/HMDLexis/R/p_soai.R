@@ -86,8 +86,8 @@ p_soai_inner_matlab <- function(PopYrSex, DeathsSex,
   # TR: I didn't think hard on this, just copied the matlab
   PopSR$Population <- f1 * c(PopSR$Population[-1], 0) + 
                       (1 - f1) * PopSR$Population
-  # the first notecode is necessarily due to p_sra(), but now we've again altered the data.
-  PopSR$NoteCode2  <- "p_soai()"
+  # TR: use notecode assignment function instead
+  PopSR            <- assignNoteCode(PopSR,"p_soai()")
   # rescale to match
   PopSR$Population <- (PopSR$Population / sum(PopSR$Population)) * POA
    
