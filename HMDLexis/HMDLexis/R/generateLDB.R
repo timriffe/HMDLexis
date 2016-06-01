@@ -227,6 +227,9 @@ computeLDB <- function(  # WORKING = "/data/commons/hmd/HMDWORK/DNK",
       ##fprintf(fout, '%g, %g, 1, %g, %.2f, %.2f\n', i, j, i-j, N, Dl);
       ##fprintf(fout, '%g, %g, 2, %g, %.2f, %.2f\n', i, j, i-j-1, P, Du);
       
+      # TR: 1 June, 2016: Change name of Triangle to Lexis to conform with
+      #  downstream processing names.
+
       this.DT.1 <- data.frame( Year=year, Age=this.Pop$Agei, Triangle = 1, 
         Cohort = year - this.Pop$Agei, Population = this.N, Deaths = this.DeathsL.full$Deaths)
       this.DT.2 <- data.frame( Year=year, Age=this.Pop$Agei, Triangle = 2, 
@@ -235,6 +238,9 @@ computeLDB <- function(  # WORKING = "/data/commons/hmd/HMDWORK/DNK",
       this.DT <- rbind(this.DT.1 , this.DT.2)
       this.DT <- this.DT[ order(this.DT$Age, this.DT$Triangle), ]
       ## replace NAs with -1 for value cols
+      # TR:  1 June, 2016: We should abandon the use of -1 for this. There are places in matlab where
+      #    they were mishandled as valid numbers and summed into quantities, FYI
+      #    I support NA for these.
       this.DT$Population <- ifelse( is.na(this.DT$Population), -1, this.DT$Population)
       this.DT$Deaths <- ifelse( is.na(this.DT$Deaths), -1, this.DT$Deaths)
       
