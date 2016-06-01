@@ -21,7 +21,15 @@
 p_precensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = FALSE){
   yr1    <- min(Deaths$Year) 
   yr2    <- min(Pop$Year)
-  C2     <- Pop[Pop$Year == yr2, ]
+  
+  #----------------------
+  # TR: added 1 June, 2016: C1 could otherwise be multiple time points.
+  Pop      <- p_Date(Pop)
+  C2       <- Pop[Pop$Date == min(Pop$Date), ]
+  Pop$Date <- NULL
+  C2$Date  <- NULL
+  #----------------------
+
   Deaths <- Deaths[Deaths$Year <= yr2, ]
   Deaths <- d_addCohortColumn(Deaths)
   
@@ -44,7 +52,9 @@ p_precensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = F
       f2 <- ypart(Year = unique(C2s$Year), 
         Month = unique(C2s$Month), 
         Day = unique(C2s$Day), 
-        reproduce.matlab = reproduce.matlab)
+        reproduce.matlab = reproduce.matlab,
+        detect.mid.year = TRUE,
+        detect.start.end = TRUE)
       
       if (length(f2) > 1){
         stop("multiple dates in use in the same year, makes intercensals tricky.\\Time to do some digging.")
