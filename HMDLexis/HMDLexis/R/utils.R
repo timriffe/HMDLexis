@@ -20,23 +20,31 @@ NULL
 
 #' @rdname HMDlogic
 '%==%' <- function(x,y){
+  x <- ifelse(is.null(x),NA,x)
+  y <- ifelse(is.null(y),NA,y)
   x == y & !is.na(x) & !is.na(y)
 }
 
 #' @rdname HMDlogic
 '%!=%' <- function(x,y){
-  x != y & !is.na(x) & !is.na(y)
+  x <- ifelse(is.null(x),NA,x)
+  y <- ifelse(is.null(y),NA,y)
+ x != y & !is.na(x) & !is.na(y) 
 }
 
 # note this is incompatible with magrittr!
 #' @rdname HMDlogic
 '%>%' <- function(x,y){
-  x > y & !is.na(x) & !is.na(y)
+  x <- ifelse(is.null(x),NA,x)
+  y <- ifelse(is.null(y),NA,y)
+  x > y & !is.na(x) & !is.na(y) 
 }
 
 #' @rdname HMDlogic
 '%<%' <- function(x,y){
-  x < y & !is.na(x) & !is.na(y)
+  x <- ifelse(is.null(x),NA,x)
+  y <- ifelse(is.null(y),NA,y)
+  x < y & !is.na(x) & !is.na(y) 
 }
 
 #' @rdname HMDlogic
