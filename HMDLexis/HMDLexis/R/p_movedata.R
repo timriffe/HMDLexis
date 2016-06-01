@@ -110,7 +110,7 @@ p_movedata_inner <- function(
 
 #' @title Move a series of midyear single-age populations estimates to January 1.
 #'
-#' @description This function uses linear interpolation, per the MP, to estimate January 1 population. Interpolation takes place between like-ages in adjacent years. Time is calculated either assuming 365 days per year (\code{reproduce.matlab = TRUE}) or with leap-year detection (\code{reproduce.matlab = FALSE}). This function covers the behavior of the matlab \code{p_movedata()} and \code{p_my()}, depending on the settings of \code{detect.mid.year} and \code{detect.start.end}. For \code{p_my()}, set these two arguments to \code{TRUE}, otherwise \code{FALSE}. It seems, however, that when a statistical office declare June 30 or July 1 that these are both intended to be midyear estimates, and so TR thinks it wise to just set the defaults to \code{TRUE} and not change them. \code{reproduce.matlab} only affects the leapyear aspect of estimating year proportions. See \code{?ypart} for more info on that. In general, TR thinks it would be best to replace this method with a) \code{p_ic()} for single-year spans or b) a version of \code{p_ic()} for single-year spans that accounts for within-cohort variation in the population distribution, e.g., from the monthly birth distribution of a given cohort. One quirk of this function is that Jan 1 of year t is considered adjacent to Dec 31 of year t+1. This means that it makes a difference if you run \code{p_ey2ny()} before this or not!
+#' @description This function uses linear interpolation, per the MP, to estimate January 1 population. Interpolation takes place between like-ages in adjacent years. Time is calculated either assuming 365 days per year (\code{reproduce.matlab = TRUE}) or with leap-year detection (\code{reproduce.matlab = FALSE}). This function covers the behavior of the matlab \code{p_movedata()} and \code{p_my()}, depending on the settings of \code{detect.mid.year} and \code{detect.start.end}. For \code{p_my()} emulation, set these two arguments to \code{TRUE}, otherwise \code{FALSE}. It seems, however, that when a statistical office declare June 30 or July 1 that these are both intended to be midyear estimates, and so TR thinks it wise to just set the defaults to \code{TRUE} and not change them. \code{reproduce.matlab} only affects the leapyear aspect of estimating year proportions. See \code{?ypart} for more info on that. In general, TR thinks it would be best to replace this method with a) \code{p_ic()} for single-year spans or b) a version of \code{p_ic()} for single-year spans that accounts for within-cohort variation in the population distribution, e.g., from the monthly birth distribution of a given cohort. This function forces Dec 31 to Jan 1 of following year, for consistency. It therefore makes no difference whether you run \code{p_ey2ny()} beforehand.
 #' 
 #' @param Pop The standard HMD population \code{data.frame}
 #' @param detect.mid.year logical. if \code{TRUE}, June 30 or July 1 will always return .5.
@@ -121,43 +121,58 @@ p_movedata_inner <- function(
 
 p_movedata <- function(Pop, detect.mid.year = TRUE, detect.start.end = TRUE, reproduce.matlab = FALSE, OPENAGE = 130){
   
+  # TR: this is a new step, and removes ambiguity from processing.
+  Pop        <- ey2ny(Pop)
+  
   # TR: added this line. This pads any years with no open age groups out to 130.
-  Pop <- suppressWarnings(p_long(Pop, OPENAGE = OPENAGE))
-  # assumes we have single-age population counts already.
-  # should do 5-yr splitting beforehand...
-  # move from right to left. We'll do this using inefficient programming,
-  # for the sake of consistency...
-  years      <- sort(unique(Pop$Year))
+  Pop        <- suppressWarnings(p_long(Pop, OPENAGE = OPENAGE))
   
-  # if you were going to split open ages, you should have done it first.
-  # stopifnot(any(Pop$AgeIntervali %!=% 1))
-   
-  Pop <- Pop[Pop$AgeIntervali %==% 1, ]
-  # calculate jumps in completed years.
-  # this allows for use of this method to fill in a Jan 1, yr t+1 estimate based on dates as far apart
-  # as Jan 1, year t, and Dec 31, year t+1, i.e. an actual 2-year gap.
-  # we won't fill in for Jan 1, t+1 if our two dates are Jan 1, t and Jan1, t+2. 
-  # That's the cutoff, that's our rule. So it makes a difference if we run
-  # ey2ny() before doing this function...
-  Pout <- list()
-  
-  # TR: unsure what would happen if years not continuous, but this works for now.
-  for (yr in rev(years)){ #
-    PopR <- Pop[Pop$Year == yr, ]
-    if ((yr - 1) %in% years){
-      PopL <- Pop[Pop$Year == (yr - 1), ]
-      
-      PopR <- p_movedata_inner( PopL, 
-                                PopR, 
-                                detect.mid.year = detect.mid.year, 
-                                detect.start.end = detect.start.end, 
-                                reproduce.matlab = reproduce.matlab)
-    }
-    Pout[[as.character(yr)]] <- PopR
+  # TR: 1 June 2016: some cleaner warnings
+  if (any(Pop$AgeIntervali %>% 1)){
+    warning("Advised to run p_split() beforehand.\n Throwing out data w age intervals > 1!")
+  }
+  if (any(Pop$AgeInterval == "+" & Pop$Agei %<=% 81)){
+    warning("Advised to run p_soai() beforehand.")
   }
   
-  Pout <- do.call(rbind, Pout)
-  Pout <- resortPops(Pout)
+  # TR: this is aggresive. I guess we could also save such date in Pout for
+  # later cleanup. But really p_movedata() should be late in processing.
+  # Best to enforce.
+  Pop        <- Pop[Pop$AgeIntervali %==% 1, ]
+  
+
+  Pop        <- p_Date(Pop)
+  dates      <- sort(unique(Pop$Date))
+  
+  Pout <- list()
+  for (i in length(dates):1){
+    PopR <- Pop[Pop$Date == dates[i], ]
+    # if  1) we're not all the way left
+    # and 2) the next date is 1 calendar year to the left.
+    if (i > 1 & dateYear(dates[i - 1]) == (dateYear(dates[i])-1)){
+
+      PopL <- Pop[Pop$Date == dates[i - 1], ]
+      
+      PopR <- p_movedata_inner( 
+                      PopL, 
+                      PopR, 
+                      detect.mid.year = detect.mid.year, 
+                      detect.start.end = detect.start.end, 
+                      reproduce.matlab = reproduce.matlab
+                    )
+    }
+    Pout[[as.character(dates[i])]] <- PopR
+  }
+  
+  # keep the far right, in case it was moved back to Jan 1 in the above loop
+  if (!as.character(max(dates)) %in% names(Pout)){
+    Pout[[as.character(max(dates))]] <- Pop[Pop$Date == max(dates),]
+  }
+  
+
+  Pout      <- do.call(rbind, Pout)
+  Pout$Date <- NULL
+  Pout      <- resortPops(Pout)
   
   Pout
   
