@@ -17,11 +17,9 @@
 #' 
 
 d_s1x1 <- function(Deaths, Births){
-  # check if function needs to be run, if not, return deaths sorted
-  if (!any(Deaths$Lexis[with(Deaths, AgeIntervali == 1 & 
-                                     AgeInterval != "+" & 
-                                     Age != "UNK" & 
-                                     Age != "TOT" & 
+  # check if function needs to be run, if not, return deaths 
+  # TR: 1 June, 2016: use new %==%, more efficient
+  if (!any(Deaths$Lexis[with(Deaths, AgeIntervali %==% 1 & 
                                      YearInterval == 1)] == "RR")){
     cat("d_s1x1() not necessary; no 1x1 RR deaths to split into triangles at this time.")
     return(Deaths)
@@ -64,6 +62,17 @@ d_s1x1 <- function(Deaths, Births){
     
     # note that this does the job of d_ma0() for a large block of ages
     RRwide          <- acast(RR, Agei ~ Year, sum, value.var = "Deaths", fill = 0)
+    
+    # TR: 1 June, 2016
+    # ensure that RRwide goes to age 0
+    AgesBox         <- 0:as.integer(rownames(RRwide)[nrow(RRwide)])
+    yrs             <- as.integer(colnames(RRwide))
+    RRwideBox       <- matrix(0,
+                            ncol=length(yrs),
+                            nrow=length(AgesBox),
+                            dimnames=list(AgesBox, yrs))
+    RRwideBox[rownames(RRwide),colnames(RRwide)] <- RRwide
+    RRwide <- RRwideBox
     # years are in order, but might not be continuous chunks..........
        
     yrs             <- as.integer(colnames(RRwide))
@@ -220,6 +229,9 @@ d_s1x1 <- function(Deaths, Births){
     Dout[["OP"]]       <- OP
   }
   Deaths               <- resortDeaths(do.call(rbind, Dout))
+  
+  # TR: 1 June, 2016: add d_agg() step in case RR overlapped with TL,TU
+  Deaths               <- d_agg(Deaths)
   rownames(Deaths)     <- NULL
   invisible(Deaths)
 }

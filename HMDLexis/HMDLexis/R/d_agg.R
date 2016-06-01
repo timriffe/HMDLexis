@@ -14,7 +14,6 @@ d_agg <- function(DeathsIn){
 
   
   # aggregate by all potentially relevant columns
-  library(data.table)
   DAgg            <-  as.data.frame(
                          data.table(DeathsIn)[, Deaths := sum(Deaths), 
                           by = c("Year","YearInterval","Sex","Age","AgeInterval","Lexis")], 
