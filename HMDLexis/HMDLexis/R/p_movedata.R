@@ -103,6 +103,9 @@ p_movedata_inner <- function(
   
   Pout <- rbind(Fout, Mout)
   
+  # if PopR has been moved left to Jan 1 then we need to redo the Date too
+  Pout <- p_Date(Pout)
+  
   Pout <- assignNoteCode(Pout, "p_movedata()")
    
   Pout
@@ -122,7 +125,7 @@ p_movedata_inner <- function(
 p_movedata <- function(Pop, detect.mid.year = TRUE, detect.start.end = TRUE, reproduce.matlab = FALSE, OPENAGE = 130){
   
   # TR: this is a new step, and removes ambiguity from processing.
-  Pop        <- ey2ny(Pop)
+  Pop        <- p_ey2ny(Pop)
   
   # TR: added this line. This pads any years with no open age groups out to 130.
   Pop        <- suppressWarnings(p_long(Pop, OPENAGE = OPENAGE))
@@ -145,11 +148,11 @@ p_movedata <- function(Pop, detect.mid.year = TRUE, detect.start.end = TRUE, rep
   dates      <- sort(unique(Pop$Date))
   
   Pout <- list()
-  for (i in length(dates):1){
+  for (i in length(dates):2){
     PopR <- Pop[Pop$Date == dates[i], ]
     # if  1) we're not all the way left
     # and 2) the next date is 1 calendar year to the left.
-    if (i > 1 & dateYear(dates[i - 1]) == (dateYear(dates[i])-1)){
+    if (i > 1 & (dateYear(dates[i - 1]) == (dateYear(dates[i])-1))){
 
       PopL <- Pop[Pop$Date == dates[i - 1], ]
       
@@ -161,19 +164,23 @@ p_movedata <- function(Pop, detect.mid.year = TRUE, detect.start.end = TRUE, rep
                       reproduce.matlab = reproduce.matlab
                     )
     }
-    Pout[[as.character(dates[i])]] <- PopR
+    new.date                       <- unique(PopR$Date)
+    Pout[[as.character(new.date)]] <- PopR
   }
   
   # keep the far right, in case it was moved back to Jan 1 in the above loop
   if (!as.character(max(dates)) %in% names(Pout)){
     Pout[[as.character(max(dates))]] <- Pop[Pop$Date == max(dates),]
   }
+  if (!as.character(min(dates)) %in% names(Pout)){
+    Pout[[as.character(min(dates))]] <- Pop[Pop$Date == min(dates),]
+  }
   
 
   Pout      <- do.call(rbind, Pout)
   Pout$Date <- NULL
   Pout      <- resortPops(Pout)
-  
+  rownames(Pout) <- NULL
   Pout
   
 }
