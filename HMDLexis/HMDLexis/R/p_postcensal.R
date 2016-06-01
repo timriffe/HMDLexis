@@ -24,6 +24,7 @@ p_postcensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = 
   Pop    <- p_Date(Pop)
   C1     <- Pop[Pop$Date == max(Pop$Date), ]
   Pop$Date <- NULL
+  C1$Date  <- NULL
   #----------------------
   
   Deaths <- Deaths[Deaths$Year >= yr1, ]
@@ -97,7 +98,7 @@ p_postcensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = 
       sum, 
       value.var = "Deaths", 
       fill = NA_real_, drop = FALSE)  
-    
+   
     # right-side adjustment for partial years
     Da      <- (1 - f1^2) * DL[1, ]
     Db      <- (1 - f1)^2 * DU[1, ]
@@ -116,7 +117,7 @@ p_postcensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = 
     ####################################################################
     # Complete cohorts                                                 #
     ####################################################################
-    Ccoh    <- C1s$Cohort[!C1s$Cohort %in% c(Icoh, Ncoh)]
+    Ccoh             <- C1s$Cohort[!C1s$Cohort %in% c(Icoh, Ncoh)]
     
     CDa              <- Da[as.character(Ccoh)]
     CDb              <- Db[as.character(Ccoh)]
