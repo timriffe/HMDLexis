@@ -13,12 +13,14 @@
 #' 
 
 resortPops <- cmpfun(function(Pop){
+  Pop                             <- p_Date(Pop)
   Pop$Age[Pop$Age == "TOT"]       <- "999"
   Pop$Age[Pop$Age == "UNK"]       <- "888"
   Pop$Age                         <- as.integer(Pop$Age)
-  Pop                             <- Pop[with(Pop, order(Year, Month, Sex, Age)), ]
+  Pop                             <- Pop[with(Pop, order(Date, Sex, Age)), ]
   Pop$Age                         <- as.character(Pop$Age)
   Pop$Age[Pop$Age == "888"]       <- "UNK"
   Pop$Age[Pop$Age == "999"]       <- "TOT"
+  Pop$Date                        <- NULL
   Pop
 })
