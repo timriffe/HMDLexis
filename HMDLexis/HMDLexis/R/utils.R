@@ -216,7 +216,10 @@ yint <- function(Day1, Month1, Year1, Day2, Month2, Year2, reproduce.matlab = TR
     detect.mid.year = detect.mid.year, 
     detect.start.end = detect.start.end)
 #  
-  (1 - Ypart1) + abs(Year2 - Year1) + Ypart2
+	#  TR: edit 2 June, 2016
+	second <- max(c(Year1, Year2))
+	first  <- min(c(Year1, Year2))
+	(1 - Ypart1) + (second - first - 1) + Ypart2 
   
 }
 
