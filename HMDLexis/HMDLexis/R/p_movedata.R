@@ -128,7 +128,8 @@ p_movedata <- function(Pop, detect.mid.year = TRUE, detect.start.end = TRUE, rep
   Pop        <- p_ey2ny(Pop)
   
   # TR: added this line. This pads any years with no open age groups out to 130.
-  Pop        <- suppressWarnings(p_long(Pop, OPENAGE = OPENAGE))
+  # CAB: added allowIO arg (default FALSE), since the call was a no OP without modification
+  Pop        <- suppressWarnings(p_long(Pop, OPENAGE = OPENAGE, allowOI = TRUE))
   
   # TR: 1 June 2016: some cleaner warnings
   if (any(Pop$AgeIntervali %>% 1)){
@@ -181,6 +182,8 @@ p_movedata <- function(Pop, detect.mid.year = TRUE, detect.start.end = TRUE, rep
   Pout$Date <- NULL
   Pout      <- resortPops(Pout)
   rownames(Pout) <- NULL
+  
+  assignNoteCode( Pout, "p_movedata()")
   Pout
   
 }

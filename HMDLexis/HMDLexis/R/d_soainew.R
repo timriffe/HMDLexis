@@ -102,25 +102,29 @@ d_soainew <- function(Deaths, reproduce.matlab = TRUE){
 # on Deaths, for each year-sex combo 
 # DeathsYearSex <- split(Deaths, list(Deaths$Year, Deaths$Sex))[[1]]
 # DeathsYearSex <-Deaths[Deaths$Year == 1980 & Deaths$Sex == "f",]
-  Deaths <- do.call(rbind,
-                lapply(
-                   split(Deaths, list(Deaths$Year, Deaths$Sex)), 
-                   function(DeathsYearSex, ACVVmatrixF., ACVVmatrixM., reproduce.matlab.){
-                     Sexit             <- unique(DeathsYearSex$Sex)
-                     if (Sexit == "f"){
-                       ACVVmatrix <- ACVVmatrixF.
-                     } else {
-                       ACVVmatrix <- ACVVmatrixM.
-                     }
-                     # avoiding a lengthy anonymous function here :-)
-                     
-                     # this function calls d_remfluct() and d_CohortAdjust()
-                     d_KannistoSplitYrSex(DeathsYearSex, 
-                                          N = 20, 
-                                          ACVVmatrix = ACVVmatrix, 
-                                          reproduce.matlab = reproduce.matlab.)
-                                   
-      }, ACVVmatrixF. = ACVVmatrixF, ACVVmatrixM. = ACVVmatrixM, reproduce.matlab. = reproduce.matlab))
+  f_split_deaths_call <-   function(DeathsYearSex, ACVVmatrixF., ACVVmatrixM., reproduce.matlab.){
+    Sexit             <- unique(DeathsYearSex$Sex)
+    if (Sexit == "f"){
+      ACVVmatrix <- ACVVmatrixF.
+    } else {
+      ACVVmatrix <- ACVVmatrixM.
+    }
+    # avoiding a lengthy anonymous function here :-)
+    
+    # this function calls d_remfluct() and d_CohortAdjust()
+    d_KannistoSplitYrSex(DeathsYearSex, 
+                         N = 20, 
+                         ACVVmatrix = ACVVmatrix, 
+                         reproduce.matlab = reproduce.matlab.)
+    
+  }
+  
+  Deaths.split <- split(Deaths, list(Deaths$Year, Deaths$Sex))
+  Deaths.lapply <- lapply(Deaths.split, f_split_deaths_call,
+                          ACVVmatrixF. = ACVVmatrixF, ACVVmatrixM. = ACVVmatrixM, reproduce.matlab. = reproduce.matlab)
+                        
+  Deaths <- do.call(rbind, Deaths.lapply)
+                
 
   # rbind deaths by Year and Sex together. That'll all be in a massive list of data.frames...
   Deaths         <- Deaths[, OrigCols] # this removes Cohort column
@@ -153,6 +157,11 @@ d_KannistoSplitYrSex <- function(DeathsYearSex, N = 20, ACVVmatrix, reproduce.ma
     return(DeathsYearSex)
   }
   
+  ## CB: TODO:  robustify so that when Lexis is NA, the right thing happens or at least
+  ## an error occurs with a proper messages.  Add check for multiple open age intervals
+  ## in a given (Year,Sex) split.
+  
+  
   # if the open age group is a VV, then we need to 
   # 1) add the TL below it to it
   # 2) save the value so we can put it back later
@@ -174,6 +183,7 @@ d_KannistoSplitYrSex <- function(DeathsYearSex, N = 20, ACVVmatrix, reproduce.ma
   # if no fluctuations were detected according to that quirky function, we still get back the 
   # right object. Note, it's only ages and deaths and another indicator column to note which
   # ones were imputed. 
+  
   dths.fit       <- d_remfluct(deathsRR, N = 25, spar1 = 0.9, spar2 = 0.3)
   
   # now do a reverse cumsum to get a synthetic survival on the last N-1 (19) years of it:
@@ -293,14 +303,14 @@ d_KannistoSplitYrSex <- function(DeathsYearSex, N = 20, ACVVmatrix, reproduce.ma
 #' @return \code{KannistoSurvMin()} returns a residual to be minimized in \code{optim()} or similar. \code{KannistoSurv()} returns the predicted survival values (which may likely need to be rescaled later) for a given a,b and age vector.
 #' 
 
-KannistoSurvMin <- cmpfun(function(pars, P = SyntheticSurvival, oa = OA, N = N, x = Ages4Kannisto){
+KannistoSurvMin <- function(pars, P = SyntheticSurvival, oa = OA, N = N, x = Ages4Kannisto){
     Sx <- ((1 + pars["a"]) / (1 + pars["a"] * exp(pars["b"] * (x - oa + N)))) ^(1 / pars["b"])
     sum((log(Sx) - log(P))[P != 0]^2)
-  })
+  }
 
-KannistoSurv <- cmpfun(function(ab, x, oa = OA, N = 20){
+KannistoSurv <- function(ab, x, oa = OA, N = 20){
     ((1 + ab["a"]) / (1 + ab["a"] * exp(ab["b"] * (x - oa + N)))) ^ (1 / ab["b"])
-  })
+  }
 
 
 #'
@@ -341,6 +351,8 @@ d_remfluct <- function(deathsRR, N = 25, spar1 = 0.9, spar2 = 0.3){
 
   ## CB: replace smooth.Pspline with smooth.spline(), which 
   ## is more robust and reduces a package dependency
+  
+  cat(paste("\n Year, Sex =", unique(deathsRR$Year), unique(deathsRR$Sex) ))
   
   fit.Diffs          <- predict(smooth.spline(
                           x = agesd,
@@ -461,7 +473,7 @@ d_remfluct <- function(deathsRR, N = 25, spar1 = 0.9, spar2 = 0.3){
 #' @details \code{PC2AC()} is also called in a sort of novel way. PC data (VV shape) are put into the AC shape for easy named reference.
 
 
-d_CohortAdjust <- cmpfun(function(Dnew, OA, ACVVmatrix, OAL, DOA, reproduce.matlab = TRUE){
+d_CohortAdjust <- function(Dnew, OA, ACVVmatrix, OAL, DOA, reproduce.matlab = TRUE){
     origCols          <- colnames(Dnew)
 # adjustment happens by cohort, so let's assign a cohort to each triangle
     Dnew$Cohort       <- Dnew$Year - Dnew$Agei
@@ -530,5 +542,5 @@ d_CohortAdjust <- cmpfun(function(Dnew, OA, ACVVmatrix, OAL, DOA, reproduce.matl
     Dnew$Deaths          <- DOA * (DeathsScaled1 / sum(DeathsScaled1))
     
     Dnew[, origCols]
-  })
+  }
 # 

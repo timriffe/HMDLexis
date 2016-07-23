@@ -199,6 +199,10 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
   }
   # -------------------------------------------------------------------------------------------------------------
   # only work with LDB = 1 (if there are any errors in rows where LDB = 0, this isn't the place to catch them
+  
+  ## CAB: rethink this.  readInputDB should read the InputDB and check for validity, but should not filter
+  ## the data here.  That should be a subsequent step.  LDB filtering should probably test for ! LDB==0 rather
+  ## than LDB ==1 since other potential values of LDB might come into play.
   {
   Pop          <- Pop[Pop$LDB == 1, ]
   Deaths       <- Deaths[Deaths$LDB == 1, ]
@@ -633,6 +637,9 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
         "\nFYI. This may not be fatal, but deserves to be investiagated\n\n", file = log.file, append = TRUE)
     }
   }
+  
+  ## Misc Birth tests   CAB
+  
   # -------------------------------------------------------------------------------------------------------------
   # Add columns to Deaths where necesary
   {
@@ -705,6 +712,21 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
   }
   }
   # TODO: discuss other checks that might be necessary or reasonable. Can ignore note codes
+  
+  # 
+  # Fix NoteCode mode to character
+  Deaths$NoteCode1 <- as.character(Deaths$NoteCode1)
+  Deaths$NoteCode2 <- as.character(Deaths$NoteCode2) 
+  Deaths$NoteCode3 <- as.character(Deaths$NoteCode3)
+  
+  Births$NoteCode1 <- as.character(Births$NoteCode1)
+  Births$NoteCode2 <- as.character(Births$NoteCode2) 
+  Births$NoteCode3 <- as.character(Births$NoteCode3)
+  
+  Pop$NoteCode1 <- as.character(Pop$NoteCode1)
+  Pop$NoteCode2 <- as.character(Pop$NoteCode2) 
+  Pop$NoteCode3 <- as.character(Pop$NoteCode3)
+  
   # -------------------------------------------------------------------------------------------------------------
   # prepare output
   {

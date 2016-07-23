@@ -11,18 +11,17 @@
 #' 
 
 b_agg <- function(Births.In){
-  # remove TOT
-  Births.In <- Births.In[!Births.In$Age == "TOT", ]
+  
   
   # aggregate by all potentially relevant columns
   B.Agg            <- as.data.frame(
                         data.table(Births.In)[, sum(Births), 
-                          by = c("PopName","Area","Year","YearInterval","Sex","LDB")])
-  # V1 = Deaths
+                          by = c("PopName","Area","Year","Sex","LDB")])
+  # V1 = Births
   colnames(B.Agg)[colnames(B.Agg) == "V1"] <- "Births"
 
   # fill in unused columns with NA
-  B.Agg$NoteCode3  <- B.Agg$NoteCode2 <- B.Agg$RefCode <- 
+  B.Agg$NoteCode3  <- B.Agg$NoteCode2 <- B.Agg$NoteCode1 <- B.Agg$RefCode <- 
     B.Agg$Access   <- B.Agg$YearReg <- NA
   
   # make note that this is no longer an input file
