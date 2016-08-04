@@ -712,6 +712,8 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
   }
   }
   # TODO: discuss other checks that might be necessary or reasonable. Can ignore note codes
+  #       CAB: need to add check that there is only 1 open age interval "+" per Year,Sex combo
+  #            once LDB is taken into account
   
   # 
   # Fix NoteCode mode to character
