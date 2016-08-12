@@ -239,7 +239,7 @@ p_soai <- function(
         OAi      <- PSY$AgeInterval == "+"
         ## CAB: OA must be unique within Year,Sex groups
         ## CAB: what to do if OA is missing, e.g. if input data goes to 130?
-        stopifnot( sum(OAi) > 1)
+        stopifnot( sum(OAi) == 1)
         OA       <- PSY$Agei[OAi]
         if (OA > 90){
           OA     <- 90

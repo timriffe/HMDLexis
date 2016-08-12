@@ -15,10 +15,10 @@
 p_long <- function(Pop, OPENAGE = 130, allowOI = FALSE){
   
   # an internal function
-  p_long_SexYr <- function(PopSexYr, allowIO = allowOI){
+  p_long_SexYr <- function(PopSexYr, .allowOI = FALSE){
     ## CAB: routine was performing a No OP here when called by p_movedata, so add a fix
     ## to bypass.  Alternative is to just warn but allow usual return
-    if (! allowOI && any(PopSexYr$AgeInterval == "+", na.rm = TRUE)){
+    if (! .allowOI && any(PopSexYr$AgeInterval == "+", na.rm = TRUE)){
       warning("Pop still has open intervals!")
       return(PopSexYr)
     } else {
@@ -66,7 +66,7 @@ p_long <- function(Pop, OPENAGE = 130, allowOI = FALSE){
   
 # break apart, operate, stick back together. Would be easier and faster with data.table
   Pop.split <- split(Pop, list(Pop$Sex,Pop$Year))
-  Pop.lapply <- lapply(Pop.split, p_long_SexYr)
+  Pop.lapply <- lapply(Pop.split, p_long_SexYr, allowOI)
   Pop <- do.call(rbind, Pop.lapply)
   
 
