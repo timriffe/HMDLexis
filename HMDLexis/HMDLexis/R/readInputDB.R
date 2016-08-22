@@ -432,11 +432,13 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
     possible.tadj.ages <- c(NA, 0:150) 
   }
   #possible.tadj.ages <- c(NA, 0:130) 
-  if (tadjTF){
-    if (!all(Tadj$Age %in% possible.tadj.ages)){
-      cat("\nThe 'Age' column in", potential.file.names["tadj"], 
-        "has values outside the set (0-130, NA).\n", file = log.file, append = TRUE)
-      stop("Take care of this issue first.")
+		if (tadjTF){
+			if (!all(Tadj$Age %in% possible.tadj.ages)){
+				cat("\nThe 'Age' column in", potential.file.names["tadj"], 
+						"has values outside the set (0-130, NA).\n", file = log.file, append = TRUE)
+				if (strict){
+					stop("Take care of this issue first.")
+				}
     }
   }
   }
