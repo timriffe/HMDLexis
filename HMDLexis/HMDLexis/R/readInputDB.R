@@ -648,6 +648,10 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
   # now coerce to integer
   Deaths$AgeIntervali                             <- as.integer(Deaths$AgeIntervali)
   Deaths$Agei                                     <- as.integer(Deaths$Agei)
+  # make sure NoteCode cols are character:
+  Deaths$NoteCode1 								  <- as.character(Deaths$NoteCode1)
+  Deaths$NoteCode2 								  <- as.character(Deaths$NoteCode2)
+  Deaths$NoteCode3 								  <- as.character(Deaths$NoteCode3)
   }
   # -------------------------------------------------------------------------------------------------------------
   # Add columns to Population where necesary
@@ -655,12 +659,16 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
   Pop$Agei                                         <- Pop$Age
   Pop$AgeIntervali                                 <- Pop$AgeInterval
     # these should be the only non-integerable cases
-  Pop$Agei[Pop$Agei == "UNK"]               <- NA 
-  Pop$Agei[Pop$Agei == "TOT"]               <- NA
+  Pop$Agei[Pop$Agei == "UNK"]                      <- NA 
+  Pop$Agei[Pop$Agei == "TOT"]                      <- NA
   Pop$AgeIntervali[Pop$AgeIntervali == "+"]        <- NA
     # now coerce to integer
   Pop$AgeIntervali                                 <- as.integer(Pop$AgeIntervali)
   Pop$Agei                                         <- as.integer(Pop$Agei)
+  # make sure NoteCode cols are character:
+  Pop$NoteCode1 								   <- as.character(Pop$NoteCode1)
+  Pop$NoteCode2 								   <- as.character(Pop$NoteCode2)
+  Pop$NoteCode3 								   <- as.character(Pop$NoteCode3)
   }
   # -------------------------------------------------------------------------------------------------------------
   # Create generic Tadj file, wherein non-tadj years have 1s for vx, rb
