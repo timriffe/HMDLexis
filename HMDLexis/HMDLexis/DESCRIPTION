@@ -52,3 +52,4 @@ Collate:
     'p_rescale.R'
     'p_long.R'
     'generateLDB.R'
+RoxygenNote: 5.0.1
