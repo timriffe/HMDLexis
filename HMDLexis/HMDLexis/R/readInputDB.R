@@ -493,7 +493,7 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
   # check Tadj$Area codes in Pop$Area codes - this could be more sophisticated. Monthly has Area too, but not sure what for
   if (tadjTF){
     if (!all(Tadj$Area1 %in% Pop$Area) | !all(Tadj$Area2 %in% Pop$Area) | !all(Pop$Area %in% c(Tadj$Area1, Tadj$Area2))){ # there are Pop$Area 's not in Tadj (the most recent)
-      stop(potential.file.names["tadj"], " Area1 and Area2 columns must contain values present in ", potential.file.names["pop"], " Area column")
+      warning(potential.file.names["tadj"], " Area1 and Area2 columns must contain values present in ", potential.file.names["pop"], " Area column")
     }
   }
   # -------------------------------------------------------------------------------------------------------------
