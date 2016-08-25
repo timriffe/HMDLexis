@@ -8,6 +8,8 @@
 #' 
 #' @return a \code{APmatrix} a matrix in age-period format, with correctly labeled dimensions. It will also have an attribute \code{Lexis}, used for automatic Lexis argument detection in the case that the matrix is placed back into \code{AP2AC()}.
 #' 
+#' @details This is a convenience function and it might not do what you think. Best to do trial and error to get things lined up right.
+#' 
 #' @author Tim Riffe \email{triffe@@demog.berkeley.edu}
 #' 
 #' @importFrom reshape2 melt
