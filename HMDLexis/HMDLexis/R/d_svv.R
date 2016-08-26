@@ -6,7 +6,7 @@
 #' 
 #' @param Deaths The standard Deaths data.frame, as typically returned by \code{readInputDB}
 #'
-#' @return Deaths with VV converted to TL and TU. There will be more rows now...
+#' @return Deaths with VV converted to TL and TU. There will be more rows now... UNK deaths are passed through and TOT deaths are removed.
 #' 
 #' @export
 #' 
@@ -15,10 +15,29 @@ d_svv <- function(Deaths, reproduce.matlab = FALSE){
   # this can be before or after redistributing deaths of Unknown age, it makes no difference
   # it can actually be at any time in the deaths processing (but before d_long(), obviosuly)
   
+  ## both TOT and UNK can be passed
+  Deaths <- Deaths[Deaths$Age != "TOT", ]
+  
   # while we're at it, slice of UNK, rbind back on later:
   # using custom logical operator now with desired behavior
+  UNKTF <- any(Deaths$Age == "UNK")
+  if (UNKTF){
+    UNK           <- Deaths[Deaths$Age == "UNK", ]
+    Deaths        <- Deaths[Deaths$Age != "UNK", ]
+  }  
+  
+  
+  # slice off OP, to be slapped back on later
+  OPi <- Deaths$AgeInterval == "+" 
+  OPTF <- any(OPi)
+  if (OPTF){
+    OP            <- Deaths[OPi, ]
+    Deaths        <- Deaths[!OPi, ]
+  }
+  
   DataKeep <- Deaths[Deaths$AgeIntervali %!=% 1 | Deaths$Lexis %!=% "VV", ]
   VV       <- Deaths[Deaths$AgeIntervali %==% 1 & Deaths$Lexis %==% "VV", ]
+  
   if (reproduce.matlab){
     cat("\nWarning: you specified reproduce.matlab = TRUE.\nThe original matlab code did some out-of-protocol stuff that I didn't\nhave time to reproduce, sorry!\nThe function will return results for reproduce.matlab = FALSE.")
     reproduce.matlab <- FALSE
@@ -52,13 +71,22 @@ d_svv <- function(Deaths, reproduce.matlab = FALSE){
     TU$Lexis          <- "TU"
     
     TLTU              <- rbind(TL,TU)
-    TLTU              <- assignNoteCode(TLTU, "d_svv()")
+    #TLTU              <- assignNoteCode(TLTU, "d_svv()")
    
   }
   
-  D.Out <- d_agg(rbind(DataKeep, TLTU))
-  
-  invisible(resortDeaths(D.Out))
+  D.Out <- rbind(DataKeep, TLTU)
+  if (UNKTF){
+    D.Out <- rbind(D.Out, UNK)
+  }
+  if (OPTF){
+    D.Out <- rbind(D.Out, OP)   
+  }
+
+  D.Out <- resortDeaths( d_agg(D.Out) )
+ 
+  rownames(D.Out) <- NULL
+  invisible(D.Out)
 }
 
 
