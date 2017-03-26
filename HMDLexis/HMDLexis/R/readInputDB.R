@@ -445,7 +445,7 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
   # -------------------------------------------------------------------------------------------------------------
   # check Sex- can only be "m", "f" or "b". if not, coerce to lower, warn. if still not valid throw error
   {
-  possible.sexes <- c("m", "f", "b")
+  possible.sexes <- c("m", "f", "b","UNK")
   # Deaths
   if (!all(Deaths$Sex %in% possible.sexes)){
     if (all(tolower(Deaths$Sex) %in% possible.sexes)){
