@@ -453,7 +453,7 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
       cat("\nCase error in ", potential.file.names["death"], 
         " in the Sex column.\nCorrected to lower case but should be changed in the original file\n", file = log.file, append = TRUE)
     } else {
-      stop("Problem in ", potential.file.names["death"], " in the Sex column\nonly values in ('f','m') accepted\n")
+      stop("Problem in ", potential.file.names["death"], " in the Sex column\nonly values in ('f','m','b') accepted\n")
     }
   }
   # Births
@@ -463,7 +463,7 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
       cat("\nCase error in ", potential.file.names["birth"], 
         " in the Sex column.\nCorrected to lower case but should be changed in the original file\n", file = log.file, append = TRUE)
     } else {
-      stop("Problem in ", potential.file.names["birth"], " in the Sex column\nonly values in ('f','m') accepted\n")
+      stop("Problem in ", potential.file.names["birth"], " in the Sex column\nonly values in ('f','m','b') accepted\n")
     }
   }
 # Population
@@ -473,7 +473,7 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
       cat("\nCase error in ", potential.file.names["pop"], 
         " in the Sex column.\nCorrected to lower case but should be changed in the original file\n", file = log.file, append = TRUE)
     } else {
-      stop("Problem in ", potential.file.names["pop"], " in the Sex column\nonly values in ('f','m') accepted\n")
+      stop("Problem in ", potential.file.names["pop"], " in the Sex column\nonly values in ('f','m','b') accepted\n")
     }
   }
 # Territorial adjustment
@@ -484,7 +484,7 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
         cat("\nCase error in ", potential.file.names["tadj"], 
           " in the Sex column.\nCorrected to lower case but should be changed in the original file\n", file = log.file, append = TRUE)
       } else {
-        stop("Problem in ", potential.file.names["tadj"], " in the Sex column\nonly values in ('f','m') accepted\n")
+        stop("Problem in ", potential.file.names["tadj"], " in the Sex column\nonly values in ('f','m','b') accepted\n")
       }
     }
   }
