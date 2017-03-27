@@ -52,10 +52,17 @@ d_unk_sex <- function(Deaths){
             KnownSex$Sex    <- c("m", "f")
             KnownSex$Deaths[KnownSex$Sex != sx] <- 0
             KnownSex$Deaths <- KnownSex$Deaths + UNK / 2
-          } else {
+          } 
+		  # special case 3): if sum of known is 0, split proportionately
+					
+		  if (sum(KnownSex$Deaths) == 0){
+			  KnownSex$Deaths <- KnownSex$Deaths + UNK / 2  
+		  } else {
           # distribute proportionally
+		 
           KnownSex$Deaths <-  KnownSex$Deaths + 
             (KnownSex$Deaths / sum(KnownSex$Deaths, na.rm = TRUE)) * UNK
+	
         }
         KnownSex <- assignNoteCode(KnownSex, "d_unk_sex()")
       }
