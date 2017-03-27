@@ -153,7 +153,12 @@ p_postcensal <- function(Pop, Deaths, Births, MPVERSION = 5, reproduce.matlab = 
     # part is births:
     IB      <- Births$Births[Births$Year == Icoh & Births$Sex == Sex]
     # part is census:
-    IC      <- C1s$Population[C1s$Cohort == Icoh]
+    if (Icoh > max(C1s$Cohort)){
+		IC <- 0
+	} else {
+		IC      <- C1s$Population[C1s$Cohort == Icoh]
+	}
+ 
     # combine using f1:
     I0      <- (1 - f1) * IB + f1 * IC # this is the starting pop
     
