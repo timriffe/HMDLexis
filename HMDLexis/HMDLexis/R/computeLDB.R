@@ -64,11 +64,7 @@ computeLDB <- function(  # WORKING = "/data/commons/hmd/HMDWORK/DNK",
                         verbose = FALSE){
 
   ## processes a single country.  Test that parts agree
-  if(TadjTF){
-    Tadj.name <- as.character(Tadj$PopName)
-  } else {
-    Tadj.name <- NULL
-  }
+  Tadj.name <- as.character(Tadj$PopName)
   
   if( length(unique( c( Pop$PopName, Deaths$PopName, Births$PopName, Tadj.name))) != 1) {
     stop("More than one PopName detected among components")
@@ -78,9 +74,16 @@ computeLDB <- function(  # WORKING = "/data/commons/hmd/HMDWORK/DNK",
 
   AGES.min <- 0
        ## when 'strict', max age is 130, but can stretch to 150 in some pops like USA
-  AGES.max <- max(Pop$Agei, Deaths$Agei, as.numeric(Tadj$Age ), na.rm=TRUE )
+       ## exclude Tadj from this computation, since the ages there are a result of computations
+       ## and do not necessarily conform
+  AGES.max <- max(Pop$Agei, Deaths$Agei, na.rm=TRUE )
   AGES <- (AGES.min):(AGES.max)
   MaximumAge <- AGES.max
+  ## Tadj$Age needs to be a superset of AGES
+  print("length( setdiff(AGES, as.numeric(Tadj$Age )) ) == 0") 
+  print( length( setdiff(AGES, as.numeric(Tadj$Age )) ) )
+  stopifnot( length( setdiff(AGES, as.numeric(Tadj$Age )) ) == 0)
+  
   SEXES <- c("f","m")
 
   FirstYear <- min(Pop$Year, Deaths$Year)
@@ -196,7 +199,7 @@ computeLDB <- function(  # WORKING = "/data/commons/hmd/HMDWORK/DNK",
           this.Vx <- Tadj[ Tadj$Type=="Vx" & Tadj$Year == year & Tadj$Sex == sex & 
             Tadj$LDB == 1, c("Age", "Area1", "Value")]
           Vx <-  rep(1L, length(this.Pop$Agei))
-          Vx[ match(this.Vx$Age, this.Pop$Agei)] <- this.Vx$Value[ this.Vx$Age %in% this.Pop$Agei ]
+          Vx[ match(this.Vx$Age, this.Pop$Agei, nomatch=0)] <- this.Vx$Value[ match(this.Vx$Age ,  this.Pop$Agei, nomatch=0) ]
         
           
           ##  TODO: test for consistency / multiplicity of Area values, but ignore for now

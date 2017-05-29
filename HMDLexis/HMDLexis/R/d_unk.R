@@ -16,7 +16,7 @@ d_unk <- function(Deaths){
   if (!any(Deaths$Age == "UNK")){
     return(Deaths)
   }
-  d_unkYrSex <- cmpfun(function(DeathsYearSex){
+  d_unkYrSex <- function(DeathsYearSex){
     if (any(DeathsYearSex$Age == "UNK")){
       UNKi          <- DeathsYearSex$Age == "UNK"
       UNK           <- sum(DeathsYearSex$Deaths[UNKi], na.rm = TRUE )
@@ -26,7 +26,7 @@ d_unk <- function(Deaths){
       DeathsYearSex <- assignNoteCode(DeathsYearSex, "d_unk()")
     }
     invisible(DeathsYearSex)
-  })
+  }
   #Deaths <- do.call(rbind, lapply(X = split(Deaths, list(Deaths$Year, Deaths$Sex)), FUN = d_unkYrSex))
   
   Deaths <- data.table(Deaths)
@@ -36,6 +36,9 @@ d_unk <- function(Deaths){
   
   # much faster than split apply combine
   D.Out <- as.data.frame(Deaths[,d_unkYrSex(.SD),by = list(Year,Sex)])
+  
+  ## CAB: ?? note that this function was applied ??
+  ## D.out <- assignNoteCode(D.out, "d_unk()")
   
   rownames(D.Out) <- NULL
   

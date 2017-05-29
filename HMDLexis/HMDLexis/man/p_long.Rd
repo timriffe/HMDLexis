@@ -4,10 +4,12 @@
 \alias{p_long}
 \title{p_long adds 0s up to age 130 for years of populations with no open age}
 \usage{
-p_long(Pop, OPENAGE = 130)
+p_long(Pop, OPENAGE = 130, allowOI = FALSE)
 }
 \arguments{
 \item{Pop}{the standard internal Population \texttt{data.frame}, probably late in its processing, but not necessarily. Intermediate gaps are also filled in. Year-Sex combos with open ages are left untouched.}
+
+\item{allowOI}{Flag to allow the routine to be used when Pop contains open age intervals (kludge)}
 }
 \value{
 Pop the same deaths data.frame, but expanded to include ages up to 130 except for Year-Sex combos with pen ages, which are untouched.

@@ -4,26 +4,38 @@
 \alias{p_ecm}
 \title{p_ecm a simple extinct cohort method function, for modularity}
 \usage{
-p_ecm(Pop, Deaths, Tadj = NULL, a = 80, reproduce.matlab = FALSE)
+p_ecm(Pop, Deaths, a = 80, reproduce.matlab = FALSE)
 }
 \arguments{
 \item{Pop}{The standard internal Population data.frame, as}
 
 \item{Deaths}{after all processing is done. Completed triangles.}
 
+<<<<<<< HEAD
 \item{Tadj}{LexisDB internal territorial (or universe) adjustment \code{data.frame}, as given by \code{readInputDB()}. This is optional.}
 
 \item{a}{lowest age for which EC estimates should be given. Default 80.}
 
+=======
+\item{a}{lowest age for which EC estimates should be given. Default 80.}
+
+>>>>>>> CABucb/master
 \item{reproduce.matlab}{logical. default is \code{FALSE}. This affects only the border cohort between EC and SR.}
 }
 \value{
 Population with old ages either filled in or imputed using the extinct cohort method
 }
 \description{
+<<<<<<< HEAD
 This implementation seeks to follow the MP. Deaths must be finalized. Populations must be in single ages and all years (i.e. after \code{p_split()} and \code{p_ic()}, if necessary). This function estimates population counts from death counts within area B from Figure 6 'Methods used for population estimates'. The actual work is odone by \code{p_ecm_inner()}. This function can handle territorial or universe adjustments. Results match those of matlab exactly, except at the time of implementation, for cohorts passing through a territorial adjustment in years prior to the adjustment things are slightly different due to a temporary bug in matlab, which will probably be fixed in due time. This version has been hand-checked to do the right thing when \code{Tadj} is specified.
 }
 \details{
 Conceivably, a population could have a long series with low open ages in the early part, but decent population data in the recent part. If we want a value of \code{A} lower than 80 for only part of the series, this can be achieved by subsetting \code{Deaths} for different year ranges, and making two calls to the function, then \code{rbind()}ing back together, removing duplicates as necessary. \code{reproduce.matlab} only affects the starting value of the border cohort between EC and SR methods, not a really big deal. Setting to \code{TRUE} does not activate the bug known from matlab.
+=======
+This implementation seeks to follow the MP. Deaths must be finalized. Populations must be in single ages and all years. This function covers area B from Figure 6 'Methods used for population estimates'. The actual work is odone by \code{p_ecm_inner()}
+}
+\details{
+Conceivably, a population could have a long series with low open ages in the early part, but decent population data in the recent part. If we want a value of \code{A} lower than 80 for only part of the series, this can be achieved by subsetting \code{Dsex}, and making two calls to the function, then \code{rbind()}ing back together.
+>>>>>>> CABucb/master
 }
 

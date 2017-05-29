@@ -1,16 +1,34 @@
 
-# All functions in this file have been copied out of the pracma
-# package by Hans Werner Borchers. CRAN version 1.8.3
+##' Hermitean Interpolation Polynomials
+##' 
+##' Piecewise Cubic Hermitean Interpolation Polynomials.
+##' 
+##' \code{pchip} is a `shape-preserving' piecewise cubic Hermite polynomial
+##' approach that apptempts to determine slopes such that function values do
+##' not overshoot data values.  \code{pchipfun} is a wrapper around
+##' \code{pchip} and returns a function.  Both \code{pchip} and the function
+##' returned by \code{pchipfun} are vectorized.
+##' 
+##' \code{xi} and \code{yi} must be vectors of the same length greater or equal
+##' 3 (for cubic interpolation to be possible), and \code{xi} must be sorted.
+##' \code{pchip} can be applied to points outside \code{[min(xi), max(xi)]},
+##' but the result does not make much sense outside this interval.
+##' 
 
-# HMD needed to limit package dependencies and so we've forked this functionality.
-# This function was needed in order to replicate the pchip() function of matlab,
-# which unfortunately is how deaths in age groups are split into sigle ages in 
-# certain circumstances. This method is in serious need of revision, as it has 
-# flaws. CB and TR have been thinking and working on this recently. The pchip()
-# solution was a patch over.
-
-# CB went and found these functions in the pracma package and now they live here
-# as a snapshot
+##' @param xi,yi x- and y-coordinates of supporting nodes.
+##' @param x x-coordinates of interpolation points.
+##' @return Values of interpolated data at points \code{x}.
+##' 
+##' All functions in this file have been copied out of the pracma
+##' package by Hans Werner Borchers. CRAN version 1.8.3
+##' HMD needed to limit package dependencies and so we've forked this functionality.
+##' This function was needed in order to replicate the pchip() function of matlab,
+##' which unfortunately is how deaths in age groups are split into sigle ages in 
+##' certain circumstances. This method is in serious need of revision, as it has 
+##' flaws. CB and TR have been thinking and working on this recently. The pchip()
+##' solution was a patch-over.
+##' CB went and found these functions in the pracma package and now they live here
+##' as a snapshot
 
 pchip <- function(xi, yi, x) {
   stopifnot(is.numeric(xi), is.numeric(yi), is.numeric(x))

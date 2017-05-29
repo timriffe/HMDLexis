@@ -111,7 +111,8 @@ d_sNx1_inner <- function(DSexYr, MPVERSION = 5){
     if (! any(c(1,5) %in% DRR4fit$Age4fit)){
       # unknown how often this is used:
       cat("Careful: used pchip()\n")
-      DRRCumsum1x1         <- pracma::pchip(DRR4fit$Age4fit, DRRCumsum, singleAges)
+                                 ## pchip extracted from pracma library and made local
+      DRRCumsum1x1         <- pchip(DRR4fit$Age4fit, DRRCumsum, singleAges)
       names(DRRCumsum1x1)  <- singleAges
     } else {
       # this is meant to be the standard case:
