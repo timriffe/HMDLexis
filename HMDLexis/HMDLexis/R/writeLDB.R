@@ -1,3 +1,4 @@
+## TODO:  allow option to supress header of CSV file (the old format)
 ###############################################################################
 writeLDB <- function(ldb.by.sex, 
                      LDBpath,  # WORKING/XXX/LexisDB   typically

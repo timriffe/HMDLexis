@@ -199,6 +199,10 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
   }
   # -------------------------------------------------------------------------------------------------------------
   # only work with LDB = 1 (if there are any errors in rows where LDB = 0, this isn't the place to catch them
+  
+  ## CAB: rethink this.  readInputDB should read the InputDB and check for validity, but should not filter
+  ## the data here.  That should be a subsequent step.  LDB filtering should probably test for ! LDB==0 rather
+  ## than LDB ==1 since other potential values of LDB might come into play.
   {
   Pop          <- Pop[Pop$LDB == 1, ]
   Deaths       <- Deaths[Deaths$LDB == 1, ]
@@ -493,7 +497,8 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
   # check Tadj$Area codes in Pop$Area codes - this could be more sophisticated. Monthly has Area too, but not sure what for
   if (tadjTF){
     if (!all(Tadj$Area1 %in% Pop$Area) | !all(Tadj$Area2 %in% Pop$Area) | !all(Pop$Area %in% c(Tadj$Area1, Tadj$Area2))){ # there are Pop$Area 's not in Tadj (the most recent)
-      warning(potential.file.names["tadj"], " Area1 and Area2 columns must contain values present in ", potential.file.names["pop"], " Area column")
+      warning(potential.file.names["tadj"], " Area1 and Area2 columns must contain values present in ", potential.file.names["pop"], " Area column",
+              immediate. = TRUE)
     }
   }
   # -------------------------------------------------------------------------------------------------------------
@@ -635,6 +640,9 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
         "\nFYI. This may not be fatal, but deserves to be investiagated\n\n", file = log.file, append = TRUE)
     }
   }
+  
+  ## Misc Birth tests   CAB
+  
   # -------------------------------------------------------------------------------------------------------------
   # Add columns to Deaths where necesary
   {
@@ -715,6 +723,23 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
   }
   }
   # TODO: discuss other checks that might be necessary or reasonable. Can ignore note codes
+  #       CAB: need to add check that there is only 1 open age interval "+" per Year,Sex combo
+  #            once LDB is taken into account
+  
+  # 
+  # Fix NoteCode mode to character
+  Deaths$NoteCode1 <- as.character(Deaths$NoteCode1)
+  Deaths$NoteCode2 <- as.character(Deaths$NoteCode2) 
+  Deaths$NoteCode3 <- as.character(Deaths$NoteCode3)
+  
+  Births$NoteCode1 <- as.character(Births$NoteCode1)
+  Births$NoteCode2 <- as.character(Births$NoteCode2) 
+  Births$NoteCode3 <- as.character(Births$NoteCode3)
+  
+  Pop$NoteCode1 <- as.character(Pop$NoteCode1)
+  Pop$NoteCode2 <- as.character(Pop$NoteCode2) 
+  Pop$NoteCode3 <- as.character(Pop$NoteCode3)
+  
   # -------------------------------------------------------------------------------------------------------------
   # prepare output
   {

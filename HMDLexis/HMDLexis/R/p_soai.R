@@ -237,6 +237,9 @@ p_soai <- function(
       for (yr in Yrs){ # yr <- 1980
         PSY      <- Psex[Psex$Year == yr, ]
         OAi      <- PSY$AgeInterval == "+"
+        ## CAB: OA must be unique within Year,Sex groups
+        ## CAB: what to do if OA is missing, e.g. if input data goes to 130?
+        stopifnot( sum(OAi) == 1)
         OA       <- PSY$Agei[OAi]
         if (OA > 90){
           OA     <- 90
@@ -253,11 +256,18 @@ p_soai <- function(
                                   Day = unique(Psex$Day[Psex$Year == yr]), 
                                   detect.mid.year = TRUE,
                                   reproduce.matlab = reproduce.matlab)
-        
+        ## Introduce CDW hack for when populations are already dated Jan 1
+        ## April 13, 2017
+        ## Define Pleft as is
         Pleft            <- RefSex[as.character(Ages),as.character(yr)]
-        Pright           <- RefSex[as.character(Ages),as.character(yr + 1)]
-        Pref             <- Pleft * (1 - f1) + f1 * c(Pright[-1], 0)
-        
+        ## if f1, the date-shift fraction != 0 (if pop is NOT Jan 1)
+        ## then compute a Pright and shift accordingly
+        if (f1 != 0) {
+          Pright           <- RefSex[as.character(Ages),as.character(yr + 1)]
+          Pref             <- Pleft * (1 - f1) + f1 * c(Pright[-1], 0)
+        } else {  #If pops are dated Jan 1, take Pleft to be Pop
+          Pref <- Pleft
+        }
         Pest             <- OAP * Pref / sum(Pref)
         
         Pouti            <- PSY[1:length(Ages), ]

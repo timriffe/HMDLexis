@@ -5,17 +5,20 @@
 #' @description Intermediate gaps are also filled in, if they exist. This functions returns the object unmodified and with warning if there are still open intervals.
 #' 
 #' @param Pop the standard internal Population \texttt{data.frame}, probably late in its processing, but not necessarily. Intermediate gaps are also filled in. Year-Sex combos with open ages are left untouched.
+#' @param allowOI  Flag to allow the routine to be used when Pop contains open age intervals (kludge)
 #' 
 #' @return Pop the same deaths data.frame, but expanded to include ages up to 130 except for Year-Sex combos with pen ages, which are untouched. 
 #' 
 #' @export
 #' 
 
-p_long <- function(Pop, OPENAGE = 130){
+p_long <- function(Pop, OPENAGE = 130, allowOI = FALSE){
   
   # an internal function
-  p_long_SexYr <- function(PopSexYr){
-    if (any(PopSexYr$AgeInterval == "+", na.rm = TRUE)){
+  p_long_SexYr <- function(PopSexYr, .allowOI = FALSE){
+    ## CAB: routine was performing a No OP here when called by p_movedata, so add a fix
+    ## to bypass.  Alternative is to just warn but allow usual return
+    if (! .allowOI && any(PopSexYr$AgeInterval == "+", na.rm = TRUE)){
       warning("Pop still has open intervals!")
       return(PopSexYr)
     } else {
@@ -62,12 +65,9 @@ p_long <- function(Pop, OPENAGE = 130){
   }
   
 # break apart, operate, stick back together. Would be easier and faster with data.table
-  Pop <- do.call(rbind,
-              lapply(
-                split(Pop, list(Pop$Sex,Pop$Year)), 
-                p_long_SexYr
-              )
-            )
+  Pop.split <- split(Pop, list(Pop$Sex,Pop$Year))
+  Pop.lapply <- lapply(Pop.split, p_long_SexYr, allowOI)
+  Pop <- do.call(rbind, Pop.lapply)
   
 
   if (UNKTF){
