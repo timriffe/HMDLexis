@@ -6,19 +6,17 @@
 #' @param Population the standard internal Population object, at any point in processing
 #' 
 #' @return Population same data.frame with an extra column. 
-#' 
-#' @importFrom compiler cmpfun
 
-p_addCohortColumn <- cmpfun(function(Pop){
-    if (! "Cohort" %in% colnames(Pop)){
-      # only valid for single-year age groups
-      Interval1i        <- Pop$AgeInterval == "1" & !is.na( Pop$AgeIntervali)
-      
-      # this may overwrite
-      Pop$Cohort <- NA
-      # this takes care of TL and VH
-      Pop$Cohort[Interval1i]   <- Pop$Year[Interval1i] - Pop$Agei[Interval1i] - 1
-    }
-    invisible(Pop)
-  })
+p_addCohortColumn <- function(Pop){
+	# TR: 9-4-2018 remove if statement. If Cohort already there, we overwrite it
+	# only valid for single-year age groups
+	Interval1i        <- Pop$AgeInterval == "1" & !is.na( Pop$AgeIntervali)
+	
+	# this may overwrite
+	Pop$Cohort <- NA
+	# this takes care of TL and VH
+	Pop$Cohort[Interval1i]   <- Pop$Year[Interval1i] - Pop$Agei[Interval1i] - 1
+	
+	invisible(Pop)
+}
 
