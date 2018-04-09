@@ -16,14 +16,14 @@
 #' @export
 #' 
  
-p_ecm <- function(Pop, Deaths, Tadj = NULL, a = 80, reproduce.matlab = FALSE){
+p_ecm <- function(Pop, Deaths, Tadj, a = 80, reproduce.matlab = FALSE){
 	
 	ColnamesKeep 	<- colnames(Pop)
 	
 	Pop 			<- Pop[Pop$Age != "TOT", ]
 	
 	# TR: new Aug 25, 2016 for Tadj
-	if (! is.null(Tadj)){
+	if (!missing(Tadj)){
 		# only keep Vx for Tadj
 		Tadj 	      <- Tadj[Tadj$Type == "Vx", ] 
 		Tadj$Cohort   <- Tadj$Year - Tadj$Age - 1
@@ -50,7 +50,7 @@ p_ecm <- function(Pop, Deaths, Tadj = NULL, a = 80, reproduce.matlab = FALSE){
 		Psex              <- Pop[Pop$Sex == Sex, ]
 		
 		# TR: new Aug 25, 2016 for Tadj
-		if (! is.null(Tadj)){
+		if (! missing(Tadj)){
 			Tsex              <- Tadj[Tadj$Sex == Sex, ]	
 		} else {
 			Tsex              <- Tadj
@@ -113,7 +113,7 @@ p_ecm <- function(Pop, Deaths, Tadj = NULL, a = 80, reproduce.matlab = FALSE){
 #' @export
 #' 
 
-p_ecm_inner <- function(Dsex, Tsex = NULL, a = 80, omega = NULL, reproduce.matlab = FALSE){
+p_ecm_inner <- function(Dsex, Tsex, a = 80, omega, reproduce.matlab = FALSE){
 	
 	# instead of feeding in Pop argument, just assume standard R LexisDB format of Pop DF.
 	# this is what we do anyway by filling out columns below.
@@ -130,7 +130,7 @@ p_ecm_inner <- function(Dsex, Tsex = NULL, a = 80, omega = NULL, reproduce.matla
 	if (!"Cohort" %in% colnames(Dsex)){
 		Dsex            <- d_addCohortColumn(Dsex)
 	}
-	if (is.null(omega)){
+	if (missing(omega)){
 		omega             <- p_ecm_findOmega(Dsex, l = 5, threshold = 0.5)
 	}
 	
@@ -145,7 +145,7 @@ p_ecm_inner <- function(Dsex, Tsex = NULL, a = 80, omega = NULL, reproduce.matla
 	# TR: new Aug 25, 2016 for Tadj
 	# Assign Vx by cohort of deaths. Problem: each triangle will have one, so each 
 	# VV will have 2. Solution acast with function unique().
-	if (! is.null(Tsex)){
+	if (!missing(Tsex)){
 		# same dims as VV...
 		TVV               <- acast(Tsex[with(Tsex, 
 								Age >= a & 
