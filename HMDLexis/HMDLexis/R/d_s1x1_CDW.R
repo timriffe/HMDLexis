@@ -4,7 +4,7 @@
 #' 
 #' @description The HMD Methods Protocol gives a formula to split Lexis 1x1 death counts (squares) into triangles based on the results of a regression. Function can be run innocuously on any Deaths data, even if no 1x1 RR is present.
 #' 
-#' @details This function does not yet deal with territorial adjustments.
+#' @details This function does not yet deal with territorial adjustments. This is a version that Celeste modified to deal with 0 or low counts.
 #' 
 #' @param Deaths LexisDB internal Deaths \code{data.frame}, long format, all columns. Format as given by \code{readInputDB()}.
 #' @param Births LexisDB internal Births \code{data.frame}, as given by \code{readInputDB()}.
@@ -16,7 +16,7 @@
 #' @export 
 #' 
 
-d_s1x1_notadj <- function(Deaths, Births){
+d_s1x1_CDW <- function(Deaths, Births){
   # check if function needs to be run, if not, return deaths 
   # TR: 1 June, 2016: use new %==%, more efficient
   if (!any(Deaths$Lexis[with(Deaths, AgeIntervali %==% 1 & 
