@@ -1,6 +1,6 @@
  
 #'
-#' @title d_s1x1, a function to split RR death counts into Lexis triangles based on regression coefficients.
+#' @title split RR death counts into Lexis triangles based on regression coefficients.
 #' 
 #' @description The HMD Methods Protocol gives a formula to split Lexis 1x1 death counts (squares) into triangles based on the results of a regression. Function can be run innocuously on any Deaths data, even if no 1x1 RR is present.
 #' 
@@ -16,7 +16,7 @@
 #' @export 
 #' 
 
-d_s1x1 <- function(Deaths, Births){
+d_s1x1_notadj <- function(Deaths, Births){
   # check if function needs to be run, if not, return deaths 
   # TR: 1 June, 2016: use new %==%, more efficient
   if (!any(Deaths$Lexis[with(Deaths, AgeIntervali %==% 1 & 
