@@ -53,8 +53,8 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
   
   {
   # what files could there be? 
-  potential.file.names <- paste0(XXX, c("pop.txt", "death.txt", "birth.txt", "monthly.txt", "tadj.txt"))
-  names(potential.file.names) <- c("pop", "death", "birth", "monthly", "tadj")
+  potential.file.names <- paste0(XXX, c("pop.txt", "death.txt", "birth.txt", "birthbymonth.txt", "tadj.txt"))
+  names(potential.file.names) <- c("pop", "death", "birth", "birthbymonth", "tadj")
   # what files are there?
   files.in.folder <- list.files(InputDB.path)
   
@@ -69,7 +69,7 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
   # -------------------------------------------------------------------------------------------------------------
   # quick TRUE / FALSE for tadj and monthly
   tadjTF      <- potential.file.names["tadj"] %in% files.we.want
-  monthlyTF   <- potential.file.names["monthly"] %in% files.we.want
+  monthlyTF   <- potential.file.names["birthbymonth"] %in% files.we.want
   # -------------------------------------------------------------------------------------------------------------
   # read in files.
   {
@@ -77,14 +77,14 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
                   sep = ",", na.strings = ".", header = TRUE, stringsAsFactors = FALSE, strip.white = TRUE)
   Pop        <- read.table(file.path(InputDB.path, grep(pattern = "pop", x = files.we.want, value = TRUE)), 
                   sep = ",", na.strings = ".", header = TRUE, stringsAsFactors = FALSE, strip.white = TRUE)
-  Births     <- read.table(file.path(InputDB.path, grep(pattern = "birth", x = files.we.want, value = TRUE)), 
+  Births     <- read.table(file.path(InputDB.path, grep(pattern = "birth[^b]", x = files.we.want, value = TRUE)), 
                   sep = ",", na.strings = ".", header = TRUE, stringsAsFactors = FALSE, strip.white = TRUE)
   if (tadjTF){
     Tadj        <- read.table(file.path(InputDB.path, grep(pattern = "tadj", x = files.we.want, value = TRUE)), 
                      sep = ",", na.strings = ".", header = TRUE, stringsAsFactors = FALSE, strip.white = TRUE)
   }
   if (monthlyTF){
-    Monthly     <- read.table(file.path(InputDB.path, grep(pattern = "monthly", x = files.we.want, value = TRUE)), 
+    Monthly     <- read.table(file.path(InputDB.path, grep(pattern = "month", x = files.we.want, value = TRUE)), 
                      sep = ",", na.strings = ".", header = TRUE, stringsAsFactors = FALSE, strip.white = TRUE)
   }
   }
@@ -107,6 +107,11 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
 
   # -------------------------------------------------------------------------------------------------------------
   # do headers match properly? If not, check after toupper() - if toupper() does it, then warn and relabel, otherwise stop
+  
+  ## CAB: corrections made for file name change from monthlybirths.txt to birthbymonth.txt   
+  ## TODO: column names can be more than are expected.  As long as the required ones are in place, we should warn
+  ## by let pass.
+  
   {
     # Deaths
     if (!all(colnames(Deaths) == header.expect.death)){
