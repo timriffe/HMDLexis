@@ -101,7 +101,7 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
       "Births", "NoteCode1", "NoteCode2", "NoteCode3", "LDB")
     header.expect.tadj      <- c("PopName", "Year", "Age", "Area1", "Area2", "Sex", "RefCode", 
       "Access", "Type", "Value", "NoteCode1", "NoteCode2", "NoteCode3", "LDB")
-    header.expect.monthly   <- c("PopName", "Area", "Year", "YearReg","Month","Vital","Births",
+    header.expect.monthly   <- c("PopName", "Area", "Year", "YearReg","Month","Births",
       "Access", "NoteCode1", "NoteCode2", "NoteCode3", "RefCode", "LDB")
   }
 
@@ -112,10 +112,12 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
   ## TODO: column names can be more than are expected.  As long as the required ones are in place, we should warn
   ## by let pass.
   
+  ## CAB use %in% instead of "==" because columns may come in any order and still be valid
+  
   {
     # Deaths
-    if (!all(colnames(Deaths) == header.expect.death)){
-      if (all(toupper(colnames(Deaths)) == toupper(header.expect.death))){
+    if (!all(colnames(Deaths) %in% header.expect.death)){
+      if (all(toupper(colnames(Deaths)) %in% toupper(header.expect.death))){
         colnames(Deaths) <- header.expect.death
         cat("\nThere was a case error in the column names of ", 
           potential.file.names["death"],"\nnames reassigned correctly, but you should change this!\n\n", file = log.file, append = TRUE)
@@ -126,8 +128,8 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
       }
     }
     # Births
-    if (!all(colnames(Births) == header.expect.birth)){
-      if (all(toupper(colnames(Births)) == toupper(header.expect.birth))){
+    if (!all(colnames(Births) %in% header.expect.birth)){
+      if (all(toupper(colnames(Births)) %in% toupper(header.expect.birth))){
         colnames(Births) <- header.expect.birth
         cat("\nThere was a case error in the column names of ", potential.file.names["birth"], 
           "\nnames reassigned correctly, but you should change this!\n\n", file = log.file, append = TRUE)
@@ -138,8 +140,8 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
       }
     }
     # Population
-    if (!all(colnames(Pop) == header.expect.pop)){
-      if (all(toupper(colnames(Pop)) == toupper(header.expect.pop))){
+    if (!all(colnames(Pop) %in% header.expect.pop)){
+      if (all(toupper(colnames(Pop)) %in% toupper(header.expect.pop))){
         colnames(Pop) <- header.expect.pop
         cat("\nThere was a case error in the column names of ", 
           potential.file.names["pop"], "\nnames reassigned correctly, but you should change this!\n\n", file = log.file, append = TRUE)
@@ -152,8 +154,8 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
     # Territorial adjustment
     if (tadjTF){
       if (ncol(Tadj) == length(header.expect.tadj)){
-        if (!all(colnames(Tadj) == header.expect.tadj)){
-          if (all(toupper(colnames(Tadj)) == toupper(header.expect.tadj))){
+        if (!all(colnames(Tadj) %in% header.expect.tadj)){
+          if (all(toupper(colnames(Tadj)) %in% toupper(header.expect.tadj))){
             colnames(Tadj) <- header.expect.tadj
             cat("\nThere was a case error in the column names of ", 
               potential.file.names["tadj"], "\nnames reassigned correctly, but you should change this!\n\n", 
@@ -166,7 +168,7 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
         } 
       } else {
         # special case for tadj, since technically it is not documented to have an LDB column:
-        if (all(toupper(colnames(Tadj)) == toupper(header.expect.tadj[-length(header.expect.tadj)]))){
+        if (all(toupper(colnames(Tadj)) %in% toupper(header.expect.tadj[-length(header.expect.tadj)]))){
           Tadj$LDB <- 1
           colnames(Tadj) <- header.expect.tadj
           cat("\nThere was no LDB column in ", potential.file.names["tadj"], 
@@ -181,15 +183,15 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
     }
     # Monthly Births
     if (monthlyTF){
-      if (!all(colnames(Monthly) == header.expect.monthly)){
-        if (all(toupper(colnames(Monthly)) == toupper(header.expect.monthly))){
+      if (!all(colnames(Monthly) %in% header.expect.monthly)){
+        if (all(toupper(colnames(Monthly)) %in% toupper(header.expect.monthly))){
           colnames(Monthly) <- header.expect.monthly
           cat("\nThere was a case error in the column names of ", 
             potential.file.names["monthly"], "\nnames reassigned correctly, but you should change this!\n\n", file = log.file, append = TRUE)
           
         } else {
           header.expect.monthly2 <- gsub(header.expect.monthly, pattern = "NoteCode", replacement = "Note")
-          if (all(toupper(colnames(Monthly)) == toupper(header.expect.monthly2))){
+          if (all(toupper(colnames(Monthly)) %in% toupper(header.expect.monthly2))){
             colnames(Monthly) <- header.expect.monthly
             cat("\nThere was an error in the column names of", 
               potential.file.names["monthly"], "\n'Note' changed to 'NoteCode', plus there may have been other case errors\nnames reassigned correctly, but you should change this!\n\n", file = log.file, append = TRUE)
