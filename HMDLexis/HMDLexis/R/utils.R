@@ -298,4 +298,25 @@ dateYear <- function(Date){
   as.integer(format(Date, "%Y")) 
 }
 
-
+#'
+#' @title print out Years with multiple RefCodes in InputDB  Death or Population files
+#' @description Once LDB=0 values have been dropped, data should only come from one source. 
+#' This function will do nothing if there are not multiple RefCodes and will present a table of
+#' multiple entries when they are present.
+#' 
+#' @param x a data frame of Deaths or Population values
+#' @return no returned value
+#'
+#' 
+print.overlapping.refcodes<- function(x, label="Overlapping RefCodes by Year"){
+  x <- x[x$LDB !=0, ]
+  x.table <- table(x$Year, x$RefCode) # full crosstabls
+  isel <- apply(x.table, 1, function(s){sum( s != 0) > 1 })
+  if( sum(isel)> 0){
+    message("\n**** WARNING ***\n")
+    message(paste0("***", label, "***\n"))
+    print( x.table[isel, , drop = FALSE])
+    message("************\n")
+  }
+  invisible()
+}

@@ -244,6 +244,8 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
       stop("Problem in ", potential.file.names["birth"], " in the PopName column\nWas expecting all values to be ", XXX, "\n")
     }
   }
+
+  
   # Population 
   if (!all(Pop$PopName == XXX)){
     if (all(toupper(Pop$PopName) == XXX)){
@@ -279,6 +281,14 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
     }
   }
   }
+  # -------------------------------------------------------------------------------------------------------------
+  
+  ## check for overlapping RefCodes, as were found in SWE
+  print.overlapping.refcodes(Deaths, label="Overlapping RefCodes by Year (Deaths)")
+  
+  ## check for overlapping RefCodes, as were found in SWE
+  print.overlapping.refcodes(Pop, label="Overlapping RefCodes by Year RefCode(Population)")
+  
   # -------------------------------------------------------------------------------------------------------------
   # check value columns (Deaths, Births, etc) - if not numeric it's because they can't be without introducing NAs
   {
