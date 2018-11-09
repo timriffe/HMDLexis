@@ -103,6 +103,8 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
       "Access", "Type", "Value", "NoteCode1", "NoteCode2", "NoteCode3", "LDB")
     header.expect.monthly   <- c("PopName", "Area", "Year", "YearReg","Month","Births",
       "Access", "NoteCode1", "NoteCode2", "NoteCode3", "RefCode", "LDB")
+    header.required.monthly <- c("PopName", "Area", "Year", "YearReg","Month","Births",
+      "Access",  "RefCode", "LDB")  # minimally required headings
   }
 
   # -------------------------------------------------------------------------------------------------------------
@@ -196,9 +198,13 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
             cat("\nThere was an error in the column names of", 
               potential.file.names["monthly"], "\n'Note' changed to 'NoteCode', plus there may have been other case errors\nnames reassigned correctly, but you should change this!\n\n", file = log.file, append = TRUE)
           } else {
-            stop("\nEither the spelling or the order of the column names is off in ", 
-              potential.file.names["monthly"], ".\nCorrect this before continuing. The correct columns should be:\n\n", 
-              paste(header.expect.monthly, collapse = ", "),"\n")
+            ## we only really care if the required and used fields are in place, so only abort if necessary
+            if( !all( header.required.monthly %in% colnames(Monthly) ) ){
+              stop("\nEither the spelling or the order of the column names is off, or a column is missing in ", 
+              potential.file.names["monthly"], ".\nCorrect this before continuing. The expected columns should be:\n\n", 
+              paste(header.expect.monthly, collapse = ", "),"\n\n and the minimal required columns are\n\n",
+              paste(header.required.monthly, collapse = ", ") )
+            }
           }
         }
       }

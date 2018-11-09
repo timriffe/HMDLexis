@@ -320,3 +320,20 @@ print.overlapping.refcodes<- function(x, label="Overlapping RefCodes by Year"){
   }
   invisible()
 }
+
+# -------------------------------------
+nameBasedRecode<- function(.x,.y){  #substitute y into x based on names attribute of x, y
+  stopifnot( !is.null(attributes(.x)[["names"]]) & !is.null(attributes(.y)[["names"]]))
+  .x[ names(.y)[names(.y) %in% names(.x)] ] <- .y[ names(.y) %in% names(.x)]
+  return(.x)
+}
+# 
+# -------------------------------------
+dimnamesBasedAssign<- function(.x,.y){  #substitute y into x based on dimnames (rowname, colname) attributes of x, y
+  stopifnot( !is.null(attributes(.x)[["dimnames"]]) & !is.null(attributes(.y)[["dimnames"]]))
+  .x[ rownames(.y)[rownames(.y) %in% rownames(.x)], colnames(.y)[colnames(.y) %in% colnames(.x)] ] <- 
+    .y[ rownames(.y) %in% rownames(.x), colnames(.y) %in% colnames(.x) ]
+  
+  return(.x)
+}
+# 

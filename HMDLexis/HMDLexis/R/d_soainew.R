@@ -30,7 +30,7 @@
 #' 
 #' @export
 
-d_soainew <- function(Deaths, reproduce.matlab = TRUE){
+d_soainew <- function(Deaths, sa=NULL, empy=NULL, reproduce.matlab = TRUE){
  
 # first, check that only TL and TU are in Lexis (except open age, which can be VV or RR.
 # UNK redistributed, single year single age.

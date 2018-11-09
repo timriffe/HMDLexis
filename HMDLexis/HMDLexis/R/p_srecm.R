@@ -21,7 +21,7 @@
 ## evaluation: recursive default argument reference or earlier problems?"
 ## stemming from 'l' being undefined yet still passed as an argument.
 
-p_srecm <- function(Pop, Deaths, k = 5, l = 5, m = 5, a = 80, A = 90, maxit = 100, reproduce.matlab = FALSE){
+p_srecm <- function(Pop, Deaths, Tadj, k = 5, l = 5, m = 5, a = 80, A = 90, maxit = 100, reproduce.matlab = FALSE){
 
  
   
@@ -52,12 +52,13 @@ p_srecm <- function(Pop, Deaths, k = 5, l = 5, m = 5, a = 80, A = 90, maxit = 10
 #   
   Pop <- p_ecm( Pop = Pop,
                 Deaths = Deaths,
+                Tadj = Tadj,
                 a = a,
                 reproduce.matlab = reproduce.matlab
   )
   
   Pop <- p_sra(Pop, 
-               Deaths,
+               Deaths,  # ??Tadj ##
                k = k,
                l = l,
                m = m,

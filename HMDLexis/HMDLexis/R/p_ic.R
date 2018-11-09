@@ -769,15 +769,15 @@ p_ict_inner <- function(C1, C2, Deaths, Births, Tadj, reproduce.matlab = FALSE){
 		if (!missing(Tsex)){
 			# same dims as VV...
 			
-			
-			TVVa    <- acast(Tsex,
+		 
+			TVVa    <- acast(Tsex[with(Tsex, Year %in% years),],   # revisit, as TVVa 1st column is a mismatch with TVV, e.g. 1830:1970 vs 1829:1970
 					Year ~ Cohort, 
 					value.var = "Value", 
 					fill = 1)
-			TVVa    <- TVVa[-1, ]
+			#TVVa    <- TVVa[-1, ]
 			
-			# get dims of VV
-			TVV[rownames(TVVa), colnames(TVVa)] <- TVVa
+			# assign TVVa section back to TVV based on dimname labeling
+			TVV<- dimnamesBasedAssign(TVV, TVVa) 
 			
 			# now, if Vx is on Jan 1 of it's year, 
 			
