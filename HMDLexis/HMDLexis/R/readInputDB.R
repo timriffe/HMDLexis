@@ -53,8 +53,8 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
   
   {
   # what files could there be? 
-  potential.file.names <- paste0(XXX, c("pop.txt", "death.txt", "birth.txt", "monthly.txt", "tadj.txt"))
-  names(potential.file.names) <- c("pop", "death", "birth", "monthly", "tadj")
+  potential.file.names <- paste0(XXX, c("pop.txt", "death.txt", "birth.txt", "birthbymonth.txt", "tadj.txt"))
+  names(potential.file.names) <- c("pop", "death", "birth", "birthbymonth", "tadj")
   # what files are there?
   files.in.folder <- list.files(InputDB.path)
   
@@ -69,7 +69,7 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
   # -------------------------------------------------------------------------------------------------------------
   # quick TRUE / FALSE for tadj and monthly
   tadjTF      <- potential.file.names["tadj"] %in% files.we.want
-  monthlyTF   <- potential.file.names["monthly"] %in% files.we.want
+  monthlyTF   <- potential.file.names["birthbymonth"] %in% files.we.want
   # -------------------------------------------------------------------------------------------------------------
   # read in files.
   {
@@ -77,14 +77,14 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
                   sep = ",", na.strings = ".", header = TRUE, stringsAsFactors = FALSE, strip.white = TRUE)
   Pop        <- read.table(file.path(InputDB.path, grep(pattern = "pop", x = files.we.want, value = TRUE)), 
                   sep = ",", na.strings = ".", header = TRUE, stringsAsFactors = FALSE, strip.white = TRUE)
-  Births     <- read.table(file.path(InputDB.path, grep(pattern = "birth", x = files.we.want, value = TRUE)), 
+  Births     <- read.table(file.path(InputDB.path, grep(pattern = "birth[^b]", x = files.we.want, value = TRUE)), 
                   sep = ",", na.strings = ".", header = TRUE, stringsAsFactors = FALSE, strip.white = TRUE)
   if (tadjTF){
     Tadj        <- read.table(file.path(InputDB.path, grep(pattern = "tadj", x = files.we.want, value = TRUE)), 
                      sep = ",", na.strings = ".", header = TRUE, stringsAsFactors = FALSE, strip.white = TRUE)
   }
   if (monthlyTF){
-    Monthly     <- read.table(file.path(InputDB.path, grep(pattern = "monthly", x = files.we.want, value = TRUE)), 
+    Monthly     <- read.table(file.path(InputDB.path, grep(pattern = "month", x = files.we.want, value = TRUE)), 
                      sep = ",", na.strings = ".", header = TRUE, stringsAsFactors = FALSE, strip.white = TRUE)
   }
   }
@@ -101,16 +101,25 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
       "Births", "NoteCode1", "NoteCode2", "NoteCode3", "LDB")
     header.expect.tadj      <- c("PopName", "Year", "Age", "Area1", "Area2", "Sex", "RefCode", 
       "Access", "Type", "Value", "NoteCode1", "NoteCode2", "NoteCode3", "LDB")
-    header.expect.monthly   <- c("PopName", "Area", "Year", "YearReg","Month","Vital","Births",
+    header.expect.monthly   <- c("PopName", "Area", "Year", "YearReg","Month","Births",
       "Access", "NoteCode1", "NoteCode2", "NoteCode3", "RefCode", "LDB")
+    header.required.monthly <- c("PopName", "Area", "Year", "YearReg","Month","Births",
+      "Access",  "RefCode", "LDB")  # minimally required headings
   }
 
   # -------------------------------------------------------------------------------------------------------------
   # do headers match properly? If not, check after toupper() - if toupper() does it, then warn and relabel, otherwise stop
+  
+  ## CAB: corrections made for file name change from monthlybirths.txt to birthbymonth.txt   
+  ## TODO: column names can be more than are expected.  As long as the required ones are in place, we should warn
+  ## by let pass.
+  
+  ## CAB use %in% instead of "==" because columns may come in any order and still be valid
+  
   {
     # Deaths
-    if (!all(colnames(Deaths) == header.expect.death)){
-      if (all(toupper(colnames(Deaths)) == toupper(header.expect.death))){
+    if (!all(colnames(Deaths) %in% header.expect.death)){
+      if (all(toupper(colnames(Deaths)) %in% toupper(header.expect.death))){
         colnames(Deaths) <- header.expect.death
         cat("\nThere was a case error in the column names of ", 
           potential.file.names["death"],"\nnames reassigned correctly, but you should change this!\n\n", file = log.file, append = TRUE)
@@ -121,8 +130,8 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
       }
     }
     # Births
-    if (!all(colnames(Births) == header.expect.birth)){
-      if (all(toupper(colnames(Births)) == toupper(header.expect.birth))){
+    if (!all(colnames(Births) %in% header.expect.birth)){
+      if (all(toupper(colnames(Births)) %in% toupper(header.expect.birth))){
         colnames(Births) <- header.expect.birth
         cat("\nThere was a case error in the column names of ", potential.file.names["birth"], 
           "\nnames reassigned correctly, but you should change this!\n\n", file = log.file, append = TRUE)
@@ -133,8 +142,8 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
       }
     }
     # Population
-    if (!all(colnames(Pop) == header.expect.pop)){
-      if (all(toupper(colnames(Pop)) == toupper(header.expect.pop))){
+    if (!all(colnames(Pop) %in% header.expect.pop)){
+      if (all(toupper(colnames(Pop)) %in% toupper(header.expect.pop))){
         colnames(Pop) <- header.expect.pop
         cat("\nThere was a case error in the column names of ", 
           potential.file.names["pop"], "\nnames reassigned correctly, but you should change this!\n\n", file = log.file, append = TRUE)
@@ -147,8 +156,8 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
     # Territorial adjustment
     if (tadjTF){
       if (ncol(Tadj) == length(header.expect.tadj)){
-        if (!all(colnames(Tadj) == header.expect.tadj)){
-          if (all(toupper(colnames(Tadj)) == toupper(header.expect.tadj))){
+        if (!all(colnames(Tadj) %in% header.expect.tadj)){
+          if (all(toupper(colnames(Tadj)) %in% toupper(header.expect.tadj))){
             colnames(Tadj) <- header.expect.tadj
             cat("\nThere was a case error in the column names of ", 
               potential.file.names["tadj"], "\nnames reassigned correctly, but you should change this!\n\n", 
@@ -161,7 +170,7 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
         } 
       } else {
         # special case for tadj, since technically it is not documented to have an LDB column:
-        if (all(toupper(colnames(Tadj)) == toupper(header.expect.tadj[-length(header.expect.tadj)]))){
+        if (all(toupper(colnames(Tadj)) %in% toupper(header.expect.tadj[-length(header.expect.tadj)]))){
           Tadj$LDB <- 1
           colnames(Tadj) <- header.expect.tadj
           cat("\nThere was no LDB column in ", potential.file.names["tadj"], 
@@ -176,22 +185,26 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
     }
     # Monthly Births
     if (monthlyTF){
-      if (!all(colnames(Monthly) == header.expect.monthly)){
-        if (all(toupper(colnames(Monthly)) == toupper(header.expect.monthly))){
+      if (!all(colnames(Monthly) %in% header.expect.monthly)){
+        if (all(toupper(colnames(Monthly)) %in% toupper(header.expect.monthly))){
           colnames(Monthly) <- header.expect.monthly
           cat("\nThere was a case error in the column names of ", 
             potential.file.names["monthly"], "\nnames reassigned correctly, but you should change this!\n\n", file = log.file, append = TRUE)
           
         } else {
           header.expect.monthly2 <- gsub(header.expect.monthly, pattern = "NoteCode", replacement = "Note")
-          if (all(toupper(colnames(Monthly)) == toupper(header.expect.monthly2))){
+          if (all(toupper(colnames(Monthly)) %in% toupper(header.expect.monthly2))){
             colnames(Monthly) <- header.expect.monthly
             cat("\nThere was an error in the column names of", 
               potential.file.names["monthly"], "\n'Note' changed to 'NoteCode', plus there may have been other case errors\nnames reassigned correctly, but you should change this!\n\n", file = log.file, append = TRUE)
           } else {
-            stop("\nEither the spelling or the order of the column names is off in ", 
-              potential.file.names["monthly"], ".\nCorrect this before continuing. The correct columns should be:\n\n", 
-              paste(header.expect.monthly, collapse = ", "),"\n")
+            ## we only really care if the required and used fields are in place, so only abort if necessary
+            if( !all( header.required.monthly %in% colnames(Monthly) ) ){
+              stop("\nEither the spelling or the order of the column names is off, or a column is missing in ", 
+              potential.file.names["monthly"], ".\nCorrect this before continuing. The expected columns should be:\n\n", 
+              paste(header.expect.monthly, collapse = ", "),"\n\n and the minimal required columns are\n\n",
+              paste(header.required.monthly, collapse = ", ") )
+            }
           }
         }
       }
@@ -237,6 +250,8 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
       stop("Problem in ", potential.file.names["birth"], " in the PopName column\nWas expecting all values to be ", XXX, "\n")
     }
   }
+
+  
   # Population 
   if (!all(Pop$PopName == XXX)){
     if (all(toupper(Pop$PopName) == XXX)){
@@ -272,6 +287,14 @@ readInputDB <- function(WORKING = "/data/commons/hmd/HMDWORK/DNK",
     }
   }
   }
+  # -------------------------------------------------------------------------------------------------------------
+  
+  ## check for overlapping RefCodes, as were found in SWE
+  print.overlapping.refcodes(Deaths, label="Overlapping RefCodes by Year (Deaths)")
+  
+  ## check for overlapping RefCodes, as were found in SWE
+  print.overlapping.refcodes(Pop, label="Overlapping RefCodes by Year RefCode(Population)")
+  
   # -------------------------------------------------------------------------------------------------------------
   # check value columns (Deaths, Births, etc) - if not numeric it's because they can't be without introducing NAs
   {

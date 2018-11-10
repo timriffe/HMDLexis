@@ -1,0 +1,14 @@
+08/10/2018 Add checks for missing ages in inputs.  This is a particularly annoying and common issue
+           Relax checks for ordering of columns (warn don't abort) and allow unneeded columns in birthbymonth.txt 
+           to be absent.
+
+6/12/2018 in readInputDB(), add check for integrity of InputDB/XYZbirthbymonth.txt
+          in particular check that the terminating column is "LDB" and not "LexisDB"
+
+2/6/2018  Should take advantage of ReadInputDB() routine as canonical reading/checking script, full of checks and reporting
+          that returns useful data frames for subsequent use as "InputDB" content.  This would allow a lot of code to work 
+          with fewer errors, (e.g. the Diagnostic code, and Lifetable code).
+
+          Generally, we want only cases where LDB=1, but allow ReadInputDB an option to keep all records ??
+
+
