@@ -287,8 +287,13 @@ HMDLexis/test_d_svv	d	2775	2018-11-06T15:20:15Z
 HMDLexis/test_d_svv/ldb_bel.m	f	0664	2018-11-06T15:20:15Z
 HMDLexis/test_d_svv/ldb_bgr.m	f	0664	2018-11-06T15:20:15Z
 HMDLexis/test_d_svv/ldb_nld.m	f	0664	2018-11-06T15:20:15Z
+HMDLexis/test_d_svv/test:d_svv/ldb_bel.m	f	0644	2018-11-09T16:37:49Z
+HMDLexis/test_d_svv/test:d_svv/ldb_bgr.m	f	0644	2018-11-09T16:37:49Z
+HMDLexis/test_d_svv/test:d_svv/ldb_nld.m	f	0644	2018-11-09T16:37:49Z
 HMDLexis/test_d_svv/test_d_svv.R	f	0664	2018-11-06T15:20:15Z
 HMDLexis/test_d_svv/test:d_svv.Rproj	f	0664	2018-11-06T15:20:15Z
+HMDLexis/test_d_svv/test:d_svv/test_d_svv.R	f	0644	2018-11-09T16:37:49Z
+HMDLexis/test_d_svv/test:d_svv/test:d_svv.Rproj	f	0644	2018-11-09T16:37:49Z
 HMDLexis/TODO	f	0664	2018-09-10T16:09:03Z
 MATLAB.hg/cell2num.m	f	0664	2018-11-06T15:20:15Z
 MATLAB.hg/centenarians.m	f	0664	2018-11-06T15:20:15Z
